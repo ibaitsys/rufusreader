@@ -313,7 +313,7 @@ h1 {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    background: #ffffff;
+    background: var(--card-bg, #ffffff);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 20px 22px;
@@ -321,6 +321,7 @@ h1 {
     margin: 0 auto;
     box-shadow: 0 12px 30px rgba(0,0,0,0.12);
     position: relative;
+    transition: background-color 0.3s ease;
 }
 
 .content-wrapper {
@@ -345,6 +346,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0.5rem;
 }
 
 .share-card-progress {
@@ -355,6 +357,137 @@ h1 {
     border-radius: 12px;
     font-size: 0.85em;
 }
+
+/* Speaker button styles */
+.speak-button {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    padding: 0;
+    margin: 0;
+    outline: none;
+}
+
+.speak-button:hover, .speak-button:focus-visible {
+    color: var(--primary-color);
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.speak-button.speaking {
+    color: var(--primary-color);
+    background-color: rgba(37, 99, 235, 0.1);
+    animation: pulse 1.5s infinite;
+}
+
+.speak-icon {
+    width: 20px;
+    height: 20px;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+    }
+}
+
+/* Ensure proper contrast in dark mode */
+[data-theme="dark"] .speak-button {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .speak-button:hover,
+[data-theme="dark"] .speak-button:focus-visible,
+[data-theme="dark"] .speak-button.speaking {
+    color: var(--primary-color);
+    background-color: rgba(37, 99, 235, 0.2);
+}
+
+/* Color Picker Styles */
+.color-picker {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    padding: 8px 0;
+}
+
+.color-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 0;
+    background-color: var(--color, white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.color-option.active {
+    border-color: var(--primary-color, #2563eb);
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--primary-color, #2563eb), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-option::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    transition: border-color 0.2s;
+}
+
+.color-option:focus-visible::after {
+    border-color: var(--primary-color);
+}
+
+/* Color Options */
+.color-option.white { background-color: #ffffff; }
+.color-option.light-blue { background-color: #e6f2ff; }
+.color-option.light-yellow { background-color: #fff9e6; }
+.color-option.light-pink { background-color: #ffebf3; }
+.color-option.light-green { background-color: #f0f9eb; }
+.color-option.light-purple { background-color: #f3e6ff; }
+
+/* Apply card background color */
+.share-card-content, 
+.card,
+.content-card {
+    background-color: var(--card-bg, #ffffff) !important;
+    transition: background-color 0.3s ease !important;
+}
+
+/* Ensure the color picker colors are applied */
+.color-option.white { --color: #ffffff; }
+.color-option.light-blue { --color: #e6f2ff; }
+.color-option.light-yellow { --color: #fff9e6; }
+.color-option.light-pink { --color: #ffebf3; }
+.color-option.light-green { --color: #f0f9eb; }
+.color-option.light-purple { --color: #f3e6ff; }
 
 /* Book name at bottom of card */
 .book-name {
@@ -508,9 +641,42 @@ h1 {
 /* Canvas fallback for scanned PDFs */
 .page canvas {
     width: 100%;
-    height: auto;
-    display: block;
-    border-radius: var(--radius-sm);
+}
+
+.share-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.color-change-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.color-change-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.color-change-btn:active {
+    transform: scale(0.98);
 }
 
 .reader-controls {

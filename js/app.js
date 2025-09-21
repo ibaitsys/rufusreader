@@ -247,11 +247,27 @@ function interleaveBooksIntoScreens(books) {
                 const match = ct.match(/^(\S+)([\s\S]*)$/);
                 const fw = match ? match[1] : '';
                 const rest = match ? match[2] : ct.slice(fw.length);
+                const chunkIndex = pos;
+                const chunks = book.chunks;
+                const progressText = `Chunk ${chunkIndex + 1}/${chunks.length}`;
+                const chunkText = ct.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
                 content.innerHTML = `
                     <div class="share-card-body"><span class="first-word">${escapeHtml(fw)}</span>${escapeHtml(rest)}</div>
                     <div class="share-card-footer">
                         <span class="share-card-page">Pg. ${totalPages + 1}</span>
+                        <button class="speak-button" aria-label="Read aloud" title="Read aloud">
+                            <svg class="speak-icon" viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                            </svg>
+                        </button>
                     </div>`;
+                const speakButton = content.querySelector('.speak-button');
+                if (speakButton) {
+                    speakButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleSpeech(chunkText, speakButton);
+                    });
+                }
             } else if (chunk.type === 'image') {
                 content.className = 'page-content';
                 const img = document.createElement('img');
@@ -1135,6 +1151,28 @@ function scrollToPage(pageNumber) {
         }
         pageElement.classList.add('current');
         
+        // Play page turn sound if it's a page change (not initial load)
+        if (currentPageNum !== pageNumber) {
+            const pageTurnSound = document.getElementById('pageTurnSound');
+            if (pageTurnSound) {
+                // Reset the audio to the beginning in case it's still playing
+                pageTurnSound.currentTime = 0;
+                // Play the sound
+                pageTurnSound.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                    // If autoplay was prevented, we'll try to play after a user interaction
+                    const playAfterInteraction = () => {
+                        pageTurnSound.play().catch(console.error);
+                        document.removeEventListener('click', playAfterInteraction);
+                    };
+                    document.addEventListener('click', playAfterInteraction, { once: true });
+                });
+            }
+        }
+        
+        // Update current page number
+        currentPageNum = pageNumber;
+        
         // Reset scrolling flag after animation
         setTimeout(() => {
             isScrolling = false;
@@ -1344,11 +1382,330 @@ function formatFileSize(bytes) {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+// Text-to-speech functionality
+let currentSpeech = null;
+
+function stopSpeech() {
+    if (currentSpeech) {
+        window.speechSynthesis.cancel();
+        currentSpeech = null;
+    }
+}
+
+function toggleSpeech(text, button) {
+    // If already speaking, stop
+    if (currentSpeech) {
+        stopSpeech();
+        button.classList.remove('speaking');
+        return;
+    }
+
+    // Create a new speech synthesis utterance
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Set default language to English
+    utterance.lang = 'en-US';
+    
+    // Set voice properties
+    const voices = window.speechSynthesis.getVoices();
+    
+    // First try to find a high-quality English voice
+    let voice = voices.find(v => 
+        v.lang.startsWith('en-') && 
+        (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha'))
+    );
+    
+    // If no high-quality English voice, find any English voice
+    if (!voice) {
+        voice = voices.find(v => v.lang.startsWith('en-'));
+    }
+    
+    // If still no English voice, use the default system voice
+    if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang; // Use the voice's language
+    }
+    
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    // Handle events
+    utterance.onstart = () => {
+        currentSpeech = utterance;
+        button.classList.add('speaking');
+    };
+
+    utterance.onend = () => {
+        if (currentSpeech === utterance) {
+            currentSpeech = null;
+            button.classList.remove('speaking');
+        }
+    };
+
+    utterance.onerror = (event) => {
+        console.error('SpeechSynthesis error:', event);
+        button.classList.remove('speaking');
+        currentSpeech = null;
+    };
+
+    // Stop any current speech and start the new one
+    stopSpeech();
+    window.speechSynthesis.speak(utterance);
+}
+
+// Initialize speech synthesis voices when they become available
+let voices = [];
+function loadVoices() {
+    voices = window.speechSynthesis.getVoices();
+    
+    // Log available voices for debugging
+    if (voices.length > 0) {
+        console.log('Available voices:');
+        voices.forEach(voice => {
+            console.log(`${voice.name} (${voice.lang}) - ${voice.default ? 'Default' : ''}`);
+        });
+    }
+}
+
+// Color options for the shuffle feature
+const colorPalette = [
+    '#e6f2ff', // Light blue
+    '#fff9e6', // Light yellow
+    '#ffebf3', // Light pink
+    '#f0f9eb', // Light green
+    '#f3e6ff', // Light purple
+    '#ffe6e6', // Light red
+    '#e6ffe6', // Mint green
+    '#fff2e6', // Peach
+    '#e6f7ff', // Ice blue
+    '#f9f2ff'  // Lavender
+];
+
+// Simple color change functionality
+function initColorPicker() {
+    // List of nice light colors
+    const colors = [
+        '#f8f9fa', // Light gray
+        '#e9ecef', // Lighter gray
+        '#e6f2ff', // Light blue
+        '#e6ffe6', // Mint green
+        '#fff2e6', // Light peach
+        '#fff0f6', // Light pink
+        '#f8f0ff', // Light purple
+        '#e6f7ff', // Ice blue
+        '#f0fff4', // Light mint
+        '#feffea'  // Light yellow
+    ];
+    
+    // Get a random color
+    function getRandomColor() {
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    // Apply color to cards
+    function applyColorToCards(color) {
+        const cards = document.querySelectorAll('.share-card-content, .card, [class*="card-"], [class*="Card"]');
+        console.log(`Found ${cards.length} card elements to update with color: ${color}`);
+        
+        cards.forEach(card => {
+            card.style.backgroundColor = color;
+            card.style.setProperty('background-color', color, 'important');
+        });
+        
+        document.documentElement.style.setProperty('--card-bg', color);
+        localStorage.setItem('cardColor', color);
+    }
+    
+    // Initialize color shuffle button
+    function initColorShuffle() {
+        const shuffleButtons = document.querySelectorAll('.color-shuffle');
+        console.log('Initializing color shuffle buttons:', shuffleButtons.length);
+        
+        shuffleButtons.forEach(button => {
+            // Remove any existing event listeners
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            
+            // Add click handler
+            newButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const newColor = getRandomColor();
+                console.log('Shuffling to color:', newColor);
+                applyColorToCards(newColor);
+                
+                // Add a quick animation on click
+                const circle = this.querySelector('.color-circle');
+                if (circle) {
+                    circle.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        circle.style.transform = 'scale(1.1)';
+                        setTimeout(() => {
+                            circle.style.transform = 'scale(1)';
+                        }, 100);
+                    }, 100);
+                }
+            });
+            
+            // Initial color if none is set
+            if (!localStorage.getItem('cardColor')) {
+                applyColorToCards(getRandomColor());
+            } else {
+                // Apply saved color
+                const savedColor = localStorage.getItem('cardColor');
+                if (savedColor) {
+                    applyColorToCards(savedColor);
+                }
+            }
+        });
+    }
+    
+    // Initialize color change buttons
+    function initColorChangeButtons() {
+        const buttons = document.querySelectorAll('.color-change-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const newColor = getRandomColor();
+                const card = this.closest('.share-card-content');
+                if (card) {
+                    card.style.backgroundColor = newColor;
+                    // Also update the CSS variable
+                    document.documentElement.style.setProperty('--card-bg', newColor);
+                    // Save the color
+                    localStorage.setItem('cardColor', newColor);
+                }
+            });
+        });
+        
+        // Apply saved color if exists
+        const savedColor = localStorage.getItem('cardColor');
+        if (savedColor) {
+            document.documentElement.style.setProperty('--card-bg', savedColor);
+            const cards = document.querySelectorAll('.share-card-content');
+            cards.forEach(card => {
+                card.style.backgroundColor = savedColor;
+            });
+        }
+    }
+    
+    // Run initialization
+    initColorChangeButtons();
+    
+    function setupColorPicker() {
+        const colorOptions = document.querySelectorAll('.color-option');
+        console.log('Found color options:', colorOptions.length);
+        
+        if (colorOptions.length === 0) {
+            console.log('No color options found in the DOM yet');
+            return false;
+        }
+        
+        // Load saved color preference
+        const savedColor = localStorage.getItem('cardColor') || '#ffffff';
+        console.log('Loading saved color:', savedColor);
+        
+        // Apply the saved color immediately
+        applyColorToCards(savedColor);
+        
+        // Set up event listeners for each color option
+        colorOptions.forEach(option => {
+            // Remove any existing event listeners by cloning the element
+            const newOption = option.cloneNode(true);
+            option.parentNode.replaceChild(newOption, option);
+            
+            // Set active state
+            if (newOption.dataset.color === savedColor) {
+                newOption.classList.add('active');
+            } else {
+                newOption.classList.remove('active');
+            }
+            
+            // Add click handler
+            newOption.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const color = this.dataset.color;
+                console.log('Color selected:', color);
+                
+                // Update active state
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Apply the color
+                applyColorToCards(color);
+            });
+        });
+        
+        return true;
+    }
+    
+    // Try to set up immediately
+    if (!setupColorPicker()) {
+        console.log('Color picker not ready, setting up observer...');
+        
+        // If color options aren't in the DOM yet, set up a mutation observer
+        const observer = new MutationObserver((mutations, obs) => {
+            console.log('DOM mutation observed, checking for color picker...');
+            if (setupColorPicker()) {
+                console.log('Color picker initialized successfully');
+                obs.disconnect();
+            }
+        });
+        
+        // Start observing the settings panel for changes
+        const settingsPanel = document.getElementById('settings-menu') || document.body;
+        observer.observe(settingsPanel, {
+            childList: true,
+            subtree: true
+        });
+        
+        // Set a timeout to stop observing after 10 seconds
+        setTimeout(() => {
+            observer.disconnect();
+            console.log('Observer disconnected after timeout');
+        }, 10000);
+    }
+    
+    // Also set up when settings panel is opened
+    const settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            console.log('Settings button clicked, initializing color picker...');
+            setTimeout(() => {
+                setupColorPicker();
+            }, 100);
+        });
+    }
+}
+
+// Function to initialize the app
+function initializeApp() {
+    init();
+    
+    // Initialize color picker when settings panel is opened
+    const settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            // Small delay to ensure the panel is visible
+            setTimeout(initColorPicker, 50);
+        });
+    }
+    
+    // Also try to initialize immediately
+    initColorPicker();
+    
+    // Load voices when they change (some browsers load them asynchronously)
+    if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+    }
+}
+
 // Initialize the app when the DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initializeApp);
 } else {
-    init();
+    initializeApp();
 }
 
 // Expose key functions globally (some environments/cache can cause scope issues)
