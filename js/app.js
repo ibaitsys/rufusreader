@@ -6,11 +6,132 @@ async function init() {
     const readerContent = document.getElementById('reader-content');
     const infoPanel = document.getElementById('info-panel');
     const actionSheetOverlay = document.getElementById('action-sheet-overlay');
+    const themeToggleButton = document.getElementById('theme-toggle');
 
     if (!readerContent) {
         console.error("FALHA CRÍTICA: #reader-content não encontrado.");
         return;
     }
+
+    // Theme switcher logic
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', currentTheme);
+
+    themeToggleButton.addEventListener('click', () => {
+        let newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+
+    // Navigation buttons logic
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    // Scroll logic
+    const readerContentDiv = document.getElementById('reader-content');
+    const scrollToTopButton = document.getElementById('scroll-to-top');
+    let isScrolling = false;
+    let scrollTimeout;
+
+    let touchStartY = 0;
+
+    readerContentDiv.addEventListener('touchstart', (event) => {
+        touchStartY = event.touches[0].clientY;
+    });
+
+    readerContentDiv.addEventListener('touchmove', (event) => {
+        event.preventDefault();
+    }, { passive: false });
+
+    readerContentDiv.addEventListener('touchend', (event) => {
+        if (isScrolling) return;
+
+        const touchEndY = event.changedTouches[0].clientY;
+        const swipeDistance = touchEndY - touchStartY;
+
+        if (Math.abs(swipeDistance) < 50) return; // Ignore small swipes
+
+        const pages = document.querySelectorAll('.page');
+        if (pages.length === 0) return;
+
+        const pageHeight = pages[0].offsetHeight;
+        const currentPageIndex = Math.round(readerContentDiv.scrollTop / pageHeight);
+
+        let targetPage;
+        if (swipeDistance < 0) {
+            // Swiping up (scrolling down)
+            targetPage = pages[Math.min(currentPageIndex + 1, pages.length - 1)];
+        } else {
+            // Swiping down (scrolling up)
+            targetPage = pages[Math.max(currentPageIndex - 1, 0)];
+        }
+
+        if (targetPage) {
+            isScrolling = true;
+            readerContentDiv.scrollTo({
+                top: targetPage.offsetTop,
+                behavior: 'smooth'
+            });
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 700); // Adjust timeout to match scroll behavior
+        }
+    });
+
+    readerContentDiv.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        if (isScrolling) return;
+
+        const pages = document.querySelectorAll('.page');
+        if (pages.length === 0) return;
+
+        const pageHeight = pages[0].offsetHeight;
+        const currentPageIndex = Math.round(readerContentDiv.scrollTop / pageHeight);
+
+        let targetPage;
+        if (event.deltaY > 0) {
+            // Scrolling down
+            targetPage = pages[Math.min(currentPageIndex + 1, pages.length - 1)];
+        } else {
+            // Scrolling up
+            targetPage = pages[Math.max(currentPageIndex - 1, 0)];
+        }
+
+        if (targetPage) {
+            isScrolling = true;
+            readerContentDiv.scrollTo({
+                top: targetPage.offsetTop,
+                behavior: 'smooth'
+            });
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 700); // Adjust timeout to match scroll behavior
+        }
+    });
+
+    readerContentDiv.addEventListener('scroll', () => {
+        if (readerContentDiv.scrollTop > 200) {
+            scrollToTopButton.classList.add('visible');
+        } else {
+            scrollToTopButton.classList.remove('visible');
+        }
+    });
+
+    scrollToTopButton.addEventListener('click', () => {
+        readerContentDiv.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
 
     // Funções de UI (simplificadas para o teste)
     function openActionSheet() { if(actionSheetOverlay) actionSheetOverlay.style.display = 'block'; }
@@ -99,7 +220,7 @@ function splitIntoSmartChunks(text) {
     let currentChunk = '';
 
     for (const sentence of sentences) {
-        if (currentChunk.length + sentence.length > 450 && currentChunk.length > 0) {
+        if (currentChunk.length + sentence.length > 250 && currentChunk.length > 0) {
             chunks.push(currentChunk.trim());
             currentChunk = '';
         }
@@ -145,6 +266,17 @@ function interleaveBooksIntoScreens(books) {
                 </button>
             </div>`;
         
+        const speakButton = content.querySelector('.speak-button');
+        speakButton.addEventListener('click', () => {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            const textToSpeak = chunkText;
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'pt-BR';
+            speechSynthesis.speak(utterance);
+        });
+
         screen.appendChild(content);
         readerContent.appendChild(screen);
     }
