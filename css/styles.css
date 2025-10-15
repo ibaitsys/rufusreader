@@ -306,16 +306,26 @@ h1 {
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 140px); /* 140px for header, nav bar, and some margin */
-    min-height: 200px;
+    height: 70vh;
+}
+
+.share-card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
 }
 
 .share-card-body {
     flex-grow: 1;
+    overflow-y: auto;
     margin-bottom: 1rem;
     font-size: 1.25rem;
     line-height: 1.6;
-    overflow-y: hidden;
+}
+
+.share-card-footer {
+    flex-shrink: 0;
 }
 
 .share-card-content {
