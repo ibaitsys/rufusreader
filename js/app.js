@@ -118,21 +118,6 @@ async function init() {
         }
     });
 
-    readerContentDiv.addEventListener('scroll', () => {
-        if (readerContentDiv.scrollTop > 200) {
-            scrollToTopButton.classList.add('visible');
-        } else {
-            scrollToTopButton.classList.remove('visible');
-        }
-    });
-
-    scrollToTopButton.addEventListener('click', () => {
-        readerContentDiv.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-
     // Funções de UI (simplificadas para o teste)
     function openActionSheet() { if(actionSheetOverlay) actionSheetOverlay.style.display = 'block'; }
     function closeActionSheet() { if(actionSheetOverlay) actionSheetOverlay.style.display = 'none'; }
