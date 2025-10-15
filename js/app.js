@@ -60,7 +60,7 @@ async function init() {
         if (pages.length === 0) return;
 
         const pageHeight = pages[0].offsetHeight;
-        const currentPageIndex = Math.round(readerContentDiv.scrollTop / pageHeight);
+        const currentPageIndex = Math.floor(readerContentDiv.scrollTop / pageHeight);
 
         let targetPage;
         if (swipeDistance < 0) {
@@ -81,7 +81,7 @@ async function init() {
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
-            }, 700); // Adjust timeout to match scroll behavior
+            }, 1000); // Adjust timeout to match scroll behavior
         }
     });
 
@@ -93,7 +93,7 @@ async function init() {
         if (pages.length === 0) return;
 
         const pageHeight = pages[0].offsetHeight;
-        const currentPageIndex = Math.round(readerContentDiv.scrollTop / pageHeight);
+        const currentPageIndex = Math.floor(readerContentDiv.scrollTop / pageHeight);
 
         let targetPage;
         if (event.deltaY > 0) {
@@ -114,7 +114,7 @@ async function init() {
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
-            }, 700); // Adjust timeout to match scroll behavior
+            }, 1000); // Adjust timeout to match scroll behavior
         }
     });
 
