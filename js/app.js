@@ -144,7 +144,7 @@ async function init() {
     // Lógica principal
     try {
         console.log("[2] Iniciando fetch do PDF...");
-        const response = await fetch('assets/Dom_Casmurro-Machado_de_Assis.pdf');
+        const response = await fetch('assets/Dom-casmurro.pdf');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
