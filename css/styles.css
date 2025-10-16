@@ -1149,3 +1149,61 @@ label#browse-btn.btn {
     height: 24px;
     margin-bottom: 0.25rem;
 }
+body.fullscreen-active .app-header,
+body.fullscreen-active .bottom-nav,
+body.fullscreen-active #audio-player-container {
+    display: none;
+}
+
+.fab-right {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.fab-right:hover {
+    transform: scale(1.1);
+}
+
+.fab-left {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.fab-left:hover {
+    transform: scale(1.1);
+}
+
+
+
+
+
+
+

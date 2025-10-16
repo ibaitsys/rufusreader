@@ -7,11 +7,59 @@ async function init() {
     const infoPanel = document.getElementById('info-panel');
     const actionSheetOverlay = document.getElementById('action-sheet-overlay');
     const themeToggleButton = document.getElementById('theme-toggle');
+    const immersiveModeBtn = document.getElementById('immersive-mode-btn');
+    const audioPlayer = document.getElementById('audio-player');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const musicSelect = document.getElementById('music-select');
+    const musicToggleBtn = document.getElementById('music-toggle-btn');
+
+
 
     if (!readerContent) {
         console.error("FALHA CRÍTICA: #reader-content não encontrado.");
         return;
     }
+
+    // Music toggle logic
+    musicToggleBtn.addEventListener('click', () => {
+        const playIcon = document.querySelector('.play-music-icon');
+        const pauseIcon = document.querySelector('.pause-music-icon');
+
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        } else {
+            audioPlayer.pause();
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        }
+    });
+
+
+
+
+
+    // Fullscreen logic
+    function toggleFullscreen() {
+        const musicToggleBtn = document.getElementById('music-toggle-btn');
+        const fullscreenAudio = document.getElementById('fullscreen-audio');
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            document.body.classList.add('fullscreen-active');
+            musicToggleBtn.style.display = 'flex';
+            fullscreenAudio.play();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.body.classList.remove('fullscreen-active');
+                musicToggleBtn.style.display = 'none';
+                fullscreenAudio.pause();
+            }
+        }
+    }
+
+    immersiveModeBtn.addEventListener('click', toggleFullscreen);
 
     // Theme switcher logic
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -77,6 +125,7 @@ async function init() {
                 top: targetPage.offsetTop,
                 behavior: 'smooth'
             });
+            saveProgress();
 
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
@@ -110,8 +159,7 @@ async function init() {
                 top: targetPage.offsetTop,
                 behavior: 'smooth'
             });
-
-            clearTimeout(scrollTimeout);
+            saveProgress();
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
             }, 1000); // Adjust timeout to match scroll behavior
@@ -266,7 +314,36 @@ function interleaveBooksIntoScreens(books) {
         readerContent.appendChild(screen);
     }
     console.log(`[10] Renderização concluída. ${totalPages} cards adicionados ao DOM.`);
+    loadProgress();
 }
 
-// Garante que o app só rode depois que todos os recursos, incluindo pdf.js, forem carregados.
+
+function getCurrentPageIndex() {
+    const readerContentDiv = document.getElementById('reader-content');
+    const pages = document.querySelectorAll('.page');
+    if (pages.length === 0) return 0;
+    const pageHeight = pages[0].offsetHeight;
+    return Math.floor(readerContentDiv.scrollTop / pageHeight);
+}
+
+function saveProgress() {
+    const pageIndex = getCurrentPageIndex();
+    localStorage.setItem('readingProgress', pageIndex);
+}
+
+
+function loadProgress() {
+    const savedPageIndex = localStorage.getItem('readingProgress');
+    if (savedPageIndex) {
+        const readerContentDiv = document.getElementById('reader-content');
+        const pages = document.querySelectorAll('.page');
+        if (pages.length > 0) {
+            const pageHeight = pages[0].offsetHeight;
+            const scrollTop = parseInt(savedPageIndex, 10) * pageHeight;
+            readerContentDiv.scrollTop = scrollTop;
+        }
+    }
+}
+
+// Garante que o app só rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
 window.onload = init;

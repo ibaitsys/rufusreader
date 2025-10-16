@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progresso do Projeto</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        h1 { font-size: 1.5em; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-bottom: 10px; }
+        label { font-size: 1.2em; }
+        .sub-task { margin-left: 20px; font-size: 1em; }
+    </style>
+</head>
+<body>
+    <h1>Progresso do Projeto: Leitor Imersivo</h1>
+
+    <h2>Funcionalidades Planejadas</h2>
+
+    <ul>
+        <li>
+            <input type="checkbox" id="feature1" checked disabled>
+            <label for="feature1">Salvar Progresso de Leitura (LocalStorage)</label>
+            <ul class="sub-task">
+                <li>
+                    <input type="checkbox" id="feature1-1" checked disabled>
+                    <label for="feature1-1">Criar função para salvar o índice da página no localStorage</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="feature1-2" checked disabled>
+                    <label for="feature1-2">Criar função para carregar o índice da página do localStorage e rolar para a página</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="feature1-3" checked disabled>
+                    <label for="feature1-3">Integrar a função de salvar com a lógica de rolagem (swipe e wheel)</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="feature1-4" checked disabled>
+                    <label for="feature1-4">Integrar a função de carregar na inicialização do aplicativo</label>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <input type="checkbox" id="feature2" checked disabled>
+            <label for="feature2">Modo de Leitura Profunda</label>
+            <ul class="sub-task">
+                <li>
+                    <input type="checkbox" id="feature2-1" checked disabled>
+                    <label for="feature2-1">Adicionar botão para ativar/desativar o modo de tela cheia</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="feature2-2" checked disabled>
+                    <label for="feature2-2">Implementar a funcionalidade de tela cheia</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="feature2-3" checked disabled>
+                    <label for="feature2-3">Adicionar player de áudio com 2 opções de música e controle de ligar/desligar</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="feature2-4" checked disabled>
+                    <label for="feature2-4">Esconder controles desnecessários no modo de leitura profunda</label>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+</body>
+</html>
