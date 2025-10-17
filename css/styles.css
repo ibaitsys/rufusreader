@@ -69,7 +69,6 @@ body.body-no-scroll {
     height: 100%;
     display: none;
     flex-direction: column;
-    background-color: var(--bg-color);
     transition: opacity 0.3s ease;
 }
 
@@ -94,7 +93,6 @@ body.body-no-scroll {
     width: 100%;
     padding: 2rem;
     margin-bottom: 1rem;
-    background-color: var(--card-bg);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     scroll-snap-align: start;
@@ -107,17 +105,11 @@ body.body-no-scroll {
     hyphens: auto;
 }
 
-.page.current {
-    transform: translateY(0) scale(1.0);
-    opacity: 1;
-    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-}
-
 .share-card-content {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    background: var(--card-bg, #ffffff);
+    background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 20px 22px;
@@ -431,4 +423,20 @@ body.fullscreen-active .exit-fullscreen-btn {
 .exit-fullscreen-btn svg {
     width: 24px;
     height: 24px;
+}
+
+
+
+.dark-theme {
+    background-image: url('/assets/Dark.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.light-theme {
+    background-image: url('/assets/Light.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }

@@ -1,6 +1,20 @@
+
+
+let currentUtterance = null;
+let currentSpeakButton = null;
+let isScrolling = false;
+
 // Versão de depuração com logs detalhados
 
 async function init() {
+    if ('speechSynthesis' in window) {
+        speechSynthesis.onvoiceschanged = () => {
+            const voices = speechSynthesis.getVoices();
+            console.log("Available voices:", voices);
+        };
+    } else {
+        console.log("Speech Synthesis not supported");
+    }
     console.log("[1] App iniciado.");
 
     const readerContent = document.getElementById('reader-content');
@@ -75,6 +89,41 @@ async function init() {
         });
     }
 
+    const actionRestart = document.getElementById('action-restart');
+    if (actionRestart) {
+        actionRestart.addEventListener('click', () => {
+            const readerContentDiv = document.getElementById('reader-content');
+            readerContentDiv.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            closeActionSheet();
+        });
+    }
+
+
+
+
+    const actionReadAloud = document.getElementById('action-read-aloud');
+    if (actionReadAloud) {
+        actionReadAloud.addEventListener('click', () => {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            } else {
+                const pageIndex = getCurrentPageIndex();
+                const pages = document.querySelectorAll('.page');
+                if (pages.length > 0 && pageIndex < pages.length) {
+                    const currentPage = pages[pageIndex];
+                    const textToSpeak = currentPage.querySelector('.share-card-body').textContent;
+                    currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+                    currentUtterance.lang = 'pt-BR';
+                    speechSynthesis.speak(currentUtterance);
+                }
+            }
+            closeActionSheet();
+        });
+    }
+
     // Theme switcher logic
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.body.setAttribute('data-theme', currentTheme);
@@ -96,11 +145,35 @@ async function init() {
 
     // Scroll logic
     const readerContentDiv = document.getElementById('reader-content');
-    const scrollToTopButton = document.getElementById('scroll-to-top');
-    let isScrolling = false;
-    let scrollTimeout;
 
-    let touchStartY = 0;
+
+    const actionThemeDark = document.getElementById('action-theme-dark');
+    if (actionThemeDark) {
+        actionThemeDark.addEventListener('click', () => {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+            closeActionSheet();
+        });
+    }
+
+    const actionThemeLight = document.getElementById('action-theme-light');
+    if (actionThemeLight) {
+        actionThemeLight.addEventListener('click', () => {
+            document.body.classList.add('light-theme');
+            document.body.classList.remove('dark-theme');
+            closeActionSheet();
+        });
+    }
+
+    const actionThemeDefault = document.getElementById('action-theme-default');
+    if (actionThemeDefault) {
+        actionThemeDefault.addEventListener('click', () => {
+            document.body.classList.remove('dark-theme', 'light-theme');
+            closeActionSheet();
+        });
+    }
+
+
 
     let totalPages = 0;
 
@@ -264,6 +337,7 @@ async function init() {
     }
 
     function closeActionSheet() {
+        document.activeElement.blur();
         const actionSheet = document.getElementById('action-sheet');
         if (actionSheetOverlay && actionSheet) {
             actionSheetOverlay.classList.remove('visible');
@@ -410,19 +484,60 @@ function interleaveBooksIntoScreens(books) {
             <div class="share-card-footer">
                 <span class="share-card-page">Pág. ${pageCounter}</span>
                 <button class="speak-button" aria-label="Read aloud">
-                    <svg class="speak-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <svg class="speak-icon play-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 </button>
             </div>`;
         
         const speakButton = content.querySelector('.speak-button');
+
         speakButton.addEventListener('click', () => {
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            }
             const textToSpeak = chunkText;
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            utterance.lang = 'pt-BR';
-            speechSynthesis.speak(utterance);
+            const playIcon = speakButton.querySelector('.play-icon');
+            const pauseIcon = speakButton.querySelector('.pause-icon');
+
+            if (speechSynthesis.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
+                // Currently speaking the same text, so stop it
+                speechSynthesis.cancel();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            } else {
+                speechSynthesis.cancel(); // Cancel any previous speech
+                // Not speaking, or speaking different text, or paused on different text
+
+                // Reset icon of previously speaking button, if any
+                if (currentSpeakButton && currentSpeakButton !== speakButton) {
+                    currentSpeakButton.querySelector('.play-icon').style.display = 'block';
+                    currentSpeakButton.querySelector('.pause-icon').style.display = 'none';
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+                currentUtterance.lang = 'pt-BR';
+
+                currentUtterance.onend = () => {
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                    currentUtterance = null;
+                    currentSpeakButton = null;
+                    isPaused = false;
+                    console.log('Speech ended, isPaused set to false');
+                };
+
+                currentUtterance.onpause = () => {
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                };
+
+                currentUtterance.onresume = () => {
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                };
+
+                speechSynthesis.speak(currentUtterance);
+                currentSpeakButton = speakButton;
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            }
         });
 
         screen.appendChild(content);
