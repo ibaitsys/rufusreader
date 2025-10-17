@@ -509,7 +509,7 @@ function interleaveBooksIntoScreens(books) {
 
         if (speakButton) {
             speakButton.addEventListener('click', () => {
-                const textToSpeak = chunkText;
+                const textToSpeak = content.textContent;
                 const playIcon = speakButton.querySelector('.play-icon');
                 const pauseIcon = speakButton.querySelector('.pause-icon');
 
