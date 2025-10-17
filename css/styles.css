@@ -440,3 +440,27 @@ body.fullscreen-active .exit-fullscreen-btn {
     background-position: center;
     background-attachment: fixed;
 }
+.action-sheet-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.action-sheet-close-btn:hover {
+    background-color: var(--border-color);
+}
+
+.action-sheet-close-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}

@@ -3,6 +3,7 @@
 let currentUtterance = null;
 let currentSpeakButton = null;
 let isScrolling = false;
+let scrollTimeout;
 
 // Versão de depuração com logs detalhados
 
@@ -171,6 +172,11 @@ async function init() {
             document.body.classList.remove('dark-theme', 'light-theme');
             closeActionSheet();
         });
+    }
+
+    const actionSheetCloseBtn = document.querySelector('.action-sheet-close-btn');
+    if (actionSheetCloseBtn) {
+        actionSheetCloseBtn.addEventListener('click', closeActionSheet);
     }
 
 
