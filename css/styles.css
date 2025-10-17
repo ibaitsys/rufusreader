@@ -428,14 +428,14 @@ body.fullscreen-active .exit-fullscreen-btn {
 
 
 .dark-theme {
-    background-image: url('/assets/Dark.png');
+    background-image: url('/machado/assets/Dark.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
 .light-theme {
-    background-image: url('/assets/Light.png');
+    background-image: url('/machado/assets/Light.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
