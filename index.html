@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=1.1">
 
     <!-- A biblioteca pdf.js precisa ser carregada aqui no head -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -74,12 +74,12 @@
 
     <div class="app-container">
         <audio id="fullscreen-audio" src="assets/Arnor(chosic.com).mp3" loop></audio>
-        <button id="immersive-mode-btn" class="fab-left">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-        </button>
         <button id="music-toggle-btn" class="fab-right">
             <svg class="play-music-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             <svg class="pause-music-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M10 16.5v-9l6 4.5-6 4.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+        </button>
+        <button id="exit-fullscreen-btn" class="exit-fullscreen-btn">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z"/></svg>
         </button>
         <div id="reader-screen" class="screen active">
             <div class="reader-content" id="reader-content">
@@ -87,22 +87,26 @@
             </div>
         </div>
 
-    </div>
+        <!-- Bottom Info Panel (polished TikTok style) -->
+        <div class="info-panel" id="info-panel">
+            <div class="info-text">
+                <h2 id="info-title">Dom Casmurro</h2>
+                <p id="info-subtitle">Page 1 of 1</p>
+            </div>
+            <div class="info-actions">
+                <a id="info-action" href="#" style="display:none">View Details</a>
+            </div>
+        </div>
 
-    <nav class="bottom-nav fullscreen-hidden">
-        <button class="nav-btn active">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
-            <span>Início</span>
-        </button>
-        <button class="nav-btn">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
-            <span>Salvos</span>
-        </button>
-        <button class="nav-btn">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.67 0-4.85-2.18-4.85-4.85 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
-            <span>Ajustes</span>
-        </button>
-    </nav>
+        <!-- Slide-up Action Sheet -->
+        <div id="action-sheet-overlay" class="action-sheet-overlay" style="display:none;"></div>
+        <div id="action-sheet" class="action-sheet">
+            <div class="action-sheet-handle" aria-hidden="true"></div>
+            <div class="action-sheet-header">Opções</div>
+            <button class="action-sheet-item" id="action-fullscreen">Modo Leitura</button>
+            
+        </div>
+    </div>
 
     <script src="js/app.js"></script>
 

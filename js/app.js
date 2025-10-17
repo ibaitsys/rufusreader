@@ -8,12 +8,15 @@ async function init() {
     const actionSheetOverlay = document.getElementById('action-sheet-overlay');
     const themeToggleButton = document.getElementById('theme-toggle');
     const immersiveModeBtn = document.getElementById('immersive-mode-btn');
-    const audioPlayer = document.getElementById('audio-player');
+    const audioPlayer = document.getElementById('fullscreen-audio');
     const playPauseBtn = document.getElementById('play-pause-btn');
     const musicSelect = document.getElementById('music-select');
     const musicToggleBtn = document.getElementById('music-toggle-btn');
+    const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
 
-
+    if (exitFullscreenBtn) {
+        exitFullscreenBtn.addEventListener('click', toggleFullscreen);
+    }
 
     if (!readerContent) {
         console.error("FALHA CRÍTICA: #reader-content não encontrado.");
@@ -44,22 +47,33 @@ async function init() {
     function toggleFullscreen() {
         const musicToggleBtn = document.getElementById('music-toggle-btn');
         const fullscreenAudio = document.getElementById('fullscreen-audio');
+        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
             document.body.classList.add('fullscreen-active');
             musicToggleBtn.style.display = 'flex';
+            exitFullscreenBtn.style.display = 'flex';
             fullscreenAudio.play();
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
                 document.body.classList.remove('fullscreen-active');
                 musicToggleBtn.style.display = 'none';
+                exitFullscreenBtn.style.display = 'none';
                 fullscreenAudio.pause();
             }
         }
     }
 
-    immersiveModeBtn.addEventListener('click', toggleFullscreen);
+    const actionFullscreen = document.getElementById('action-fullscreen');
+
+    if (actionFullscreen) {
+        actionFullscreen.addEventListener('click', () => {
+            toggleFullscreen();
+            closeActionSheet(); // Close the sheet after activating
+        });
+    }
 
     // Theme switcher logic
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -87,6 +101,30 @@ async function init() {
     let scrollTimeout;
 
     let touchStartY = 0;
+
+    let totalPages = 0;
+
+    readerContentDiv.addEventListener('click', (event) => {
+        if (event.target.classList.contains('share-card-page')) {
+            const totalPages = document.querySelectorAll('.page').length;
+            const pageIndicator = event.target;
+            const displayMode = pageIndicator.dataset.displayMode || 'page';
+            const currentPageText = pageIndicator.textContent;
+            const currentPageMatch = currentPageText.match(/\d+/);
+            if (!currentPageMatch) return;
+
+            const currentPage = parseInt(currentPageMatch[0], 10);
+
+            if (displayMode === 'page') {
+                const percentage = Math.round((currentPage / totalPages) * 100);
+                pageIndicator.textContent = `${percentage}%`;
+                pageIndicator.dataset.displayMode = 'percentage';
+            } else {
+                pageIndicator.textContent = `Pág. ${currentPage}`;
+                pageIndicator.dataset.displayMode = 'page';
+            }
+        }
+    });
 
     readerContentDiv.addEventListener('touchstart', (event) => {
         touchStartY = event.touches[0].clientY;
@@ -127,6 +165,10 @@ async function init() {
             });
             saveProgress();
 
+            const pages = document.querySelectorAll('.page');
+            const newIndex = Array.from(pages).indexOf(targetPage);
+            updatePageNumber(newIndex + 1, pages.length);
+
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
@@ -160,15 +202,81 @@ async function init() {
                 behavior: 'smooth'
             });
             saveProgress();
+
+            const pages = document.querySelectorAll('.page');
+            const newIndex = Array.from(pages).indexOf(targetPage);
+            updatePageNumber(newIndex + 1, pages.length);
+
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
             }, 1000); // Adjust timeout to match scroll behavior
         }
     });
 
-    // Funções de UI (simplificadas para o teste)
-    function openActionSheet() { if(actionSheetOverlay) actionSheetOverlay.style.display = 'block'; }
-    function closeActionSheet() { if(actionSheetOverlay) actionSheetOverlay.style.display = 'none'; }
+    // Set stagger index for action sheet items
+    const actionSheetItems = document.querySelectorAll('.action-sheet-item');
+    actionSheetItems.forEach((item, index) => {
+        item.style.setProperty('--stagger-index', index);
+    });
+
+    // Swipe to close action sheet
+    let actionSheetTouchStartY = 0;
+    let actionSheetTouchMoveY = 0;
+    const actionSheet = document.getElementById('action-sheet');
+
+    if(actionSheet) {
+        actionSheet.addEventListener('touchstart', (e) => {
+            actionSheetTouchStartY = e.touches[0].clientY;
+        });
+
+        actionSheet.addEventListener('touchmove', (e) => {
+            actionSheetTouchMoveY = e.touches[0].clientY;
+        });
+
+        actionSheet.addEventListener('touchend', () => {
+            if (actionSheetTouchMoveY > actionSheetTouchStartY + 50) { // Swipe down by 50px
+                closeActionSheet();
+            }
+            // Reset values
+            actionSheetTouchStartY = 0;
+            actionSheetTouchMoveY = 0;
+        });
+    }
+
+    let actionSheetTrigger = null;
+
+    // Funções de UI (melhoradas)
+    function openActionSheet() {
+        actionSheetTrigger = document.activeElement;
+        const actionSheet = document.getElementById('action-sheet');
+        if (actionSheetOverlay && actionSheet) {
+            actionSheetOverlay.classList.add('visible');
+            actionSheet.classList.add('open');
+            actionSheet.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('body-no-scroll');
+
+            // Focus on the first focusable element in the action sheet
+            const firstFocusable = actionSheet.querySelector('button');
+            if (firstFocusable) {
+                firstFocusable.focus();
+            }
+        }
+    }
+
+    function closeActionSheet() {
+        const actionSheet = document.getElementById('action-sheet');
+        if (actionSheetOverlay && actionSheet) {
+            actionSheetOverlay.classList.remove('visible');
+            actionSheet.classList.remove('open');
+            actionSheet.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('body-no-scroll');
+
+            // Return focus to the trigger element
+            if (actionSheetTrigger) {
+                actionSheetTrigger.focus();
+            }
+        }
+    }
 
     // Listeners básicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
@@ -265,11 +373,18 @@ function splitIntoSmartChunks(text) {
     return chunks;
 }
 
+function updatePageNumber(currentPage, totalPages) {
+    const infoSubtitle = document.getElementById('info-subtitle');
+    if (infoSubtitle) {
+        infoSubtitle.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+}
+
 function interleaveBooksIntoScreens(books) {
     console.log("[9] Entrou em interleaveBooksIntoScreens para renderizar os cards.");
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '';
-    let totalPages = 0;
+    let pageCounter = 0;
 
     const book = books[0];
     if (!book || !book.chunks) {
@@ -278,7 +393,7 @@ function interleaveBooksIntoScreens(books) {
     }
 
     for (const chunk of book.chunks) {
-        totalPages++;
+        pageCounter++;
         const screen = document.createElement('div');
         screen.className = 'page share-card';
         
@@ -293,7 +408,7 @@ function interleaveBooksIntoScreens(books) {
         content.innerHTML = `
             <div class="share-card-body"><span class="first-word">${fw}</span>${rest}</div>
             <div class="share-card-footer">
-                <span class="share-card-page">Pág. ${totalPages}</span>
+                <span class="share-card-page">Pág. ${pageCounter}</span>
                 <button class="speak-button" aria-label="Read aloud">
                     <svg class="speak-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </button>
@@ -313,7 +428,11 @@ function interleaveBooksIntoScreens(books) {
         screen.appendChild(content);
         readerContent.appendChild(screen);
     }
-    console.log(`[10] Renderização concluída. ${totalPages} cards adicionados ao DOM.`);
+
+    totalPages = document.querySelectorAll('.page').length;
+    updatePageNumber(1, totalPages);
+
+    console.log(`[10] Renderização concluída. ${pageCounter} cards adicionados ao DOM.`);
     loadProgress();
 }
 
