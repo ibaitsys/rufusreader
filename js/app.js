@@ -365,7 +365,7 @@ async function init() {
     // Lógica principal
     try {
         console.log("[2] Iniciando fetch do PDF...");
-        const response = await fetch('assets/Dom-casmurro.pdf');
+        const response = await fetch('assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -373,7 +373,7 @@ async function init() {
         console.log("[3] Fetch do PDF concluído com sucesso.");
 
         const blob = await response.blob();
-        const file = new File([blob], 'Dom_Casmurro-Machado_de_Assis.pdf', { type: 'application/pdf' });
+        const file = new File([blob], 'Memórias Postumas de Brás Cubas - PDF_removed.pdf', { type: 'application/pdf' });
         console.log("[4] Objeto File criado a partir do blob.");
 
         await processAndDisplayBook([file]);
@@ -422,7 +422,11 @@ async function buildBookFromFile(file) {
             const textContent = await page.getTextContent({ normalizeWhitespace: true });
             const textItems = textContent.items.map(it => it.str).join(' ').trim();
 
-            if (textItems && textItems.length > 20) { // Apenas processa páginas com texto significativo
+            if (p === 1) {
+                chunks.push({ type: 'text', content: textItems });
+            } else if (p === 2) {
+                chunks.push({ type: 'text', content: textItems });
+            } else if (textItems) {
                 const pageChunks = splitIntoSmartChunks(textItems);
                 chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
             }
@@ -472,7 +476,7 @@ function interleaveBooksIntoScreens(books) {
         return;
     }
 
-    for (const chunk of book.chunks) {
+    for (const [index, chunk] of book.chunks.entries()) {
         pageCounter++;
         const screen = document.createElement('div');
         screen.className = 'page share-card';
@@ -480,71 +484,79 @@ function interleaveBooksIntoScreens(books) {
         const content = document.createElement('div');
         content.className = 'page-content share-card-content';
 
-        const chunkText = chunk.content.trim();
-        const match = chunkText.match(/^(\S+)(.*)$/s);
-        const fw = match ? match[1] : chunkText;
-        const rest = match ? match[2] : '';
+        if (index === 0) {
+            content.innerHTML = `<h1 class="book-title">${chunk.content}</h1>`;
+        } else if (index === 1) {
+            content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
+        } else {
+            const chunkText = chunk.content.trim();
+            const match = chunkText.match(/^(\S+)(.*)$/s);
+            const fw = match ? match[1] : chunkText;
+            const rest = match ? match[2] : '';
 
-        content.innerHTML = `
-            <div class="share-card-body"><span class="first-word">${fw}</span>${rest}</div>
-            <div class="share-card-footer">
-                <span class="share-card-page">Pág. ${pageCounter}</span>
-                <button class="speak-button" aria-label="Read aloud">
-                    <svg class="speak-icon play-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                    <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                </button>
-            </div>`;
+            content.innerHTML = `
+                <div class="share-card-body"><span class="first-word">${fw}</span>${rest}</div>
+                <div class="share-card-footer">
+                    <span class="share-card-page">Pág. ${pageCounter}</span>
+                    <button class="speak-button" aria-label="Read aloud">
+                        <svg class="speak-icon play-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                        <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                </div>`;
+        }
         
         const speakButton = content.querySelector('.speak-button');
 
-        speakButton.addEventListener('click', () => {
-            const textToSpeak = chunkText;
-            const playIcon = speakButton.querySelector('.play-icon');
-            const pauseIcon = speakButton.querySelector('.pause-icon');
+        if (speakButton) {
+            speakButton.addEventListener('click', () => {
+                const textToSpeak = chunkText;
+                const playIcon = speakButton.querySelector('.play-icon');
+                const pauseIcon = speakButton.querySelector('.pause-icon');
 
-            if (speechSynthesis.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
-                // Currently speaking the same text, so stop it
-                speechSynthesis.cancel();
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-            } else {
-                speechSynthesis.cancel(); // Cancel any previous speech
-                // Not speaking, or speaking different text, or paused on different text
-
-                // Reset icon of previously speaking button, if any
-                if (currentSpeakButton && currentSpeakButton !== speakButton) {
-                    currentSpeakButton.querySelector('.play-icon').style.display = 'block';
-                    currentSpeakButton.querySelector('.pause-icon').style.display = 'none';
-                }
-
-                currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                currentUtterance.lang = 'pt-BR';
-
-                currentUtterance.onend = () => {
+                if (speechSynthesis.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
+                    // Currently speaking the same text, so stop it
+                    speechSynthesis.cancel();
                     playIcon.style.display = 'block';
                     pauseIcon.style.display = 'none';
-                    currentUtterance = null;
-                    currentSpeakButton = null;
-                    isPaused = false;
-                    console.log('Speech ended, isPaused set to false');
-                };
+                } else {
+                    speechSynthesis.cancel(); // Cancel any previous speech
+                    // Not speaking, or speaking different text, or paused on different text
 
-                currentUtterance.onpause = () => {
-                    playIcon.style.display = 'block';
-                    pauseIcon.style.display = 'none';
-                };
+                    // Reset icon of previously speaking button, if any
+                    if (currentSpeakButton && currentSpeakButton !== speakButton) {
+                        currentSpeakButton.querySelector('.play-icon').style.display = 'block';
+                        currentSpeakButton.querySelector('.pause-icon').style.display = 'none';
+                    }
 
-                currentUtterance.onresume = () => {
+                    currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+                    currentUtterance.lang = 'pt-BR';
+
+                    currentUtterance.onend = () => {
+                        playIcon.style.display = 'block';
+                        pauseIcon.style.display = 'none';
+                        currentUtterance = null;
+                        currentSpeakButton = null;
+                        isPaused = false;
+                        console.log('Speech ended, isPaused set to false');
+                    };
+
+                    currentUtterance.onpause = () => {
+                        playIcon.style.display = 'block';
+                        pauseIcon.style.display = 'none';
+                    };
+
+                    currentUtterance.onresume = () => {
+                        playIcon.style.display = 'none';
+                        pauseIcon.style.display = 'block';
+                    };
+
+                    speechSynthesis.speak(currentUtterance);
+                    currentSpeakButton = speakButton;
                     playIcon.style.display = 'none';
                     pauseIcon.style.display = 'block';
-                };
-
-                speechSynthesis.speak(currentUtterance);
-                currentSpeakButton = speakButton;
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            }
-        });
+                }
+            });
+        }
 
         screen.appendChild(content);
         readerContent.appendChild(screen);
