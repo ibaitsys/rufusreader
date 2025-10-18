@@ -468,6 +468,25 @@ function splitIntoSmartChunks(text) {
     return chunks;
 }
 
+// Simple, offline rules-based Portuguese simplifier
+function simplifyTextRules(text) {
+    let out = text;
+    const rules = [
+        [/\bvossa merc[êe]\b/gi, 'você'],
+        [/\bvossemec[êe]\b/gi, 'você'],
+        [/\bhei de\b/gi, 'vou'],
+        [/\bcousa\b/gi, 'coisa'],
+        [/\bdeveras\b/gi, 'realmente'],
+        [/\bassaz\b/gi, 'bastante'],
+        [/\bporventura\b/gi, 'talvez'],
+        [/\bd'outra\b/gi, 'de outra'],
+    ];
+    for (const [re, rep] of rules) out = out.replace(re, rep);
+    // Normalize spaces and spaces before punctuation
+    out = out.replace(/\s+/g, ' ').replace(/\s([,.;:!?])/g, '$1').trim();
+    return out;
+}
+
 function updatePageNumber(currentPage, totalPages) {
     const infoSubtitle = document.getElementById('info-subtitle');
     if (infoSubtitle) {
@@ -521,6 +540,53 @@ function interleaveBooksIntoScreens(books) {
                 </div>`;
         }
         
+        // Create a "Simplificar" button and group actions to the right
+        (function setupSimplifyButton() {
+            const footerEl = content.querySelector('.share-card-footer');
+            const speakBtn = content.querySelector('.speak-button');
+            const bodyEl = content.querySelector('.share-card-body');
+            if (!footerEl || !speakBtn || !bodyEl) return;
+
+            // Wrap actions
+            const actions = document.createElement('div');
+            actions.className = 'share-card-actions';
+            footerEl.replaceChild(actions, speakBtn);
+
+            // Create simplify button
+            const simplifyBtn = document.createElement('button');
+            simplifyBtn.className = 'simplify-button';
+            simplifyBtn.setAttribute('aria-label', 'Simplificar texto');
+            simplifyBtn.setAttribute('title', 'Simplificar');
+            simplifyBtn.textContent = 'Aa';
+
+            actions.appendChild(simplifyBtn);
+            actions.appendChild(speakBtn);
+
+            // Toggle logic with simple rules + cache
+            const originalText = bodyEl.textContent.trim();
+            const cacheKey = `simplified:${book.name || 'book'}:${index}`;
+            let isSimplified = false;
+
+            simplifyBtn.addEventListener('click', () => {
+                if (!isSimplified) {
+                    const cached = localStorage.getItem(cacheKey);
+                    const simplified = cached || simplifyTextRules(originalText);
+                    bodyEl.textContent = simplified;
+                    localStorage.setItem(cacheKey, simplified);
+                    isSimplified = true;
+                    simplifyBtn.classList.add('active');
+                    simplifyBtn.setAttribute('aria-pressed', 'true');
+                    simplifyBtn.title = 'Mostrar original';
+                } else {
+                    bodyEl.textContent = originalText;
+                    isSimplified = false;
+                    simplifyBtn.classList.remove('active');
+                    simplifyBtn.setAttribute('aria-pressed', 'false');
+                    simplifyBtn.title = 'Simplificar';
+                }
+            });
+        })();
+
         const speakButton = content.querySelector('.speak-button');
 
         if (speakButton) {

@@ -140,6 +140,12 @@ body.body-no-scroll {
     gap: 0.5rem;
 }
 
+.share-card-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .share-card-page {
     background-color: #f1f1f1;
     padding: 0.25rem 0.5rem;
@@ -163,6 +169,22 @@ body.body-no-scroll {
 }
 
 .speak-button:hover {
+    background-color: var(--border-color);
+}
+
+.simplify-button {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.simplify-button.active,
+.simplify-button:hover {
     background-color: var(--border-color);
 }
 
