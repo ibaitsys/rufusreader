@@ -1,4 +1,4 @@
-
+﻿
 
 let currentUtterance = null;
 let currentSpeakButton = null;
@@ -7,7 +7,7 @@ let scrollTimeout;
 let isScrolling = false;
 let touchStartY = 0;
 
-// Versão de depuração com logs detalhados
+// VersÃ£o de depuraÃ§Ã£o com logs detalhados
 
 async function init() {
     if ('speechSynthesis' in window) {
@@ -35,8 +35,166 @@ async function init() {
         exitFullscreenBtn.addEventListener('click', toggleFullscreen);
     }
 
+    // Deep reading helpers: rain visual and sound
+    let rainAudioCtx = null;
+    let rainGain = null;
+    const RAIN_DROP_COUNT = 60;
+
+    function ensureRainOverlay() {
+        let overlay = document.getElementById('rain-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'rain-overlay';
+            overlay.className = 'rain-overlay';
+            const app = document.querySelector('.app-container');
+            if (app) app.prepend(overlay);
+        }
+        return overlay;
+    }
+
+    function startRainEffect() {
+        const overlay = ensureRainOverlay();
+        overlay.innerHTML = '';
+        for (let i = 0; i < RAIN_DROP_COUNT; i++) {
+            const drop = document.createElement('span');
+            drop.className = 'raindrop';
+            const left = Math.random() * 100; // vw percentage
+            const duration = 1.6 + Math.random() * 1.8; // 1.6s - 3.4s
+            const delay = Math.random() * 3; // 0 - 3s
+            const skew = (Math.random() * 6 - 3); // -3 to 3 deg
+            drop.style.left = left + 'vw';
+            drop.style.animationDuration = duration + 's';
+            drop.style.animationDelay = delay + 's';
+            drop.style.transform = `skewX(${skew}deg)`;
+            overlay.appendChild(drop);
+        }
+        document.body.classList.add('deep-reading-active');
+    }
+
+    function stopRainEffect() {
+        const overlay = document.getElementById('rain-overlay');
+        if (overlay) overlay.innerHTML = '';
+        document.body.classList.remove('deep-reading-active');
+    }
+
+    function startRainSound() {
+        if (rainAudioCtx) return;
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            rainAudioCtx = new AudioCtx();
+            const sampleRate = rainAudioCtx.sampleRate;
+            const length = sampleRate * 2; // 2 seconds loop
+            const buffer = rainAudioCtx.createBuffer(1, length, sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < length; i++) {
+                // White noise, lightly filtered feel (simple high roll-off)
+                data[i] = (Math.random() * 2 - 1) * 0.5;
+            }
+            const src = rainAudioCtx.createBufferSource();
+            src.buffer = buffer;
+            src.loop = true;
+
+            const biquad = rainAudioCtx.createBiquadFilter();
+            biquad.type = 'lowpass';
+            biquad.frequency.value = 2200; // soften the hiss
+
+            rainGain = rainAudioCtx.createGain();
+            rainGain.gain.value = 0.18;
+
+            src.connect(biquad).connect(rainGain).connect(rainAudioCtx.destination);
+            src.start();
+        } catch (e) {
+            console.warn('Rain sound not available:', e);
+        }
+    }
+
+    function stopRainSound() {
+        if (rainAudioCtx) {
+            try { rainAudioCtx.close(); } catch(_) {}
+            rainAudioCtx = null;
+            rainGain = null;
+        }
+    }
+    // Space ambience (canvas starfield)
+    let spaceCtx = null;
+    let spaceCanvas = null;
+    let spaceAnim = null;
+    let stars = [];
+
+    function ensureSpaceCanvas() {
+        if (!spaceCanvas) spaceCanvas = document.getElementById('space-canvas');
+        return spaceCanvas;
+    }
+
+    function startSpaceEffect() {
+        const canvas = ensureSpaceCanvas();
+        if (!canvas) return;
+        spaceCanvas = canvas;
+        spaceCtx = spaceCanvas.getContext('2d');
+        resizeSpaceCanvas();
+        createStars();
+        cancelAnimationFrame(spaceAnim);
+        animateStars();
+        document.body.classList.add('deep-reading-active');
+    }
+
+    function stopSpaceEffect() {
+        cancelAnimationFrame(spaceAnim);
+        if (spaceCtx && spaceCanvas) {
+            spaceCtx.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+        }
+    }
+
+    function resizeSpaceCanvas() {
+        const c = ensureSpaceCanvas();
+        if (!c) return;
+        c.width = window.innerWidth;
+        c.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeSpaceCanvas);
+
+    function createStars() {
+        const c = ensureSpaceCanvas(); if (!c) return;
+        const count = Math.min(300, Math.floor((c.width * c.height) / 6000));
+        stars = new Array(count).fill(0).map(() => ({
+            x: Math.random() * c.width,
+            y: Math.random() * c.height,
+            r: Math.random() * 1.4 + 0.2,
+            a: Math.random(),
+            tw: Math.random() * 0.02 + 0.005,
+            vx: (Math.random() - 0.5) * 0.05,
+            vy: 0.08 + Math.random() * 0.08,
+        }));
+    }
+
+    function animateStars() {
+        const c = ensureSpaceCanvas(); if (!c || !spaceCtx) return;
+        const w = c.width, h = c.height;
+        spaceCtx.clearRect(0, 0, w, h);
+        // subtle nebula glow
+        const g = spaceCtx.createRadialGradient(w*0.7, h*0.3, 50, w*0.7, h*0.3, Math.max(w,h));
+        g.addColorStop(0, 'rgba(60,90,160,0.25)');
+        g.addColorStop(1, 'rgba(10,13,21,0)');
+        spaceCtx.fillStyle = g;
+        spaceCtx.fillRect(0,0,w,h);
+
+        spaceCtx.fillStyle = '#fff';
+        for (const s of stars) {
+            s.x += s.vx; s.y += s.vy; s.a += s.tw;
+            if (s.y > h + 10) { s.y = -10; s.x = Math.random() * w; }
+            const alpha = 0.5 + 0.5 * Math.sin(s.a);
+            spaceCtx.globalAlpha = alpha;
+            spaceCtx.beginPath();
+            spaceCtx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+            spaceCtx.fill();
+        }
+        spaceCtx.globalAlpha = 1;
+        spaceAnim = requestAnimationFrame(animateStars);
+    }
+
     if (!readerContent) {
-        console.error("FALHA CRÍTICA: #reader-content não encontrado.");
+        console.error("FALHA CRÃTICA: #reader-content nÃ£o encontrado.");
         return;
     }
 
@@ -55,12 +213,33 @@ async function init() {
             pauseIcon.style.display = 'none';
         }
     });
+// Global translation helpers (round-trip PT -> EN -> PT)
+function getTranslateConfig() {
+    return {
+        url: localStorage.getItem('translateApiUrl') || 'https://libretranslate.de/translate',
+        key: localStorage.getItem('translateApiKey') || null
+    };
+}
+
+async function translateText(text, from, to) {
+    const { url, key } = getTranslateConfig();
+    const payload = { q: text, source: from, target: to, format: 'text' };
+    if (key) payload.api_key = key;
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    if (!res.ok) throw new Error('Translation API error: ' + res.status);
+    const data = await res.json();
+    return data.translatedText || data.translation || '';
+}
+
+async function roundTripSimplify(text) {
+    const en = await translateText(text, 'pt', 'en');
+    const pt = await translateText(en, 'en', 'pt');
+    return pt;
+}
 
 
 
-
-
-    // Fullscreen logic
+    // Fullscreen logic (neutral entry; ambience applied separately)
     function toggleFullscreen() {
         const musicToggleBtn = document.getElementById('music-toggle-btn');
         const fullscreenAudio = document.getElementById('fullscreen-audio');
@@ -69,26 +248,96 @@ async function init() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
             document.body.classList.add('fullscreen-active');
+            // Neutral: no ambiance, show music toggle (user can choose), pause any playing
             musicToggleBtn.style.display = 'flex';
             exitFullscreenBtn.style.display = 'flex';
-            fullscreenAudio.play();
+            try { fullscreenAudio.pause(); } catch(_) {}
+            document.body.classList.add('deep-reading-active');
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
                 document.body.classList.remove('fullscreen-active');
                 musicToggleBtn.style.display = 'none';
                 exitFullscreenBtn.style.display = 'none';
-                fullscreenAudio.pause();
+                try { fullscreenAudio.pause(); } catch(_) {}
+                stopRainSound();
+                stopRainEffect();
+                try { stopSpaceEffect(); } catch(_) {}
+                document.body.classList.remove('deep-reading-active');
             }
         }
     }
 
     const actionFullscreen = document.getElementById('action-fullscreen');
+    // Ambient selection modal wiring
+    const ambientModal = document.getElementById('ambient-modal');
+    const ambientOverlay = document.getElementById('ambient-modal-overlay');
+    const ambientConfirm = document.getElementById('ambient-confirm');
+    const ambientClose = document.getElementById('ambient-close');
+    let selectedAmbient = 'neutral';
 
+    function openAmbientModal() {
+        document.body.classList.add('ambient-visible');
+        ambientModal?.setAttribute('aria-hidden', 'false');
+        ambientOverlay?.setAttribute('aria-hidden', 'false');
+        // reset selection to neutral
+        const radios = document.querySelectorAll('input[name="ambient"]');
+        radios.forEach(r => { if (r instanceof HTMLInputElement) r.checked = (r.value === 'neutral'); });
+        selectedAmbient = 'neutral';
+    }
+    function closeAmbientModal() {
+        document.body.classList.remove('ambient-visible');
+        ambientModal?.setAttribute('aria-hidden', 'true');
+        ambientOverlay?.setAttribute('aria-hidden', 'true');
+    }
+    function applyAmbient(kind) {
+        const musicToggleBtn = document.getElementById('music-toggle-btn');
+        const fullscreenAudio = document.getElementById('fullscreen-audio');
+        const playIcon = document.querySelector('.play-music-icon');
+        const pauseIcon = document.querySelector('.pause-music-icon');
+        stopRainSound();
+        stopRainEffect();
+        try { stopSpaceEffect(); } catch(_) {}
+        document.body.classList.remove('ambient-rain', 'ambient-space');
+
+        if (kind === 'rain') {
+            startRainEffect();
+            startRainSound();
+            document.body.classList.add('ambient-rain');
+            if (musicToggleBtn) musicToggleBtn.style.display = 'none';
+            try { fullscreenAudio.pause(); } catch(_) {}
+        } else if (kind === 'space') {
+            startSpaceEffect();
+            document.body.classList.add('ambient-space');
+            if (musicToggleBtn) musicToggleBtn.style.display = 'flex';
+            try {
+                fullscreenAudio.play();
+                if (playIcon && pauseIcon) { playIcon.style.display = 'none'; pauseIcon.style.display = 'block'; }
+            } catch(_) {}
+        } else {
+            // neutral
+            if (musicToggleBtn) musicToggleBtn.style.display = 'flex';
+            try {
+                fullscreenAudio.pause();
+                if (playIcon && pauseIcon) { playIcon.style.display = 'block'; pauseIcon.style.display = 'none'; }
+            } catch(_) {}
+        }
+    }
+    if (ambientOverlay) ambientOverlay.addEventListener('click', closeAmbientModal);
+    if (ambientClose) ambientClose.addEventListener('click', closeAmbientModal);
+    if (ambientConfirm) ambientConfirm.addEventListener('click', () => {
+        closeAmbientModal();
+        if (!document.fullscreenElement) toggleFullscreen();
+        applyAmbient(selectedAmbient);
+    });
+    document.addEventListener('change', (e) => {
+        const t = e.target; if (t && t instanceof HTMLInputElement && t.name === 'ambient') selectedAmbient = t.value;
+    });
     if (actionFullscreen) {
         actionFullscreen.addEventListener('click', () => {
-            toggleFullscreen();
-            closeActionSheet(); // Close the sheet after activating
+            closeActionSheet();
+            if (!document.fullscreenElement) toggleFullscreen();
+            openAmbientModal();
         });
     }
 
@@ -210,7 +459,7 @@ async function init() {
                 pageIndicator.textContent = `${percentage}%`;
                 pageIndicator.dataset.displayMode = 'percentage';
             } else {
-                pageIndicator.textContent = `Pág. ${currentPage}`;
+                pageIndicator.textContent = `PÃ¡g. ${currentPage}`;
                 pageIndicator.dataset.displayMode = 'page';
             }
         }
@@ -333,7 +582,7 @@ async function init() {
 
     let actionSheetTrigger = null;
 
-    // Funções de UI (melhoradas)
+    // FunÃ§Ãµes de UI (melhoradas)
     function openActionSheet() {
         actionSheetTrigger = document.activeElement;
         const actionSheet = document.getElementById('action-sheet');
@@ -369,28 +618,37 @@ async function init() {
         }
     }
 
-    // Listeners básicos
+    // Listeners bÃ¡sicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
     if (actionSheetOverlay) actionSheetOverlay.addEventListener('click', closeActionSheet);
 
-    // Lógica principal
+    // LÃ³gica principal
     try {
         console.log("[2] Iniciando fetch do PDF...");
-        const response = await fetch('assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // Multi-path fallback for PDF
+        let response = null; let chosen = null;
+        const candidates = ['assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf','assets/Dom-casmurro.pdf','assets/Dom_Casmurro-Machado_de_Assis.pdf'].map(p=>encodeURI(p));
+        for (const url of candidates) {
+            try { const r = await fetch(url); if (r.ok) { response = r; chosen = url; break; } } catch(_) {}
         }
-        console.log("[3] Fetch do PDF concluído com sucesso.");
+        if (!response) throw new Error('Nenhum PDF encontrado nos caminhos candidatos.');
+        console.log('[3] PDF localizado:', chosen);
+        
+
+
+
+
 
         const blob = await response.blob();
-        const file = new File([blob], 'Memórias Postumas de Brás Cubas - PDF_removed.pdf', { type: 'application/pdf' });
+        const file = new File([blob], (chosen ? chosen.split('/').pop() : 'book.pdf'), { type: 'application/pdf' });
+        // Avoid reprocessing book within the same session
+        if (!window.__bookCache) { await processAndDisplayBook([file]); window.__bookCache = true; }
         console.log("[4] Objeto File criado a partir do blob.");
 
-        await processAndDisplayBook([file]);
+
 
     } catch (error) {
-        console.error("[ERRO] Falha no bloco de inicialização:", error);
+        console.error("[ERRO] Falha no bloco de inicializaÃ§Ã£o:", error);
         readerContent.innerHTML = '<p style="text-align: center; padding-top: 50%;">Ocorreu um erro ao carregar o livro.</p>';
     }
 }
@@ -417,14 +675,14 @@ async function buildBookFromFile(file) {
     console.log("[6] Entrou em buildBookFromFile.");
     const arrayBuffer = await file.arrayBuffer();
     
-    // Configuração do worker do PDF.js
+    // ConfiguraÃ§Ã£o do worker do PDF.js
     if (typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     const pdf = await loadingTask.promise;
-    console.log(`[7] PDF carregado pela pdfjsLib. Total de páginas: ${pdf.numPages}`);
+    console.log(`[7] PDF carregado pela pdfjsLib. Total de pÃ¡ginas: ${pdf.numPages}`);
 
     const chunks = [];
     for (let p = 1; p <= pdf.numPages; p++) {
@@ -442,10 +700,10 @@ async function buildBookFromFile(file) {
                 chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
             }
         } catch (err) {
-            console.warn(`Falha ao processar página ${p}:`, err);
+            console.warn(`Falha ao processar pÃ¡gina ${p}:`, err);
         }
     }
-    console.log(`[7.1] Processamento de páginas concluído. Total de chunks: ${chunks.length}`);
+    console.log(`[7.1] Processamento de pÃ¡ginas concluÃ­do. Total de chunks: ${chunks.length}`);
     return { name: file.name.replace(/\.pdf$/i, ''), chunks };
 }
 
@@ -472,8 +730,8 @@ function splitIntoSmartChunks(text) {
 function simplifyTextRules(text) {
     let out = text;
     const rules = [
-        [/\bvossa merc[êe]\b/gi, 'você'],
-        [/\bvossemec[êe]\b/gi, 'você'],
+        [/\bvossa merc[Ãªe]\b/gi, 'vocÃª'],
+        [/\bvossemec[Ãªe]\b/gi, 'vocÃª'],
         [/\bhei de\b/gi, 'vou'],
         [/\bcousa\b/gi, 'coisa'],
         [/\bdeveras\b/gi, 'realmente'],
@@ -532,7 +790,7 @@ function interleaveBooksIntoScreens(books) {
             content.innerHTML = `
                 <div class="share-card-body"><span class="first-word">${fw}</span>${rest}</div>
                 <div class="share-card-footer">
-                    <span class="share-card-page">Pág. ${pageCounter}</span>
+                    <span class="share-card-page">PÃ¡g. ${pageCounter}</span>
                     <button class="speak-button" aria-label="Read aloud">
                         <svg class="speak-icon play-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                         <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
@@ -562,23 +820,45 @@ function interleaveBooksIntoScreens(books) {
             actions.appendChild(simplifyBtn);
             actions.appendChild(speakBtn);
 
-            // Toggle logic with simple rules + cache
+            // Round-trip translation toggle with caching
+            const originalHTML = bodyEl.innerHTML;
             const originalText = bodyEl.textContent.trim();
-            const cacheKey = `simplified:${book.name || 'book'}:${index}`;
+            const cacheKey = `rt-simple:${book.name || 'book'}:${index}`;
             let isSimplified = false;
 
-            simplifyBtn.addEventListener('click', () => {
-                if (!isSimplified) {
+            function decorateFirstWord(text) {
+                const m = text.match(/^(\S+)(.*)$/s);
+                const fw = m ? m[1] : text;
+                const rest = m ? m[2] : '';
+                return `<span class="first-word">${fw}</span>${rest}`;
+            }
+
+            async function applySimplify() {
+                try {
+                    simplifyBtn.classList.add('loading');
+                    simplifyBtn.textContent = 'Aa…';
                     const cached = localStorage.getItem(cacheKey);
-                    const simplified = cached || simplifyTextRules(originalText);
-                    bodyEl.textContent = simplified;
-                    localStorage.setItem(cacheKey, simplified);
+                    const simplifiedText = cached || await roundTripSimplify(originalText);
+                    bodyEl.innerHTML = decorateFirstWord(simplifiedText);
+                    if (!cached) localStorage.setItem(cacheKey, simplifiedText);
                     isSimplified = true;
                     simplifyBtn.classList.add('active');
                     simplifyBtn.setAttribute('aria-pressed', 'true');
                     simplifyBtn.title = 'Mostrar original';
+                } catch (e) {
+                    console.error('Falha na simplificação:', e);
+                    alert('Não foi possível simplificar agora. Verifique a conexão/configuração de tradução.');
+                } finally {
+                    simplifyBtn.classList.remove('loading');
+                    simplifyBtn.textContent = 'Aa';
+                }
+            }
+
+            simplifyBtn.addEventListener('click', async () => {
+                if (!isSimplified) {
+                    await applySimplify();
                 } else {
-                    bodyEl.textContent = originalText;
+                    bodyEl.innerHTML = originalHTML;
                     isSimplified = false;
                     simplifyBtn.classList.remove('active');
                     simplifyBtn.setAttribute('aria-pressed', 'false');
@@ -647,7 +927,7 @@ function interleaveBooksIntoScreens(books) {
     totalPages = document.querySelectorAll('.page').length;
     updatePageNumber(1, totalPages);
 
-    console.log(`[10] Renderização concluída. ${pageCounter} cards adicionados ao DOM.`);
+    console.log(`[10] RenderizaÃ§Ã£o concluÃ­da. ${pageCounter} cards adicionados ao DOM.`);
     loadProgress();
 }
 
@@ -691,5 +971,10 @@ function loadProgress() {
     }
 }
 
-// Garante que o app só rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
+// Garante que o app sÃ³ rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
 window.onload = init;
+
+
+
+
+

@@ -86,6 +86,8 @@ body.body-no-scroll {
     display: block;
     scroll-snap-type: y mandatory;
     scroll-behavior: auto;
+    position: relative;
+    z-index: 1;
 }
 
 .page {
@@ -186,6 +188,11 @@ body.body-no-scroll {
 .simplify-button.active,
 .simplify-button:hover {
     background-color: var(--border-color);
+}
+
+.simplify-button.loading {
+    opacity: 0.6;
+    cursor: wait;
 }
 
 .speak-icon {
@@ -731,3 +738,107 @@ body[data-theme="light"] {
     font-style: italic;
     text-align: center;
 }
+
+/* Deep Reading (glassmorphism + rain) */
+body.deep-reading-active.ambient-rain,
+body.deep-reading-active.ambient-space {
+    background: radial-gradient(1200px 800px at 20% 10%, rgba(20,24,34,0.95) 0%, rgba(11,14,22,0.98) 40%, #0a0d15 100%) fixed;
+}
+
+/* Glass cards while in deep reading */
+.deep-reading-active.ambient-rain .share-card-content,
+.deep-reading-active.ambient-space .share-card-content {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+/* Rain overlay behind content */
+.rain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
+}
+
+.deep-reading-active.ambient-rain .rain-overlay {
+    opacity: 0.35;
+}
+
+.raindrop {
+    position: absolute;
+    top: -80px;
+    width: 2px;
+    height: 70px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0) 100%);
+    filter: blur(0.2px);
+    animation-name: rain-fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes rain-fall {
+    0% { transform: translate3d(0, -100px, 0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translate3d(0, 120vh, 0); opacity: 0; }
+}
+
+/* Space ambience */
+.space-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
+}
+
+.deep-reading-active.ambient-space .space-overlay {
+    opacity: 0.45;
+}
+
+/* Ambient modal */
+.ambient-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+}
+
+.ambient-modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.98);
+    width: min(560px, 92vw);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.ambient-modal-inner { padding: 16px; }
+.ambient-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.ambient-title { font-weight: 700; font-size: 16px; }
+.ambient-close { background: transparent; border: none; font-size: 22px; line-height: 1; cursor: pointer; color: var(--text-color); }
+.ambient-options { display: flex; gap: 10px; flex-wrap: wrap; margin: 6px 0 12px; }
+.ambient-option { display: inline-flex; align-items: center; gap: 8px; }
+.ambient-option input { display: none; }
+.ambient-chip { padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; user-select: none; }
+.ambient-option input:checked + .ambient-chip { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+.ambient-footer { display: flex; justify-content: flex-end; }
+.ambient-confirm { background: var(--primary-color); color: white; border: none; border-radius: 10px; padding: 10px 14px; cursor: pointer; }
+
+.ambient-visible .ambient-overlay { opacity: 1; pointer-events: auto; }
+.ambient-visible .ambient-modal { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }

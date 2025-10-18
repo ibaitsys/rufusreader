@@ -73,6 +73,8 @@
     </header>
 
     <div class="app-container">
+        <div id="rain-overlay" class="rain-overlay" aria-hidden="true"></div>
+        <canvas id="space-canvas" class="space-overlay" aria-hidden="true"></canvas>
         <audio id="fullscreen-audio" src="assets/Arnor(chosic.com).mp3" loop></audio>
         <button id="music-toggle-btn" class="fab-right">
             <svg class="play-music-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
@@ -204,6 +206,33 @@
 
 
             
+        </div>
+        <!-- Ambient selection modal -->
+        <div id="ambient-modal-overlay" class="ambient-overlay" aria-hidden="true"></div>
+        <div id="ambient-modal" class="ambient-modal" role="dialog" aria-modal="true" aria-labelledby="ambient-title" aria-hidden="true">
+            <div class="ambient-modal-inner">
+                <div class="ambient-header">
+                    <div class="ambient-title" id="ambient-title">Ambiente imersivo</div>
+                    <button class="ambient-close" id="ambient-close" aria-label="Fechar">&times;</button>
+                </div>
+                <div class="ambient-options" role="group" aria-label="Selecionar ambiente">
+                    <label class="ambient-option">
+                        <input type="radio" name="ambient" value="neutral" checked>
+                        <span class="ambient-chip">Neutro</span>
+                    </label>
+                    <label class="ambient-option">
+                        <input type="radio" name="ambient" value="rain">
+                        <span class="ambient-chip">Chuva</span>
+                    </label>
+                    <label class="ambient-option">
+                        <input type="radio" name="ambient" value="space">
+                        <span class="ambient-chip">Espaço</span>
+                    </label>
+                </div>
+                <div class="ambient-footer">
+                    <button id="ambient-confirm" class="ambient-confirm">Confirmar</button>
+                </div>
+            </div>
         </div>
     </div>
 
