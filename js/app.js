@@ -149,11 +149,11 @@ async function init() {
     // Theme picker: 3 circles (default, tema1, tema2)
     function applyPaperTheme(choice) {
         if (choice === 'tema1') {
-            document.body.style.backgroundImage = "url('/assets/tema1.png')";
+            document.body.style.backgroundImage = "url('assets/tema1.png')";
             document.body.style.backgroundRepeat = 'repeat';
             document.body.style.backgroundSize = 'auto';
         } else if (choice === 'tema2') {
-            document.body.style.backgroundImage = "url('/assets/tema2.png')";
+            document.body.style.backgroundImage = "url('assets/tema2.png')";
             document.body.style.backgroundRepeat = 'repeat';
             document.body.style.backgroundSize = 'auto';
         } else {
@@ -498,7 +498,7 @@ function interleaveBooksIntoScreens(books) {
         if (index === 0) {
             content.classList.add('cover-card');
             content.innerHTML = '';
-            content.style.backgroundImage = "url('/assets/Cover.png')";
+            content.style.backgroundImage = "url('assets/Cover.png')";
             content.style.backgroundSize = 'cover';
             content.style.backgroundPosition = 'center';
             content.style.backgroundRepeat = 'no-repeat';
