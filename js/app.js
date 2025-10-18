@@ -496,7 +496,12 @@ function interleaveBooksIntoScreens(books) {
         content.className = 'page-content share-card-content';
 
         if (index === 0) {
-            content.innerHTML = `<h1 class="book-title">${chunk.content}</h1>`;
+            content.classList.add('cover-card');
+            content.innerHTML = '';
+            content.style.backgroundImage = "url('/assets/Cover.png')";
+            content.style.backgroundSize = 'cover';
+            content.style.backgroundPosition = 'center';
+            content.style.backgroundRepeat = 'no-repeat';
         } else if (index === 1) {
             content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
         } else {
