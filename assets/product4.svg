@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240">
+  <rect width="320" height="240" fill="#111827"/>
+  <rect x="76" y="36" width="168" height="168" rx="12" fill="#60a5fa"/>
+  <line x1="76" y1="64" x2="244" y2="64" stroke="#93c5fd" stroke-width="6"/>
+  <text x="20" y="220" font-family="Inter, system-ui" font-size="18" fill="#e5e7eb" font-weight="700">Caderno</text>
+</svg>

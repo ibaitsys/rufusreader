@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/styles.css?v=1.1">
+    <link rel="stylesheet" href="css/styles.css?v=1.3">
 
     <!-- A biblioteca pdf.js precisa ser carregada aqui no head -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -106,14 +106,103 @@
             <button class="action-sheet-close-btn">
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z"/></svg>
             </button>
-            <button class="action-sheet-item" id="action-fullscreen">Modo Leitura</button>
+            <div class="action-sheet-inner">
             <button class="action-sheet-item" id="action-restart">Recomeçar</button>
-            <button class="action-sheet-item" id="action-theme-dark">Tema Escuro</button>
-            <button class="action-sheet-item" id="action-theme-light">Tema Claro</button>
-            <button class="action-sheet-item" id="action-theme-default">Tema Padrão</button>
+
+            <div class="action-sheet-header">Tema</div>
+            <div class="theme-options" role="group" aria-label="Escolher tema de papel">
+                <button class="theme-circle" data-theme-choice="default" aria-label="Padrão"></button>
+                <button class="theme-circle" data-theme-choice="tema1" aria-label="Tema 1"></button>
+                <button class="theme-circle" data-theme-choice="tema2" aria-label="Tema 2"></button>
+            </div>
+
+            <div class="action-sheet-header">Aparência</div>
+            <div class="setting-row">
+                <div class="setting-text">
+                    <div class="setting-title">Modo escuro</div>
+                    <div class="setting-subtitle">Melhor para leitura noturna</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="menu-dark-toggle" aria-label="Ativar modo escuro">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            
+            <button class="action-card deep-reading-card" id="action-fullscreen" aria-label="Leitura profunda">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" width="28" height="28" fill="none">
+                        <circle cx="32" cy="16" r="6" fill="currentColor"/>
+                        <path d="M20 34c3-6 9-9 12-9s9 3 12 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 46c4-4 10-6 18-6s14 2 18 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M24 40l8 6 8-6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="card-content">
+                    <span class="card-title">Leitura profunda</span>
+                    <span class="card-subtitle">Entrar em tela cheia e foco</span>
+                </span>
+            </button>
+
+            <!-- Card do autor (logo abaixo do botão de leitura) -->
+            <div class="author-card" role="group" aria-label="Sobre o autor">
+                <div class="author-cover">
+                    <img src="/assets/authorphoto.png" alt="Machado de Assis" loading="lazy"/>
+                </div>
+                <div class="author-content">
+                    <div class="author-eyebrow">Sobre o autor</div>
+                    <div class="author-title">Machado de Assis</div>
+                    <div class="author-desc">Clássico da literatura brasileira. Cronista, contista e romancista.</div>
+                    <div class="author-actions">
+                        <a class="author-link" href="https://pt.wikipedia.org/wiki/Machado_de_Assis" target="_blank" rel="noopener">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-sheet-header">Outros livros do autor</div>
+            <div class="carousel" aria-label="Outros livros">
+                <a class="carousel-card" href="#" aria-label="Quincas Borba">
+                    <img src="/assets/book1.svg" alt="Capa de Quincas Borba" loading="lazy" />
+                    <div class="carousel-title">Quincas Borba</div>
+                </a>
+                <a class="carousel-card" href="#" aria-label="Memórias Póstumas de Brás Cubas">
+                    <img src="/assets/book2.svg" alt="Capa de Memórias Póstumas de Brás Cubas" loading="lazy" />
+                    <div class="carousel-title">Memórias Póstumas</div>
+                </a>
+                <a class="carousel-card" href="#" aria-label="Esaú e Jacó">
+                    <img src="/assets/book3.svg" alt="Capa de Esaú e Jacó" loading="lazy" />
+                    <div class="carousel-title">Esaú e Jacó</div>
+                </a>
+            </div>
+
+            
+
+            <!-- Último: Produtos -->
+            <div class="action-sheet-header">Produtos</div>
+            <div class="products-list" aria-label="Produtos do autor">
+                <a class="product-card" href="#" aria-label="Marca-páginas">
+                    <img src="/assets/product1.svg" alt="Marca-páginas" loading="lazy" />
+                    <div class="product-title">Marca‑páginas</div>
+                </a>
+                <a class="product-card" href="#" aria-label="Pôster">
+                    <img src="/assets/product2.svg" alt="Pôster" loading="lazy" />
+                    <div class="product-title">Pôster</div>
+                </a>
+                <a class="product-card" href="#" aria-label="Camiseta">
+                    <img src="/assets/product3.svg" alt="Camiseta" loading="lazy" />
+                    <div class="product-title">Camiseta</div>
+                </a>
+                <a class="product-card" href="#" aria-label="Caderno">
+                    <img src="/assets/product4.svg" alt="Caderno" loading="lazy" />
+                    <div class="product-title">Caderno</div>
+                </a>
+            </div>
+            </div>
+        </div>
+            </div>
 
 
-            <button class="action-sheet-item" id="action-read-aloud">Ler em voz alta</button>
+
             
         </div>
     </div>
