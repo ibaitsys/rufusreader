@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2d3748"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <!-- Minimal portrait-style illustration to suggest an author without realism -->
+  <g transform="translate(320,190)">
+    <circle cx="0" cy="-60" r="60" fill="#e5e7eb"/>
+    <rect x="-110" y="10" width="220" height="110" rx="22" fill="#e5e7eb"/>
+    <!-- glasses -->
+    <circle cx="-24" cy="-64" r="18" fill="none" stroke="#1f2937" stroke-width="6"/>
+    <circle cx="24" cy="-64" r="18" fill="none" stroke="#1f2937" stroke-width="6"/>
+    <line x1="-6" y1="-64" x2="6" y2="-64" stroke="#1f2937" stroke-width="6"/>
+    <!-- moustache hint -->
+    <path d="M-26 -40 q 26 20 52 0" fill="none" stroke="#1f2937" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <text x="28" y="320" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="28" fill="#e5e7eb" font-weight="700">Machado de Assis</text>
+</svg>

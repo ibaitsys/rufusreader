@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 460">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="460" rx="18" fill="url(#g3)"/>
+  <rect x="24" y="28" width="272" height="404" rx="12" fill="rgba(255,255,255,0.12)"/>
+  <text x="32" y="260" font-family="Inter, system-ui" font-size="34" fill="#fff" font-weight="800">Esaú e</text>
+  <text x="32" y="300" font-family="Inter, system-ui" font-size="34" fill="#fff" font-weight="800">Jacó</text>
+</svg>

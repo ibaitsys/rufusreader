@@ -2,8 +2,10 @@
 
 let currentUtterance = null;
 let currentSpeakButton = null;
-let isScrolling = false;
 let scrollTimeout;
+// Scrolling state flags used by touch and wheel handlers
+let isScrolling = false;
+let touchStartY = 0;
 
 // Versão de depuração com logs detalhados
 
@@ -105,35 +107,31 @@ async function init() {
 
 
 
-    const actionReadAloud = document.getElementById('action-read-aloud');
-    if (actionReadAloud) {
-        actionReadAloud.addEventListener('click', () => {
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            } else {
-                const pageIndex = getCurrentPageIndex();
-                const pages = document.querySelectorAll('.page');
-                if (pages.length > 0 && pageIndex < pages.length) {
-                    const currentPage = pages[pageIndex];
-                    const textToSpeak = currentPage.querySelector('.share-card-body').textContent;
-                    currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                    currentUtterance.lang = 'pt-BR';
-                    speechSynthesis.speak(currentUtterance);
-                }
-            }
-            closeActionSheet();
-        });
-    }
+    // Read Aloud menu item removed (available on card and header)
 
     // Theme switcher logic
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.body.setAttribute('data-theme', currentTheme);
 
+    // Header theme toggle
     themeToggleButton.addEventListener('click', () => {
         let newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+        const menuDarkToggle = document.getElementById('menu-dark-toggle');
+        if (menuDarkToggle) menuDarkToggle.checked = (newTheme === 'dark');
     });
+
+    // Menu dark mode toggle (in action sheet)
+    const menuDarkToggle = document.getElementById('menu-dark-toggle');
+    if (menuDarkToggle) {
+        menuDarkToggle.checked = (currentTheme === 'dark');
+        menuDarkToggle.addEventListener('change', (e) => {
+            const newTheme = e.target.checked ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
 
     // Navigation buttons logic
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -148,31 +146,44 @@ async function init() {
     const readerContentDiv = document.getElementById('reader-content');
 
 
-    const actionThemeDark = document.getElementById('action-theme-dark');
-    if (actionThemeDark) {
-        actionThemeDark.addEventListener('click', () => {
-            document.body.classList.add('dark-theme');
-            document.body.classList.remove('light-theme');
-            closeActionSheet();
+    // Theme picker: 3 circles (default, tema1, tema2)
+    function applyPaperTheme(choice) {
+        if (choice === 'tema1') {
+            document.body.style.backgroundImage = "url('/assets/tema1.png')";
+            document.body.style.backgroundRepeat = 'repeat';
+            document.body.style.backgroundSize = 'auto';
+        } else if (choice === 'tema2') {
+            document.body.style.backgroundImage = "url('/assets/tema2.png')";
+            document.body.style.backgroundRepeat = 'repeat';
+            document.body.style.backgroundSize = 'auto';
+        } else {
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundRepeat = '';
+            document.body.style.backgroundSize = '';
+        }
+        localStorage.setItem('paperTheme', choice);
+        // Update UI selection state
+        document.querySelectorAll('.theme-circle').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.themeChoice === choice);
+            btn.setAttribute('aria-pressed', btn.dataset.themeChoice === choice ? 'true' : 'false');
         });
     }
 
-    const actionThemeLight = document.getElementById('action-theme-light');
-    if (actionThemeLight) {
-        actionThemeLight.addEventListener('click', () => {
-            document.body.classList.add('light-theme');
-            document.body.classList.remove('dark-theme');
-            closeActionSheet();
-        });
-    }
+    // Restore saved paper theme
+    const savedPaperTheme = localStorage.getItem('paperTheme') || 'default';
+    applyPaperTheme(savedPaperTheme);
 
-    const actionThemeDefault = document.getElementById('action-theme-default');
-    if (actionThemeDefault) {
-        actionThemeDefault.addEventListener('click', () => {
-            document.body.classList.remove('dark-theme', 'light-theme');
+    // Wire up theme circle buttons
+    const themeButtons = document.querySelectorAll('.theme-circle');
+    themeButtons.forEach((btn, index) => {
+        btn.style.setProperty('--stagger-index', index + 1);
+        btn.addEventListener('click', () => {
+            applyPaperTheme(btn.dataset.themeChoice || 'default');
             closeActionSheet();
         });
-    }
+    });
+
+
 
     const actionSheetCloseBtn = document.querySelector('.action-sheet-close-btn');
     if (actionSheetCloseBtn) {
@@ -224,8 +235,7 @@ async function init() {
         const pages = document.querySelectorAll('.page');
         if (pages.length === 0) return;
 
-        const pageHeight = pages[0].offsetHeight;
-        const currentPageIndex = Math.floor(readerContentDiv.scrollTop / pageHeight);
+        const currentPageIndex = getCurrentPageIndex();
 
         let targetPage;
         if (swipeDistance < 0) {
@@ -262,8 +272,7 @@ async function init() {
         const pages = document.querySelectorAll('.page');
         if (pages.length === 0) return;
 
-        const pageHeight = pages[0].offsetHeight;
-        const currentPageIndex = Math.floor(readerContentDiv.scrollTop / pageHeight);
+        const currentPageIndex = getCurrentPageIndex();
 
         let targetPage;
         if (event.deltaY > 0) {
@@ -331,6 +340,7 @@ async function init() {
         if (actionSheetOverlay && actionSheet) {
             actionSheetOverlay.classList.add('visible');
             actionSheet.classList.add('open');
+            actionSheet.classList.add('peek');
             actionSheet.setAttribute('aria-hidden', 'false');
             document.body.classList.add('body-no-scroll');
 
@@ -348,6 +358,7 @@ async function init() {
         if (actionSheetOverlay && actionSheet) {
             actionSheetOverlay.classList.remove('visible');
             actionSheet.classList.remove('open');
+            actionSheet.classList.remove('peek');
             actionSheet.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('body-no-scroll');
 
@@ -574,8 +585,20 @@ function getCurrentPageIndex() {
     const readerContentDiv = document.getElementById('reader-content');
     const pages = document.querySelectorAll('.page');
     if (pages.length === 0) return 0;
-    const pageHeight = pages[0].offsetHeight;
-    return Math.floor(readerContentDiv.scrollTop / pageHeight);
+
+    // Use nearest offsetTop instead of dividing by height to avoid
+    // drift from margins/gaps accumulating over many pages.
+    const scrollTop = readerContentDiv.scrollTop;
+    let closestIndex = 0;
+    let closestDelta = Infinity;
+    for (let i = 0; i < pages.length; i++) {
+        const delta = Math.abs(pages[i].offsetTop - scrollTop);
+        if (delta < closestDelta) {
+            closestDelta = delta;
+            closestIndex = i;
+        }
+    }
+    return closestIndex;
 }
 
 function saveProgress() {
@@ -586,13 +609,13 @@ function saveProgress() {
 
 function loadProgress() {
     const savedPageIndex = localStorage.getItem('readingProgress');
-    if (savedPageIndex) {
+    if (savedPageIndex !== null) {
         const readerContentDiv = document.getElementById('reader-content');
         const pages = document.querySelectorAll('.page');
+        const idx = Math.min(parseInt(savedPageIndex, 10) || 0, Math.max(0, pages.length - 1));
         if (pages.length > 0) {
-            const pageHeight = pages[0].offsetHeight;
-            const scrollTop = parseInt(savedPageIndex, 10) * pageHeight;
-            readerContentDiv.scrollTop = scrollTop;
+            readerContentDiv.scrollTop = pages[idx].offsetTop;
+            updatePageNumber(idx + 1, pages.length);
         }
     }
 }

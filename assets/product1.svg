@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240">
+  <rect width="320" height="240" fill="#111827"/>
+  <rect x="120" y="24" width="80" height="192" rx="10" fill="#f59e0b"/>
+  <circle cx="160" cy="52" r="10" fill="#fb923c"/>
+  <text x="20" y="220" font-family="Inter, system-ui" font-size="18" fill="#e5e7eb" font-weight="700">Marca‑páginas</text>
+</svg>
