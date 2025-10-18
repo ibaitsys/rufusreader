@@ -9,6 +9,26 @@ let touchStartY = 0;
 
 // VersÃ£o de depuraÃ§Ã£o com logs detalhados
 
+
+
+async function translateText(text, from, to) {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Translation API error: ' + res.status);
+    const data = await res.json();
+    // The response is a nested array, the translated text is in the first element
+    if (data && data[0] && data[0][0] && data[0][0][0]) {
+        return data[0].map(segment => segment[0]).join('');
+    }
+    return '';
+}
+
+async function roundTripSimplify(text) {
+    const en = await translateText(text, 'pt', 'en');
+    const pt = await translateText(en, 'en', 'pt');
+    return pt;
+}
+
 async function init() {
     if ('speechSynthesis' in window) {
         speechSynthesis.onvoiceschanged = () => {
@@ -213,29 +233,8 @@ async function init() {
             pauseIcon.style.display = 'none';
         }
     });
-// Global translation helpers (round-trip PT -> EN -> PT)
-function getTranslateConfig() {
-    return {
-        url: localStorage.getItem('translateApiUrl') || 'https://libretranslate.de/translate',
-        key: localStorage.getItem('translateApiKey') || null
-    };
-}
 
-async function translateText(text, from, to) {
-    const { url, key } = getTranslateConfig();
-    const payload = { q: text, source: from, target: to, format: 'text' };
-    if (key) payload.api_key = key;
-    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    if (!res.ok) throw new Error('Translation API error: ' + res.status);
-    const data = await res.json();
-    return data.translatedText || data.translation || '';
-}
 
-async function roundTripSimplify(text) {
-    const en = await translateText(text, 'pt', 'en');
-    const pt = await translateText(en, 'en', 'pt');
-    return pt;
-}
 
 
 
@@ -443,27 +442,7 @@ async function roundTripSimplify(text) {
 
     let totalPages = 0;
 
-    readerContentDiv.addEventListener('click', (event) => {
-        if (event.target.classList.contains('share-card-page')) {
-            const totalPages = document.querySelectorAll('.page').length;
-            const pageIndicator = event.target;
-            const displayMode = pageIndicator.dataset.displayMode || 'page';
-            const currentPageText = pageIndicator.textContent;
-            const currentPageMatch = currentPageText.match(/\d+/);
-            if (!currentPageMatch) return;
-
-            const currentPage = parseInt(currentPageMatch[0], 10);
-
-            if (displayMode === 'page') {
-                const percentage = Math.round((currentPage / totalPages) * 100);
-                pageIndicator.textContent = `${percentage}%`;
-                pageIndicator.dataset.displayMode = 'percentage';
-            } else {
-                pageIndicator.textContent = `PÃ¡g. ${currentPage}`;
-                pageIndicator.dataset.displayMode = 'page';
-            }
-        }
-    });
+    
 
     readerContentDiv.addEventListener('touchstart', (event) => {
         touchStartY = event.touches[0].clientY;
@@ -656,8 +635,12 @@ async function roundTripSimplify(text) {
 async function processAndDisplayBook(files) {
     console.log("[5] Entrou em processAndDisplayBook.");
     const readerContent = document.getElementById('reader-content');
-    readerContent.innerHTML = '<p style="text-align: center; padding-top: 50%;">Processando PDF...</p>';
-    
+    readerContent.innerHTML = '<div class="loading-container"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
+
+    // Force a reflow to ensure the loading animation is rendered.
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise(resolve => setTimeout(resolve, 0)); // Yield to the event loop
+
     try {
         const books = [];
         for (const file of files) {
@@ -764,6 +747,8 @@ function interleaveBooksIntoScreens(books) {
         return;
     }
 
+    const totalChunks = book.chunks.length;
+
     for (const [index, chunk] of book.chunks.entries()) {
         pageCounter++;
         const screen = document.createElement('div');
@@ -786,11 +771,12 @@ function interleaveBooksIntoScreens(books) {
             const match = chunkText.match(/^(\S+)(.*)$/s);
             const fw = match ? match[1] : chunkText;
             const rest = match ? match[2] : '';
+            const percentage = Math.round((pageCounter / totalChunks) * 100);
 
             content.innerHTML = `
                 <div class="share-card-body"><span class="first-word">${fw}</span>${rest}</div>
                 <div class="share-card-footer">
-                    <span class="share-card-page">PÃ¡g. ${pageCounter}</span>
+                    <span class="share-card-page">${percentage}%</span>
                     <button class="speak-button" aria-label="Read aloud">
                         <svg class="speak-icon play-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                         <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
