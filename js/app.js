@@ -43,7 +43,7 @@ async function init() {
     const readerContent = document.getElementById('reader-content');
     const infoPanel = document.getElementById('info-panel');
     const actionSheetOverlay = document.getElementById('action-sheet-overlay');
-    const themeToggleButton = document.getElementById('theme-toggle');
+    // const themeToggleButton = document.getElementById('theme-toggle');
     const immersiveModeBtn = document.getElementById('immersive-mode-btn');
     const audioPlayer = document.getElementById('fullscreen-audio');
     const playPauseBtn = document.getElementById('play-pause-btn');
@@ -362,13 +362,13 @@ async function init() {
     document.body.setAttribute('data-theme', currentTheme);
 
     // Header theme toggle
-    themeToggleButton.addEventListener('click', () => {
-        let newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        const menuDarkToggle = document.getElementById('menu-dark-toggle');
-        if (menuDarkToggle) menuDarkToggle.checked = (newTheme === 'dark');
-    });
+    // themeToggleButton.addEventListener('click', () => {
+    //     let newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    //     document.body.setAttribute('data-theme', newTheme);
+    //     localStorage.setItem('theme', newTheme);
+    //     const menuDarkToggle = document.getElementById('menu-dark-toggle');
+    //     if (menuDarkToggle) menuDarkToggle.checked = (newTheme === 'dark');
+    // });
 
     // Menu dark mode toggle (in action sheet)
     const menuDarkToggle = document.getElementById('menu-dark-toggle');
@@ -604,13 +604,37 @@ async function init() {
     // LÃ³gica principal
     try {
         console.log("[2] Iniciando fetch do PDF...");
-        // Multi-path fallback for PDF
+        // Get book from URL parameter or use default
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookPath = urlParams.get('book');
+        const defaultBook = 'assets/Dom_Casmurro-Machado_de_Assis.pdf';
+        const finalBookPath = bookPath ? decodeURIComponent(bookPath) : defaultBook;
+
         let response = null; let chosen = null;
-        const candidates = ['assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf','assets/Dom-casmurro.pdf','assets/Dom_Casmurro-Machado_de_Assis.pdf'].map(p=>encodeURI(p));
-        for (const url of candidates) {
-            try { const r = await fetch(url); if (r.ok) { response = r; chosen = url; break; } } catch(_) {}
+        try {
+            const r = await fetch(finalBookPath);
+            if (r.ok) {
+                response = r;
+                chosen = finalBookPath;
+            }
+        } catch (e) {
+            console.error('Error fetching book:', e);
         }
-        if (!response) throw new Error('Nenhum PDF encontrado nos caminhos candidatos.');
+
+        if (!response) {
+            // Fallback to default if the chosen book fails
+            try {
+                const r = await fetch(defaultBook);
+                if (r.ok) {
+                    response = r;
+                    chosen = defaultBook;
+                }
+            } catch (e) {
+                console.error('Error fetching default book:', e);
+            }
+        }
+
+        if (!response) throw new Error('Nenhum PDF encontrado.');
         console.log('[3] PDF localizado:', chosen);
         
 
