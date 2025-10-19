@@ -2,15 +2,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const books = [
         {
-            title: 'Dom Casmurro',
-            author: 'Machado de Assis',
-            cover: 'assets/Cover.png',
-            path: 'assets/Dom_Casmurro-Machado_de_Assis.pdf'
-        },
-        {
             title: 'Memórias Póstumas de Brás Cubas',
             author: 'Machado de Assis',
-            cover: 'assets/book2.svg',
+            cover: 'assets/Cover.png',
             path: 'assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf'
         }
     ];
