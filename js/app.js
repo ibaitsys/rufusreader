@@ -607,7 +607,7 @@ async function init() {
         // Get book from URL parameter or use default
         const urlParams = new URLSearchParams(window.location.search);
         const bookPath = urlParams.get('book');
-        const defaultBook = 'assets/Dom_Casmurro-Machado_de_Assis.pdf';
+        const defaultBook = 'assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf';
         const finalBookPath = bookPath ? decodeURIComponent(bookPath) : defaultBook;
 
         let response = null; let chosen = null;
