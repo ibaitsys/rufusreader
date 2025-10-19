@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       li.className = 'book-item';
 
       const a = document.createElement('a');
-      a.href = `reader.html?book=${encodeURIComponent(book.path)}`;
+            a.href = `book-dashboard.html?book=${encodeURIComponent(book.path)}&title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&cover=${encodeURIComponent(book.cover)}`;
 
       const wrap = document.createElement('div');
       wrap.className = 'book-cover-wrap';

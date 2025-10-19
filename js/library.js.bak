@@ -1,0 +1,127 @@
+
+document.addEventListener('DOMContentLoaded', () => {
+    const books = [
+        {
+            title: 'Memórias Póstumas de Brás Cubas',
+            author: 'Machado de Assis',
+            cover: 'assets/Cover.png',
+            path: 'assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf'
+        }
+    ];
+
+    const bookList = document.getElementById('book-list');
+
+    books.forEach(book => {
+        const bookItem = document.createElement('li');
+        bookItem.className = 'book-item';
+
+        const bookLink = document.createElement('a');
+        bookLink.href = `reader.html?book=${encodeURIComponent(book.path)}`;
+
+        const bookCover = document.createElement('img');
+        bookCover.src = book.cover;
+        bookCover.alt = `Capa do livro ${book.title}`;
+
+        const coverWrap = document.createElement('div');\n        coverWrap.className = 'book-cover-wrap';\n        const formatBadge = document.createElement('div');\n        formatBadge.className = 'corner-badge';\n        formatBadge.textContent = 'PDF';\n        coverWrap.appendChild(bookCover);\n        coverWrap.appendChild(formatBadge);\n\n        const meta = document.createElement('div');\n        meta.className = 'book-meta';\n        meta.textContent = 'Machado de Assis � PDF';\n\n        bookLink.appendChild(coverWrap);\n        bookLink.appendChild(meta);
+        bookItem.appendChild(bookLink);
+        bookList.appendChild(bookItem);
+    });
+});
+
+// Extensões da estante: identidade Rufus e seção "Em breve"
+document.addEventListener('DOMContentLoaded', () => {
+    // Flag de página para estilização específica
+    document.body.setAttribute('data-page','library');
+    // Atualiza o título da aba e o h1 para a identidade do projeto
+    document.title = 'Rufus � Biblioteca';
+    const h1 = document.querySelector('.library-container h1');
+    if (h1) h1.textContent = 'Rufus � Biblioteca';
+
+    // Injeta estilos para a seção
+    const style = document.createElement('style');
+    style.textContent = `
+        .section-title { margin: 1.5rem 0 0.75rem; font-size: 1.1rem; font-weight: 600; color: var(--text-secondary, #6b7280); }
+        .book-item.disabled { filter: grayscale(1); opacity: 0.85; pointer-events: none; }
+        .badge { display: inline-block; margin-top: 0.35rem; padding: 0.15rem 0.5rem; font-size: 0.75rem; font-weight: 600; border-radius: 999px; background: var(--border-color, #e5e7eb); color: var(--text-secondary, #6b7280); }
+    `;
+    document.head.appendChild(style);
+
+    const comingSoon = [
+        { title: 'Dom Casmurro' },
+        { title: 'Quincas Borba' },
+        { title: 'Esaú e Jacó' },
+        { title: 'Memorial de Aires' },
+        { title: 'Iaiá Garcia' },
+        { title: 'Helena' },
+        { title: 'Ressurreição' },
+        { title: 'Papéis Avulsos' },
+        { title: 'Histórias sem Data' },
+        { title: 'Várias Histórias' }
+    ];
+
+    const container = document.querySelector('.library-container');
+    const bookList = document.getElementById('book-list');
+    // Insere um título de seção "Disponíveis" antes da lista, se não existir
+    if (bookList && !document.querySelector('.section-title')) {
+        const availableTitle = document.createElement('div');
+        availableTitle.className = 'section-title';
+        availableTitle.textContent = 'Dispon�veis';
+        bookList.insertAdjacentElement('beforebegin', availableTitle);
+    }
+    if (!container) return;
+
+    // Evita inserir duplicado
+    if (document.getElementById('coming-soon-list')) return;
+
+    const sectionTitle = document.createElement('div');
+    sectionTitle.className = 'section-title';
+    sectionTitle.textContent = 'Em breve';
+
+    const comingList = document.createElement('ul');
+    comingList.id = 'coming-soon-list';
+    comingList.className = 'book-list';
+
+    const covers = ['assets/book1.svg', 'assets/book2.svg', 'assets/book3.svg'];
+
+    comingSoon.forEach((book, i) => {
+        const item = document.createElement('li');
+        item.className = 'book-item disabled';
+
+        const item = document.createElement('li');
+        item.className = 'book-item disabled';
+
+        const wrapper = document.createElement('div');
+        wrapper.style.textAlign = 'center';
+
+        const img = document.createElement('img');
+        img.src = covers[i % covers.length];
+        img.alt = Capa do livro  (em breve);
+
+        const coverWrap = document.createElement('div');
+        coverWrap.className = 'book-cover-wrap';
+        const soon = document.createElement('div');
+        soon.className = 'corner-badge';
+        soon.textContent = 'Em breve';
+        coverWrap.appendChild(img);
+        coverWrap.appendChild(soon);
+
+        const meta = document.createElement('div');
+        meta.className = 'book-meta';
+        meta.textContent = 'Machado de Assis';
+
+        wrapper.appendChild(coverWrap);
+        wrapper.appendChild(meta);
+        item.appendChild(wrapper);
+        comingList.appendChild(item);
+    });
+
+    if (bookList && bookList.parentElement === container) {
+        bookList.insertAdjacentElement('afterend', sectionTitle);
+        sectionTitle.insertAdjacentElement('afterend', comingList);
+    } else {
+        container.appendChild(sectionTitle);
+        container.appendChild(comingList);
+    }
+});
+
+

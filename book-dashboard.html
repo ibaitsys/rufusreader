@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Livro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/book-dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard do Livro</h1>
+        <div class="dashboard-container">
+            <div class="main-content">
+                <div class="book-details">
+                    <div id="book-cover-container">
+                        <!-- A capa do livro será inserida aqui via JavaScript -->
+                    </div>
+                    <div class="book-info">
+                        <h2 id="book-title"></h2>
+                        <p id="book-author"></p>
+                        <button id="ler-agora-btn">Ler agora</button>
+                    </div>
+                </div>
+                <div class="progresso-leitura">
+                    <h3>Progresso de Leitura</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <p><span id="progress-percentage">0</span>% concluído</p>
+                </div>
+                <div class="clube-do-livro">
+                    <h3>Clube do Livro</h3>
+                    <p>Junte-se ao nosso grupo no WhatsApp para discutir sobre o livro!</p>
+                    <a href="https://chat.whatsapp.com/URL_DO_GRUPO" target="_blank" class="whatsapp-btn">Entrar no grupo</a>
+                </div>
+                <div class="comentarios">
+                    <h3>Comentários</h3>
+                    <div class="comment-list" id="comment-list">
+                        <!-- Comentários serão adicionados aqui -->
+                    </div>
+                    <div class="comment-form">
+                        <textarea id="comment-input" placeholder="Deixe seu comentário..."></textarea>
+                        <button id="submit-comment">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/book-dashboard.js"></script>
+</body>
+</html>

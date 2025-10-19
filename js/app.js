@@ -604,11 +604,7 @@ async function init() {
     // LÃ³gica principal
     try {
         console.log("[2] Iniciando fetch do PDF...");
-        // Get book from URL parameter or use default
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookPath = urlParams.get('book');
-        const defaultBook = 'assets/Memórias Postumas de Brás Cubas - PDF_removed.pdf';
-        const finalBookPath = bookPath ? decodeURIComponent(bookPath) : defaultBook;
+        const finalBookPath = 'assets/Dom_Casmurro-Machado_de_Assis.pdf';
 
         let response = null; let chosen = null;
         try {
@@ -772,16 +768,8 @@ function interleaveBooksIntoScreens(books) {
     }
 
     const infoTitle = document.getElementById('info-title');
-    let coverImage = '';
-    let bookTitle = '';
-
-    if (book.name.includes('Casmurro')) {
-        bookTitle = 'Dom Casmurro';
-        coverImage = 'assets/book2.svg'; // Using the svg from the carousel
-    } else {
-        bookTitle = 'Memórias Póstumas de Brás Cubas';
-        coverImage = 'assets/Cover.png';
-    }
+    let coverImage = 'assets/book2.svg'; // Using the svg from the carousel
+    let bookTitle = 'Dom Casmurro';
 
     if (infoTitle) {
         infoTitle.textContent = bookTitle;
