@@ -771,6 +771,22 @@ function interleaveBooksIntoScreens(books) {
         return;
     }
 
+    const infoTitle = document.getElementById('info-title');
+    let coverImage = '';
+    let bookTitle = '';
+
+    if (book.name.includes('Casmurro')) {
+        bookTitle = 'Dom Casmurro';
+        coverImage = 'assets/book2.svg'; // Using the svg from the carousel
+    } else {
+        bookTitle = 'Memórias Póstumas de Brás Cubas';
+        coverImage = 'assets/Cover.png';
+    }
+
+    if (infoTitle) {
+        infoTitle.textContent = bookTitle;
+    }
+
     const totalChunks = book.chunks.length;
 
     for (const [index, chunk] of book.chunks.entries()) {
@@ -784,7 +800,7 @@ function interleaveBooksIntoScreens(books) {
         if (index === 0) {
             content.classList.add('cover-card');
             content.innerHTML = '';
-            content.style.backgroundImage = "url('assets/Cover.png')";
+            content.style.backgroundImage = `url('${coverImage}')`;
             content.style.backgroundSize = 'cover';
             content.style.backgroundPosition = 'center';
             content.style.backgroundRepeat = 'no-repeat';
