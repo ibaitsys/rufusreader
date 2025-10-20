@@ -6,6 +6,7 @@ let scrollTimeout;
 // Scrolling state flags used by touch and wheel handlers
 let isScrolling = false;
 let touchStartY = 0;
+const CLUB_GROUP_LINK = 'https://chat.whatsapp.com/SEU_GRUPO';
 
 // PWA install prompt handling
 let __deferredPrompt = null;
@@ -817,6 +818,8 @@ function buildBookFromText(text, filePath) {
     
     const rawName = filePath.split('/').pop().replace(/\.txt$/i, '').replace(/_/g, ' ');
     const title = rawName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    // Append final club CTA chunk
+    chunks.push({ type: 'club_cta' });
     console.log(`[7] Processamento de texto concluído. Total de chunks: ${chunks.length}`);
     return { name: title, chunks };
 }
@@ -932,6 +935,45 @@ function interleaveBooksIntoScreens(books) {
             content.style.backgroundSize = 'cover';
             content.style.backgroundPosition = 'center';
             content.style.backgroundRepeat = 'no-repeat';
+        } else if (chunk && chunk.type === 'club_cta') {
+            const percentage = Math.round((pageCounter / totalChunks) * 100);
+            content.innerHTML = `
+                <div class="share-card-body">
+                    <p><strong>Quase lá!</strong> Estamos finalizando os próximos capítulos. Quer ser avisado e fazer parte do Clube Rufus?</p>
+                    <div class="club-form" style="display:grid; gap:8px; margin-top:8px; text-align:left;">
+                        <label>Nome
+                            <input type="text" class="club-name" placeholder="Seu nome" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:8px;">
+                        </label>
+                        <label>WhatsApp
+                            <input type="tel" class="club-phone" placeholder="(DDD) 9XXXX-XXXX" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:8px;">
+                        </label>
+                        <small style="opacity:.7">Usaremos seu número para avisos do Rufus Reader. Você pode sair a qualquer momento.</small>
+                    </div>
+                </div>
+                <div class="share-card-footer">
+                    <span class="share-card-page">${percentage}%</span>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <button class="club-save btn" style="padding:8px 10px; border-radius:8px;">Quero ser avisado</button>
+                        <a class="club-join btn" href="${CLUB_GROUP_LINK}" target="_blank" rel="noopener" style="padding:8px 10px; border-radius:8px; background: var(--primary-color); color:#fff; text-decoration:none;">Entrar no grupo</a>
+                    </div>
+                </div>`;
+
+            // Hook up handlers
+            (function setupClubForm(){
+                const saveBtn = content.querySelector('.club-save');
+                const joinBtn = content.querySelector('.club-join');
+                const nameEl = content.querySelector('.club-name');
+                const phoneEl = content.querySelector('.club-phone');
+                if (!saveBtn || !joinBtn) return;
+                saveBtn.addEventListener('click', () => {
+                    const name = (nameEl?.value || '').trim();
+                    const phone = (phoneEl?.value || '').trim();
+                    if (!phone) { alert('Informe seu WhatsApp.'); return; }
+                    try { localStorage.setItem('clubLead', JSON.stringify({ name, phone, ts: Date.now() })); } catch(_){}
+                    saveBtn.textContent = 'Salvo!';
+                    saveBtn.disabled = true;
+                });
+            })();
         } else if (!firstTextRenderedAsRemarkable && chunk && chunk.type === 'text') {
             content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
             firstTextRenderedAsRemarkable = true;

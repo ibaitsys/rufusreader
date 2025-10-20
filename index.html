@@ -91,12 +91,42 @@
         <span class="beta-badge" aria-label="Vers&#227;o beta">Beta</span>
     </header>
     <div class="library-container">
+        <div class="club-cta" role="region" aria-label="Clube Rufus">
+            <div class="club-cta-text">
+                <strong>Clube Rufus</strong> — leituras, sorteios e encontros semanais.
+            </div>
+            <div class="club-cta-actions">
+                <a class="club-cta-btn" href="https://chat.whatsapp.com/SEU_GRUPO" target="_blank" rel="noopener">Entrar no grupo</a>
+                <a class="club-cta-link" href="#" onclick="alert('R$15/mês • Sorteios • Encontros • Novos livros toda semana'); return false;">Saiba mais</a>
+            </div>
+        </div>
         <div class="section-title">Dispon&#237;veis</div>
         <ul id="book-list" class="book-list">
             <!-- Livros ser&#227;o inseridos aqui via JavaScript -->
         </ul>
     </div>
     <script src="js/library.js"></script>
+    <script>
+    (function(){
+        try{
+            var el = document.querySelector('.club-cta');
+            if(!el) return;
+            // Style inline to avoid CSS sheet edits
+            el.style.margin = '8px 0 2px';
+            el.style.padding = '10px 12px';
+            el.style.border = '1px solid var(--border-color, #e5e7eb)';
+            el.style.borderRadius = '12px';
+            el.style.display = 'flex';
+            el.style.justifyContent = 'space-between';
+            el.style.alignItems = 'center';
+            el.style.background = 'var(--card-bg, #fff)';
+            var btn = document.querySelector('.club-cta-btn');
+            if(btn){ btn.style.background = '#2563eb'; btn.style.color = '#fff'; btn.style.padding = '6px 10px'; btn.style.borderRadius = '8px'; btn.style.textDecoration = 'none'; btn.style.fontWeight='700'; }
+            var link = document.querySelector('.club-cta-link');
+            if(link){ link.style.marginLeft = '10px'; link.style.color = 'var(--text-color,#111827)'; }
+        }catch(e){}
+    })();
+    </script>
 </body>
 </html>
 
