@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
         title: 'Memórias Póstumas de Brás Cubas',
         author: 'Machado de Assis',
         year: '1881',
-        format: 'PDF',
+        format: 'Texto',
         cover: 'assets/Cover.png',
-        path: 'assets/Mem?rias Postumas de Br?s Cubas - PDF_removed.pdf'
+        path: 'assets/memorias_postumas_final.txt'
       }
     ];
 

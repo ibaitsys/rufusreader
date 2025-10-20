@@ -678,7 +678,13 @@ async function init() {
     // LÃ³gica principal
     try {
         console.log("[2] Iniciando fetch do livro de texto...");
-        const bookPath = 'assets/memorias_postumas_final.txt';
+        // Prefer URL param ?book= when it's a .txt; otherwise fallback to default
+        const params = new URLSearchParams(window.location.search);
+        const requested = params.get('book');
+        let bookPath = 'assets/memorias_postumas_final.txt';
+        if (requested && /\.txt$/i.test(requested)) {
+            bookPath = requested;
+        }
         const response = await fetch(bookPath);
 
         if (!response.ok) {
