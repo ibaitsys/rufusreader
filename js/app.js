@@ -905,6 +905,18 @@ function interleaveBooksIntoScreens(books) {
                     </button>
                 </div>`;
 
+            // Replace percentage badge with dummy chapter pill (visual only)
+            {
+                const footerEl = content.querySelector('.share-card-footer');
+                const pageEl = content.querySelector('.share-card-page');
+                if (footerEl && pageEl) {
+                    const pill = document.createElement('span');
+                    pill.className = 'chapter-pill';
+                    pill.textContent = 'Capítulo 1';
+                    footerEl.replaceChild(pill, pageEl);
+                }
+            }
+
             // Inject a dummy chapter pill above the footer (visual only)
             {
                 const footerForPill = content.querySelector('.share-card-footer');
