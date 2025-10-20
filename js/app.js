@@ -1,4 +1,4 @@
-﻿
+
 
 let currentUtterance = null;
 let currentSpeakButton = null;
@@ -652,19 +652,46 @@ function buildBookFromText(text, filePath) {
     const chunks = [];
 
     for (const paragraph of paragraphs) {
-        const trimmedParagraph = paragraph.trim();
-        if (!trimmedParagraph) continue;
+        let rest = paragraph.trim();
+        if (!rest) continue;
 
-        // Chapter marker: lines beginning with '### ' become a dedicated chapter chunk
-        const chapterMatch = trimmedParagraph.match(/^###\s+(.+?)\s*$/);
-        if (chapterMatch) {
-            const chapterTitle = chapterMatch[1].trim();
-            chunks.push({ type: 'chapter', title: chapterTitle });
-            continue;
+        // Handle inline chapter markers like: "... capitulo 1 ### O AVIADOR   texto ..."
+        while (true) {
+            const idx = rest.indexOf('### ');
+            if (idx === -1) {
+                // No chapter marker; push remaining text as normal chunks
+                const clean = rest.trim();
+                if (clean) {
+                    const pageChunks = splitIntoSmartChunks(clean);
+                    chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
+                }
+                break;
+            }
+
+            const pre = rest.slice(0, idx).trim();
+            if (pre) {
+                const pageChunks = splitIntoSmartChunks(pre);
+                chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
+            }
+
+            let after = rest.slice(idx + 4); // skip '### '
+            // Title ends at first run of 2+ spaces or end of string
+            const m = after.match(/\s{2,}/);
+            let title, post;
+            if (m) {
+                title = after.slice(0, m.index).trim();
+                post = after.slice(m.index).trim();
+            } else {
+                title = after.trim();
+                post = '';
+            }
+            if (title) {
+                chunks.push({ type: 'chapter', title });
+            }
+            rest = post;
+            if (!rest) break; // nothing left to process
+            // loop to handle multiple markers in the same paragraph
         }
-
-        const pageChunks = splitIntoSmartChunks(trimmedParagraph);
-        chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
     }
     
     const rawName = filePath.split('/').pop().replace(/\.txt$/i, '').replace(/_/g, ' ');
@@ -745,6 +772,7 @@ function interleaveBooksIntoScreens(books) {
     }
 
     const totalChunks = book.chunks.length;
+    let firstTextRenderedAsRemarkable = false;
 
     for (const [index, chunk] of book.chunks.entries()) {
         pageCounter++;
@@ -971,6 +999,7 @@ function loadProgress() {
 
 // Garante que o app sÃ³ rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
 window.onload = init;
+
 
 
 
