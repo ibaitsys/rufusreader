@@ -203,13 +203,25 @@ body.body-no-scroll {
     position: relative;
     transition: background-color 0.3s ease;
     height: 100%;
+    /* Allow inner flex children to shrink and scroll */
+    min-height: 0;
 }
 
 .share-card-body {
-    flex-grow: 1;
+    /* Take remaining space and enable internal scroll when content overflows */
+    flex: 1 1 auto;
+    min-height: 0;
     margin-bottom: 1rem;
     font-size: 1.25rem;
     line-height: 1.6;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Robust text wrapping to avoid horizontal overflow */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    /* Keep layout stable when scrollbar appears */
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
 }
 
 .share-card-footer {
@@ -819,6 +831,13 @@ body[data-theme="light"] {
     font-size: 1.5rem;
     font-style: italic;
     text-align: center;
+    /* If this is the only child in the card, allow inner scroll */
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    scrollbar-gutter: stable;
 }
 
 /* Deep Reading (glassmorphism + rain) */
