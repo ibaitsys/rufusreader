@@ -850,6 +850,7 @@ function interleaveBooksIntoScreens(books) {
 
     const totalChunks = book.chunks.length;
     let firstTextRenderedAsRemarkable = false;
+    let currentChapter = null;
 
     for (const [index, chunk] of book.chunks.entries()) {
         pageCounter++;
@@ -875,6 +876,7 @@ function interleaveBooksIntoScreens(books) {
             if (eyebrowEl) { eyebrowEl.textContent = `Capítulo ${number}`; }
             if (!window.__chapters) window.__chapters = [];
             window.__chapters.push({ number, title, pageIndex: pageCounter });
+            currentChapter = { number, title };
             continue;
         }
 
@@ -905,14 +907,30 @@ function interleaveBooksIntoScreens(books) {
                     </button>
                 </div>`;
 
-            // Replace percentage badge with dummy chapter pill (visual only)
+            // Replace percentage badge with chapter pill showing current chapter number
             {
                 const footerEl = content.querySelector('.share-card-footer');
                 const pageEl = content.querySelector('.share-card-page');
-                if (footerEl && pageEl) {
+                if (footerEl && pageEl && currentChapter && currentChapter.number) {
                     const pill = document.createElement('span');
                     pill.className = 'chapter-pill';
-                    pill.textContent = 'Capítulo 1';
+                    pill.textContent = `Capítulo ${currentChapter.number}`;
+                    pill.tabIndex = 0;
+                    pill.setAttribute('role', 'button');
+                    pill.setAttribute('aria-label', 'Selecionar capítulo');
+                    pill.addEventListener('click', () => {
+                        const overlay = document.getElementById('action-sheet-overlay');
+                        const chapterSheetEl = document.getElementById('chapter-sheet');
+                        const actionSheetEl = document.getElementById('action-sheet');
+                        if (!chapterSheetEl || !overlay) return;
+                        if (typeof renderChapterList === 'function') renderChapterList();
+                        overlay.classList.add('visible');
+                        document.body.classList.add('body-no-scroll');
+                        if (actionSheetEl) actionSheetEl.classList.remove('open');
+                        chapterSheetEl.classList.add('open');
+                        chapterSheetEl.classList.add('peek');
+                        chapterSheetEl.setAttribute('aria-hidden', 'false');
+                    });
                     footerEl.replaceChild(pill, pageEl);
                 }
             }
