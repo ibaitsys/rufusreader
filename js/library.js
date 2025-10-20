@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     comingList.className = 'book-list';
 
     // Use neutral covers to avoid showing "Memórias Póstumas" text in thumbnails
-    const covers = ['assets/book1.svg', 'assets/book3.svg', 'assets/machado.svg'];
+    const covers = ['assets/book1.svg', 'assets/book3.svg', 'assets/dom-casmurro.svg'];
     const comingSoon = [
       'Quincas Borba',
       'Esaú e Jacó',
