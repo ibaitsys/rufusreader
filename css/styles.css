@@ -398,6 +398,30 @@ body.body-no-scroll {
     background-repeat: no-repeat;
 }
 
+/* Chapter cover card (rendered for lines starting with ###) */
+.share-card-content.chapter-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.chapter-cover-inner { max-width: 80%; margin: 0 auto; }
+.chapter-eyebrow {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+.chapter-title {
+    font-size: clamp(28px, 5.2vw, 56px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--text-color);
+    text-wrap: balance;
+}
+
 .action-sheet.open {
     transform: translateY(0%);
 }

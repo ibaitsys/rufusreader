@@ -653,10 +653,18 @@ function buildBookFromText(text, filePath) {
 
     for (const paragraph of paragraphs) {
         const trimmedParagraph = paragraph.trim();
-        if (trimmedParagraph) {
-            const pageChunks = splitIntoSmartChunks(trimmedParagraph);
-            chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
+        if (!trimmedParagraph) continue;
+
+        // Chapter marker: lines beginning with '### ' become a dedicated chapter chunk
+        const chapterMatch = trimmedParagraph.match(/^###\s+(.+?)\s*$/);
+        if (chapterMatch) {
+            const chapterTitle = chapterMatch[1].trim();
+            chunks.push({ type: 'chapter', title: chapterTitle });
+            continue;
         }
+
+        const pageChunks = splitIntoSmartChunks(trimmedParagraph);
+        chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
     }
     
     const rawName = filePath.split('/').pop().replace(/\.txt$/i, '').replace(/_/g, ' ');
@@ -745,6 +753,20 @@ function interleaveBooksIntoScreens(books) {
         
         const content = document.createElement('div');
         content.className = 'page-content share-card-content';
+
+        // Render chapter markers (### Title) as dedicated cover cards after the book cover
+        if (index > 0 && chunk && chunk.type === 'chapter') {
+            content.classList.add('cover-card', 'chapter-cover');
+            const title = chunk.title || '';
+            content.innerHTML = `
+                <div class="chapter-cover-inner">
+                    <div class="chapter-eyebrow">Capítulo</div>
+                    <h2 class="chapter-title">${title}</h2>
+                </div>`;
+            screen.appendChild(content);
+            readerContent.appendChild(screen);
+            continue;
+        }
 
         if (index === 0) {
             content.classList.add('cover-card');
