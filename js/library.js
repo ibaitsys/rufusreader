@@ -1,5 +1,8 @@
 ﻿// Biblioteca: renderização de livros e seção "Em breve" com metadados compactos e badges
 document.addEventListener('DOMContentLoaded', () => {
+  // Prevent duplicate rendering if this script runs twice for any reason
+  if (window.__libraryInitDone) return;
+  window.__libraryInitDone = true;
   // Flag de página e título
   document.body.setAttribute('data-page', 'library');
   document.title = 'Rufus Reader - Biblioteca';
@@ -54,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Seção Em breve
+  // Seção Em breve (render only once)
   const container = document.querySelector('.library-container');
   if (container && !document.getElementById('coming-soon-list')) {
     const title = document.createElement('div');
@@ -112,7 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
       comingList.appendChild(li);
     });
 
+    // Ensure we don't already have a coming soon section
+    const existing = container.querySelectorAll('#coming-soon-list');
+    if (existing.length > 1) {
+      // Remove duplicates, keep the first
+      existing.forEach((el, idx) => { if (idx > 0) el.remove(); });
+    }
+
     if (bookList && bookList.parentElement === container) {
+      // Insert right after the available list
       bookList.insertAdjacentElement('afterend', title);
       title.insertAdjacentElement('afterend', comingList);
     } else {
