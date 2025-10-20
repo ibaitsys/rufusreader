@@ -71,16 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Use neutral covers to avoid showing "Memórias Póstumas" text in thumbnails
     const covers = ['assets/book1.svg', 'assets/book3.svg', 'assets/machado.svg'];
     const comingSoon = [
-      'Dom Casmurro',
       'Quincas Borba',
       'Esaú e Jacó',
-      'Memorial de Aires',
-      'Iaiá Garcia',
-      'Helena',
-      'Ressurreição',
-      'Papéis Avulsos',
-      'Histórias sem Data',
-      'Várias Histórias'
+      'Dom Casmurro'
     ];
 
     comingSoon.forEach((bookTitle, i) => {
