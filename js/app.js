@@ -587,12 +587,19 @@ async function init() {
     function closeActionSheet() {
         document.activeElement.blur();
         const actionSheet = document.getElementById('action-sheet');
+        const chapterSheet = document.getElementById('chapter-sheet');
         if (actionSheetOverlay && actionSheet) {
             actionSheetOverlay.classList.remove('visible');
             actionSheet.classList.remove('open');
             actionSheet.classList.remove('peek');
             actionSheet.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('body-no-scroll');
+
+            if (chapterSheet) {
+                chapterSheet.classList.remove('open');
+                chapterSheet.classList.remove('peek');
+                chapterSheet.setAttribute('aria-hidden', 'true');
+            }
 
             // Return focus to the trigger element
             if (actionSheetTrigger) {
@@ -604,6 +611,37 @@ async function init() {
     // Listeners bÃ¡sicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
     if (actionSheetOverlay) actionSheetOverlay.addEventListener('click', closeActionSheet);
+
+    // Open nested chapter sheet
+    const actionChaptersBtn = document.getElementById('action-chapters');
+    if (actionChaptersBtn) {
+        actionChaptersBtn.addEventListener('click', () => {
+            const chapterSheetEl = document.getElementById('chapter-sheet');
+            const actionSheetEl = document.getElementById('action-sheet');
+            if (!chapterSheetEl || !actionSheetEl) return;
+            if (typeof renderChapterList === 'function') renderChapterList();
+            actionSheetEl.classList.remove('open');
+            chapterSheetEl.classList.add('open');
+            chapterSheetEl.classList.add('peek');
+            chapterSheetEl.setAttribute('aria-hidden', 'false');
+        });
+    }
+
+    // Close chapter sheet and return to main sheet
+    const chapterCloseBtn = document.querySelector('.chapter-sheet-close');
+    if (chapterCloseBtn) {
+        chapterCloseBtn.addEventListener('click', () => {
+            const chapterSheetEl = document.getElementById('chapter-sheet');
+            const actionSheetEl = document.getElementById('action-sheet');
+            if (!chapterSheetEl || !actionSheetEl) return;
+            chapterSheetEl.classList.remove('open');
+            chapterSheetEl.classList.remove('peek');
+            chapterSheetEl.setAttribute('aria-hidden', 'true');
+            actionSheetEl.classList.add('open');
+            actionSheetEl.classList.add('peek');
+            actionSheetEl.setAttribute('aria-hidden', 'false');
+        });
+    }
 
     function scrollToPageIndex(pageIndex) {
         const readerContentDiv = document.getElementById('reader-content');
