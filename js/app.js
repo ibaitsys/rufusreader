@@ -818,14 +818,8 @@ function buildBookFromText(text, filePath) {
     
     const rawName = filePath.split('/').pop().replace(/\.txt$/i, '').replace(/_/g, ' ');
     const title = rawName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    // Append final club CTA chunk
-    try {
-        if (localStorage.getItem('__clubHide') !== '1') {
-            chunks.push({ type: 'club_cta' });
-        }
-    } catch (_) {
-        chunks.push({ type: 'club_cta' });
-    }
+    // Append final club CTA chunk (persistent)
+    chunks.push({ type: 'club_cta' });
     console.log(`[7] Processamento de texto concluído. Total de chunks: ${chunks.length}`);
     return { name: title, chunks };
 }
@@ -988,15 +982,14 @@ function interleaveBooksIntoScreens(books) {
                     btn.addEventListener('click', () => {
                         const phone = prompt('Seu WhatsApp (com DDD):');
                         const name = prompt('Seu nome (opcional):');
-                        if (phone && phone.trim()) {
-                            try {
-                                localStorage.setItem('clubLead', JSON.stringify({ name: (name||'').trim(), phone: phone.trim(), ts: Date.now() }));
-                                localStorage.setItem('__clubHide','1');
-                            } catch(_){}
-                            alert('Tudo certo! Avisaremos quando chegar.');
-                            const screenEl = content.closest('.page');
-                            if (screenEl) screenEl.remove();
-                        }
+                    if (phone && phone.trim()) {
+                        try {
+                            localStorage.setItem('clubLead', JSON.stringify({ name: (name||'').trim(), phone: phone.trim(), ts: Date.now() }));
+                        } catch(_){}
+                        alert('Tudo certo! Avisaremos quando chegar.');
+                        btn.textContent = 'Anotado!';
+                        btn.disabled = true;
+                    }
                     });
                 }
                 continue;
