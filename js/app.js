@@ -819,7 +819,13 @@ function buildBookFromText(text, filePath) {
     const rawName = filePath.split('/').pop().replace(/\.txt$/i, '').replace(/_/g, ' ');
     const title = rawName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     // Append final club CTA chunk
-    chunks.push({ type: 'club_cta' });
+    try {
+        if (localStorage.getItem('__clubHide') !== '1') {
+            chunks.push({ type: 'club_cta' });
+        }
+    } catch (_) {
+        chunks.push({ type: 'club_cta' });
+    }
     console.log(`[7] Processamento de texto concluído. Total de chunks: ${chunks.length}`);
     return { name: title, chunks };
 }
@@ -938,14 +944,27 @@ function interleaveBooksIntoScreens(books) {
         } else if (chunk && chunk.type === 'club_cta') {
             const percentage = Math.round((pageCounter / totalChunks) * 100);
             content.innerHTML = `
-                <div class="share-card-body">
-                    <p><strong>Quase lá!</strong> Estamos finalizando os próximos capítulos. Quer ser avisado e fazer parte do Clube Rufus?</p>
-                    <div class="club-form" style="display:grid; gap:8px; margin-top:8px; text-align:left;">
-                        <label>Nome
+                <div class="share-card-body" style="text-align:left">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="font-size:12px; font-weight:800; padding:2px 8px; border-radius:999px; background:#f3f4f6; border:1px solid var(--border-color); color:var(--text-secondary);">Clube Rufus</span>
+                        <small style="opacity:.7">R$15/mês</small>
+                    </div>
+                    <div style="font-weight:800; font-size:18px; margin-bottom:6px;">Quase lá!</div>
+                    <p style="margin:0 0 8px;">Estamos finalizando os próximos capítulos. Quer ser avisado e participar da nossa comunidade?</p>
+                    <ul style="margin:6px 0 8px 18px; line-height:1.6;">
+                        <li>✓ Encontros semanais entre leitores</li>
+                        <li>✓ Sorteios e novidades</li>
+                        <li>✓ Novos livros toda semana</li>
+                    </ul>
+                    <div class="club-form" style="display:grid; gap:8px; margin-top:8px;">
+                        <label style="font-size:12px">Nome
                             <input type="text" class="club-name" placeholder="Seu nome" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:8px;">
                         </label>
-                        <label>WhatsApp
+                        <label style="font-size:12px">WhatsApp
                             <input type="tel" class="club-phone" placeholder="(DDD) 9XXXX-XXXX" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:8px;">
+                        </label>
+                        <label style="display:flex; align-items:center; gap:6px; font-size:12px; opacity:.8">
+                            <input type="checkbox" class="club-hide"> Não mostrar novamente
                         </label>
                         <small style="opacity:.7">Usaremos seu número para avisos do Rufus Reader. Você pode sair a qualquer momento.</small>
                     </div>
@@ -961,18 +980,28 @@ function interleaveBooksIntoScreens(books) {
             // Hook up handlers
             (function setupClubForm(){
                 const saveBtn = content.querySelector('.club-save');
-                const joinBtn = content.querySelector('.club-join');
                 const nameEl = content.querySelector('.club-name');
                 const phoneEl = content.querySelector('.club-phone');
-                if (!saveBtn || !joinBtn) return;
-                saveBtn.addEventListener('click', () => {
-                    const name = (nameEl?.value || '').trim();
-                    const phone = (phoneEl?.value || '').trim();
-                    if (!phone) { alert('Informe seu WhatsApp.'); return; }
-                    try { localStorage.setItem('clubLead', JSON.stringify({ name, phone, ts: Date.now() })); } catch(_){}
-                    saveBtn.textContent = 'Salvo!';
-                    saveBtn.disabled = true;
-                });
+                const hideCb = content.querySelector('.club-hide');
+                const screenEl = content.closest('.page');
+                if (hideCb) {
+                    hideCb.addEventListener('change', (e) => {
+                        try { localStorage.setItem('__clubHide', e.target.checked ? '1' : '0'); } catch(_){}
+                        if (e.target.checked && screenEl) {
+                            screenEl.remove();
+                        }
+                    });
+                }
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', () => {
+                        const name = (nameEl?.value || '').trim();
+                        const phone = (phoneEl?.value || '').trim();
+                        if (!phone) { alert('Informe seu WhatsApp.'); return; }
+                        try { localStorage.setItem('clubLead', JSON.stringify({ name, phone, ts: Date.now() })); } catch(_){}
+                        saveBtn.textContent = 'Salvo!';
+                        saveBtn.disabled = true;
+                    });
+                }
             })();
         } else if (!firstTextRenderedAsRemarkable && chunk && chunk.type === 'text') {
             content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
