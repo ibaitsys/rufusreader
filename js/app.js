@@ -949,31 +949,28 @@ function interleaveBooksIntoScreens(books) {
                         <span style="font-size:12px; font-weight:800; padding:2px 8px; border-radius:999px; background:#f3f4f6; border:1px solid var(--border-color); color:var(--text-secondary);">Clube Rufus</span>
                         <small style="opacity:.7">R$15/mês</small>
                     </div>
-                    <div style="font-weight:800; font-size:18px; margin-bottom:6px;">Quase lá!</div>
+                    <div style="font-weight:800; font-size:20px; margin-bottom:4px;">Quase lá!</div>
                     <p style="margin:0 0 8px;">Estamos finalizando os próximos capítulos. Quer ser avisado e participar da nossa comunidade?</p>
-                    <ul style="margin:6px 0 8px 18px; line-height:1.6;">
+                    <ul style="margin:6px 0 12px 18px; line-height:1.6;">
                         <li>✓ Encontros semanais entre leitores</li>
                         <li>✓ Sorteios e novidades</li>
                         <li>✓ Novos livros toda semana</li>
                     </ul>
                     <div class="club-form" style="display:grid; gap:8px; margin-top:8px;">
                         <label style="font-size:12px">Nome
-                            <input type="text" class="club-name" placeholder="Seu nome" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:8px;">
+                            <input type="text" class="club-name" placeholder="Seu nome" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:10px;">
                         </label>
                         <label style="font-size:12px">WhatsApp
-                            <input type="tel" class="club-phone" placeholder="(DDD) 9XXXX-XXXX" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:8px;">
+                            <input type="tel" class="club-phone" placeholder="(DDD) 9XXXX-XXXX" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:10px;">
                         </label>
+                        <div class="cta-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+                            <a class="club-join" href="${CLUB_GROUP_LINK}" target="_blank" rel="noopener" style="flex:1; text-align:center; padding:10px 12px; border-radius:10px; background: var(--primary-color); color:#fff; text-decoration:none; font-weight:800;">Entrar no grupo</a>
+                            <button class="club-save" style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background: var(--card-bg); font-weight:700;">Quero ser avisado</button>
+                        </div>
                         <label style="display:flex; align-items:center; gap:6px; font-size:12px; opacity:.8">
                             <input type="checkbox" class="club-hide"> Não mostrar novamente
                         </label>
                         <small style="opacity:.7">Usaremos seu número para avisos do Rufus Reader. Você pode sair a qualquer momento.</small>
-                    </div>
-                </div>
-                <div class="share-card-footer">
-                    <span class="share-card-page">${percentage}%</span>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <button class="club-save btn" style="padding:8px 10px; border-radius:8px;">Quero ser avisado</button>
-                        <a class="club-join btn" href="${CLUB_GROUP_LINK}" target="_blank" rel="noopener" style="padding:8px 10px; border-radius:8px; background: var(--primary-color); color:#fff; text-decoration:none;">Entrar no grupo</a>
                     </div>
                 </div>`;
 
