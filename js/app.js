@@ -1328,3 +1328,17 @@ window.onload = init;
 
 
 
+
+// Ensure Home button navigates to index explicitly (GitHub Pages + localhost)
+try {
+  const homeBtn = document.querySelector('.home-button');
+  if (homeBtn) {
+    homeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const base = window.location.pathname.replace(/[^/]+$/, '');
+      const url = `${window.location.origin}${base}index.html`;
+      window.location.assign(url);
+    });
+  }
+} catch (_) {}
+
