@@ -974,6 +974,33 @@ function interleaveBooksIntoScreens(books) {
                     </div>
                 </div>`;
 
+            // Simple single-button override (no footer, no scroll)
+            {
+                content.innerHTML = `<div class="share-card-body" style="text-align:left; padding-bottom:12px;">
+                    <div style="font-weight:800; font-size:20px; margin-bottom:6px;">Quase lá!</div>
+                    <p style="margin:0 0 12px;">Estamos finalizando os próximos capítulos. Toque abaixo e eu aviso você quando chegar.</p>
+                    <div style="display:flex; justify-content:center;">
+                        <button class="club-notify" style="padding:12px 16px; border-radius:10px; background: var(--primary-color); color:#fff; font-weight:800;">Me avise</button>
+                    </div>
+                </div>`;
+                const btn = content.querySelector('.club-notify');
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        const phone = prompt('Seu WhatsApp (com DDD):');
+                        const name = prompt('Seu nome (opcional):');
+                        if (phone && phone.trim()) {
+                            try {
+                                localStorage.setItem('clubLead', JSON.stringify({ name: (name||'').trim(), phone: phone.trim(), ts: Date.now() }));
+                                localStorage.setItem('__clubHide','1');
+                            } catch(_){}
+                            alert('Tudo certo! Avisaremos quando chegar.');
+                            const screenEl = content.closest('.page');
+                            if (screenEl) screenEl.remove();
+                        }
+                    });
+                }
+                continue;
+            }
             // Hook up handlers
             (function setupClubForm(){
                 const saveBtn = content.querySelector('.club-save');
