@@ -915,22 +915,7 @@ function interleaveBooksIntoScreens(books) {
                     const pill = document.createElement('span');
                     pill.className = 'chapter-pill';
                     pill.textContent = `Capítulo ${currentChapter.number}`;
-                    pill.tabIndex = 0;
-                    pill.setAttribute('role', 'button');
-                    pill.setAttribute('aria-label', 'Selecionar capítulo');
-                    pill.addEventListener('click', () => {
-                        const overlay = document.getElementById('action-sheet-overlay');
-                        const chapterSheetEl = document.getElementById('chapter-sheet');
-                        const actionSheetEl = document.getElementById('action-sheet');
-                        if (!chapterSheetEl || !overlay) return;
-                        if (typeof renderChapterList === 'function') renderChapterList();
-                        overlay.classList.add('visible');
-                        document.body.classList.add('body-no-scroll');
-                        if (actionSheetEl) actionSheetEl.classList.remove('open');
-                        chapterSheetEl.classList.add('open');
-                        chapterSheetEl.classList.add('peek');
-                        chapterSheetEl.setAttribute('aria-hidden', 'false');
-                    });
+                    // Non-interactive visual pill only
                     footerEl.replaceChild(pill, pageEl);
                 }
             }
