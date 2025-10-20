@@ -26,7 +26,7 @@ window.addEventListener('appinstalled', () => {
     } catch (_) {}
 });
 
-// VersÃ£o de depuraÃ§Ã£o com logs detalhados
+// VersÃƒÂ£o de depuraÃƒÂ§ÃƒÂ£o com logs detalhados
 
 
 
@@ -244,7 +244,7 @@ async function init() {
     }
 
     if (!readerContent) {
-        console.error("FALHA CRÃTICA: #reader-content nÃ£o encontrado.");
+        console.error("FALHA CRÃƒÂTICA: #reader-content nÃƒÂ£o encontrado.");
         return;
     }
 
@@ -591,7 +591,7 @@ async function init() {
 
     let actionSheetTrigger = null;
 
-    // FunÃ§Ãµes de UI (melhoradas)
+    // FunÃƒÂ§ÃƒÂµes de UI (melhoradas)
     function openActionSheet() {
         actionSheetTrigger = document.activeElement;
         const actionSheet = document.getElementById('action-sheet');
@@ -638,7 +638,7 @@ async function init() {
         }
     }
 
-    // Listeners bÃ¡sicos
+    // Listeners bÃƒÂ¡sicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
     if (actionSheetOverlay) actionSheetOverlay.addEventListener('click', closeActionSheet);
 
@@ -696,7 +696,7 @@ async function init() {
             btn.className = 'chapter-item';
             btn.setAttribute('role', 'listitem');
             btn.setAttribute('data-page-index', String(ch.pageIndex));
-            btn.innerHTML = `<span class=\"chapter-item-title\">Capítulo ${ch.number}</span><span class=\"chapter-item-sub\">${ch.title}</span>`;
+            btn.innerHTML = `<span class=\"chapter-item-title\">CapÃ­tulo ${ch.number}</span><span class=\"chapter-item-sub\">${ch.title}</span>`;
             btn.addEventListener('click', () => {
                 scrollToPageIndex(ch.pageIndex);
                 closeActionSheet();
@@ -705,7 +705,7 @@ async function init() {
         }
     }
 
-    // LÃ³gica principal
+    // LÃƒÂ³gica principal
     try {
         console.log("[2] Iniciando fetch do livro de texto...");
         // Prefer URL param ?book= when it's a .txt; otherwise fallback to default
@@ -724,15 +724,15 @@ async function init() {
         const text = await response.text();
         console.log("[3] Arquivo .txt carregado.");
 
-        // Evita reprocessar o livro na mesma sessÃ£o
+        // Evita reprocessar o livro na mesma sessÃƒÂ£o
         if (!window.__bookCache) {
             await processAndDisplayBook(text, bookPath);
             window.__bookCache = true;
         }
-        console.log("[4] Processamento do livro concluÃ­do.");
+        console.log("[4] Processamento do livro concluÃƒÂ­do.");
 
     } catch (error) {
-        console.error("[ERRO] Falha no bloco de inicializaÃ§Ã£o:", error);
+        console.error("[ERRO] Falha no bloco de inicializaÃƒÂ§ÃƒÂ£o:", error);
         readerContent.innerHTML = '<p style="text-align: center; padding-top: 50%;">Ocorreu um erro ao carregar o livro.</p>';
     }
 }
@@ -742,7 +742,7 @@ async function processAndDisplayBook(text, bookPath) {
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '<div class="loading-container"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
 
-    // ForÃ§a uma reflow para garantir que a animaÃ§Ã£o de carregamento seja renderizada.
+    // ForÃƒÂ§a uma reflow para garantir que a animaÃƒÂ§ÃƒÂ£o de carregamento seja renderizada.
     await new Promise(resolve => requestAnimationFrame(resolve));
     await new Promise(resolve => setTimeout(resolve, 0)); // Cede ao loop de eventos
 
@@ -770,7 +770,7 @@ function buildBookFromText(text, filePath) {
         if (alt.length > paragraphs.length) paragraphs = alt;
     }
 
-    console.log(`[6a] Parágrafos detectados: ${paragraphs.length}`);
+    console.log(`[6a] ParÃ¡grafos detectados: ${paragraphs.length}`);
 
     for (const paragraph of paragraphs) {
         let rest = paragraph.trim();
@@ -820,7 +820,7 @@ function buildBookFromText(text, filePath) {
     const title = rawName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     // Append final club CTA chunk (persistent)
     chunks.push({ type: 'club_cta' });
-    console.log(`[7] Processamento de texto concluído. Total de chunks: ${chunks.length}`);
+    console.log(`[7] Processamento de texto concluÃ­do. Total de chunks: ${chunks.length}`);
     return { name: title, chunks };
 }
 
@@ -853,8 +853,8 @@ function splitIntoSmartChunks(text) {
 function simplifyTextRules(text) {
     let out = text;
     const rules = [
-        [/\bvossa merc[Ãªe]\b/gi, 'vocÃª'],
-        [/\bvossemec[Ãªe]\b/gi, 'vocÃª'],
+        [/\bvossa merc[ÃƒÂªe]\b/gi, 'vocÃƒÂª'],
+        [/\bvossemec[ÃƒÂªe]\b/gi, 'vocÃƒÂª'],
         [/\bhei de\b/gi, 'vou'],
         [/\bcousa\b/gi, 'coisa'],
         [/\bdeveras\b/gi, 'realmente'],
@@ -914,14 +914,14 @@ function interleaveBooksIntoScreens(books) {
             const title = chunk.title || '';
             content.innerHTML = `
                 <div class="chapter-cover-inner">
-                    <div class="chapter-eyebrow">Capítulo</div>
+                    <div class="chapter-eyebrow">CapÃ­tulo</div>
                     <h2 class="chapter-title">${title}</h2>
                 </div>`;
             screen.appendChild(content);
             readerContent.appendChild(screen);
             const number = (chunk && chunk.number) ? chunk.number : (window.__chapters ? window.__chapters.length + 1 : 1);
             const eyebrowEl = content.querySelector('.chapter-eyebrow');
-            if (eyebrowEl) { eyebrowEl.textContent = `Capítulo ${number}`; }
+            if (eyebrowEl) { eyebrowEl.textContent = `CapÃ­tulo ${number}`; }
             if (!window.__chapters) window.__chapters = [];
             window.__chapters.push({ number, title, pageIndex: pageCounter });
             currentChapter = { number, title };
@@ -941,14 +941,14 @@ function interleaveBooksIntoScreens(books) {
                 <div class="share-card-body" style="text-align:left">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
                         <span style="font-size:12px; font-weight:800; padding:2px 8px; border-radius:999px; background:#f3f4f6; border:1px solid var(--border-color); color:var(--text-secondary);">Clube Rufus</span>
-                        <small style="opacity:.7">R$15/mês</small>
+                        <small style="opacity:.7">R$15/mÃªs</small>
                     </div>
-                    <div style="font-weight:800; font-size:20px; margin-bottom:4px;">Quase lá!</div>
-                    <p style="margin:0 0 8px;">Estamos finalizando os próximos capítulos. Quer ser avisado e participar da nossa comunidade?</p>
+                    <div style="font-weight:800; font-size:20px; margin-bottom:4px;">Quase lÃ¡!</div>
+                    <p style="margin:0 0 8px;">Estamos finalizando os prÃ³ximos capÃ­tulos. Quer ser avisado e participar da nossa comunidade?</p>
                     <ul style="margin:6px 0 12px 18px; line-height:1.6;">
-                        <li>✓ Encontros semanais entre leitores</li>
-                        <li>✓ Sorteios e novidades</li>
-                        <li>✓ Novos livros toda semana</li>
+                        <li>âœ“ Encontros semanais entre leitores</li>
+                        <li>âœ“ Sorteios e novidades</li>
+                        <li>âœ“ Novos livros toda semana</li>
                     </ul>
                     <div class="club-form" style="display:grid; gap:8px; margin-top:8px;">
                         <label style="font-size:12px">Nome
@@ -962,17 +962,17 @@ function interleaveBooksIntoScreens(books) {
                             <button class="club-save" style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background: var(--card-bg); font-weight:700;">Quero ser avisado</button>
                         </div>
                         <label style="display:flex; align-items:center; gap:6px; font-size:12px; opacity:.8">
-                            <input type="checkbox" class="club-hide"> Não mostrar novamente
+                            <input type="checkbox" class="club-hide"> NÃ£o mostrar novamente
                         </label>
-                        <small style="opacity:.7">Usaremos seu número para avisos do Rufus Reader. Você pode sair a qualquer momento.</small>
+                        <small style="opacity:.7">Usaremos seu nÃºmero para avisos do Rufus Reader. VocÃª pode sair a qualquer momento.</small>
                     </div>
                 </div>`;
 
             // Simple single-button override (no footer, no scroll)
             {
                 content.innerHTML = `<div class="share-card-body" style="text-align:left; padding-bottom:12px;">
-                    <div style="font-weight:800; font-size:20px; margin-bottom:6px;">Quase lá!</div>
-                    <p style="margin:0 0 12px;">Estamos finalizando os próximos capítulos. Toque abaixo e eu aviso você quando chegar.</p>
+                    <div style="font-weight:800; font-size:20px; margin-bottom:6px;">Quase lÃ¡!</div>
+                    <p style="margin:0 0 12px;">Estamos finalizando os prÃ³ximos capÃ­tulos. Toque abaixo e eu aviso vocÃª quando chegar.</p>
                     <div style="display:flex; justify-content:center;">
                         <button class="club-notify" style="padding:12px 16px; border-radius:10px; background: var(--primary-color); color:#fff; font-weight:800;">Me avise</button>
                     </div>
@@ -1012,6 +1012,8 @@ function interleaveBooksIntoScreens(books) {
                         if (btn) { btn.textContent = 'Anotado!'; btn.disabled = true; }
                     });
                 }
+                screen.appendChild(content);
+                readerContent.appendChild(screen);
                 continue;
             }
             // Hook up handlers
@@ -1067,7 +1069,7 @@ function interleaveBooksIntoScreens(books) {
                 if (footerEl && pageEl && currentChapter && currentChapter.number) {
                     const pill = document.createElement('span');
                     pill.className = 'chapter-pill';
-                    pill.textContent = `Capítulo ${currentChapter.number}`;
+                    pill.textContent = `CapÃ­tulo ${currentChapter.number}`;
                     // Non-interactive visual pill only
                     footerEl.replaceChild(pill, pageEl);
                 }
@@ -1114,7 +1116,7 @@ function interleaveBooksIntoScreens(books) {
             async function applySimplify() {
                 try {
                     simplifyBtn.classList.add('loading');
-                    simplifyBtn.textContent = 'Aa…';
+                    simplifyBtn.textContent = 'Aaâ€¦';
                     const cached = localStorage.getItem(cacheKey);
                     const simplifiedText = cached || await roundTripSimplify(originalText);
                     bodyEl.innerHTML = decorateFirstWord(simplifiedText);
@@ -1124,8 +1126,8 @@ function interleaveBooksIntoScreens(books) {
                     simplifyBtn.setAttribute('aria-pressed', 'true');
                     simplifyBtn.title = 'Mostrar original';
                 } catch (e) {
-                    console.error('Falha na simplificação:', e);
-                    alert('Não foi possível simplificar agora. Verifique a conexão/configuração de tradução.');
+                    console.error('Falha na simplificaÃ§Ã£o:', e);
+                    alert('NÃ£o foi possÃ­vel simplificar agora. Verifique a conexÃ£o/configuraÃ§Ã£o de traduÃ§Ã£o.');
                 } finally {
                     simplifyBtn.classList.remove('loading');
                     simplifyBtn.textContent = 'Aa';
@@ -1205,7 +1207,7 @@ function interleaveBooksIntoScreens(books) {
     totalPages = document.querySelectorAll('.page').length;
     updatePageNumber(1, totalPages);
 
-    console.log(`[10] RenderizaÃ§Ã£o concluÃ­da. ${pageCounter} cards adicionados ao DOM.`);
+    console.log(`[10] RenderizaÃƒÂ§ÃƒÂ£o concluÃƒÂ­da. ${pageCounter} cards adicionados ao DOM.`);
     loadProgress();
 }
 
@@ -1219,13 +1221,13 @@ function showInstallToast(hintOnly = false) {
         toast.innerHTML = `
             <div class="toast-body">
                 <div class="toast-title">Adicionar atalho</div>
-                <div class="toast-text">Adicione o Rufus Reader à tela inicial para acesso rápido.</div>
+                <div class="toast-text">Adicione o Rufus Reader Ã  tela inicial para acesso rÃ¡pido.</div>
                 <div class="toast-actions">
                     <button class="btn-primary" id="install-accept">Adicionar</button>
                     <button class="btn-secondary" id="install-dismiss">Depois</button>
                 </div>
             </div>
-            <button class="toast-close" id="install-close" aria-label="Fechar">×</button>
+            <button class="toast-close" id="install-close" aria-label="Fechar">Ã—</button>
         `;
         document.body.appendChild(toast);
 
@@ -1260,7 +1262,7 @@ function showInstallToast(hintOnly = false) {
                     hideInstallToast();
                 } else {
                     // Fallback hint: show quick instructions
-                    alert("iOS: Toque em Compartilhar e 'Adicionar à Tela de Início'.\nAndroid: use o menu do navegador 'Adicionar à tela inicial'.");
+                    alert("iOS: Toque em Compartilhar e 'Adicionar Ã  Tela de InÃ­cio'.\nAndroid: use o menu do navegador 'Adicionar Ã  tela inicial'.");
                     hideInstallToast();
                 }
             } catch (_) {
@@ -1318,7 +1320,7 @@ function loadProgress() {
     }
 }
 
-// Garante que o app sÃ³ rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
+// Garante que o app sÃƒÂ³ rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
 window.onload = init;
 
 
