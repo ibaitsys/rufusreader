@@ -20,6 +20,10 @@ app.get('/reader.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'reader.html'));
 });
 
+app.get('/book-dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'book-dashboard.html'));
+});
+
 // Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);

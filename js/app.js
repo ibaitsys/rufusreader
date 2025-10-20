@@ -603,48 +603,23 @@ async function init() {
 
     // LÃ³gica principal
     try {
-        console.log("[2] Iniciando fetch do PDF...");
-        const finalBookPath = 'assets/Dom_Casmurro-Machado_de_Assis.pdf';
+        console.log("[2] Iniciando fetch do livro de texto...");
+        const bookPath = 'assets/memorias_postumas_final.txt';
+        const response = await fetch(bookPath);
 
-        let response = null; let chosen = null;
-        try {
-            const r = await fetch(finalBookPath);
-            if (r.ok) {
-                response = r;
-                chosen = finalBookPath;
-            }
-        } catch (e) {
-            console.error('Error fetching book:', e);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        if (!response) {
-            // Fallback to default if the chosen book fails
-            try {
-                const r = await fetch(defaultBook);
-                if (r.ok) {
-                    response = r;
-                    chosen = defaultBook;
-                }
-            } catch (e) {
-                console.error('Error fetching default book:', e);
-            }
+        const text = await response.text();
+        console.log("[3] Arquivo .txt carregado.");
+
+        // Evita reprocessar o livro na mesma sessÃ£o
+        if (!window.__bookCache) {
+            await processAndDisplayBook(text, bookPath);
+            window.__bookCache = true;
         }
-
-        if (!response) throw new Error('Nenhum PDF encontrado.');
-        console.log('[3] PDF localizado:', chosen);
-        
-
-
-
-
-
-        const blob = await response.blob();
-        const file = new File([blob], (chosen ? chosen.split('/').pop() : 'book.pdf'), { type: 'application/pdf' });
-        // Avoid reprocessing book within the same session
-        if (!window.__bookCache) { await processAndDisplayBook([file]); window.__bookCache = true; }
-        console.log("[4] Objeto File criado a partir do blob.");
-
-
+        console.log("[4] Processamento do livro concluÃ­do.");
 
     } catch (error) {
         console.error("[ERRO] Falha no bloco de inicializaÃ§Ã£o:", error);
@@ -652,67 +627,53 @@ async function init() {
     }
 }
 
-async function processAndDisplayBook(files) {
-    console.log("[5] Entrou em processAndDisplayBook.");
+async function processAndDisplayBook(text, bookPath) {
+    console.log("[5] Entrou em processAndDisplayBook com texto.");
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '<div class="loading-container"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
 
-    // Force a reflow to ensure the loading animation is rendered.
+    // ForÃ§a uma reflow para garantir que a animaÃ§Ã£o de carregamento seja renderizada.
     await new Promise(resolve => requestAnimationFrame(resolve));
-    await new Promise(resolve => setTimeout(resolve, 0)); // Yield to the event loop
+    await new Promise(resolve => setTimeout(resolve, 0)); // Cede ao loop de eventos
 
     try {
-        const books = [];
-        for (const file of files) {
-            const book = await buildBookFromFile(file);
-            books.push(book);
-        }
-        console.log("[8] Todos os livros processados. Chamando interleaveBooksIntoScreens.");
-        interleaveBooksIntoScreens(books);
+        const book = buildBookFromText(text, bookPath);
+        console.log("[8] Livro processado a partir do texto. Chamando interleaveBooksIntoScreens.");
+        interleaveBooksIntoScreens([book]); // interleave espera um array de livros
     } catch (error) {
         console.error("[ERRO] Falha em processAndDisplayBook:", error);
     }
 }
 
-async function buildBookFromFile(file) {
-    console.log("[6] Entrou em buildBookFromFile.");
-    const arrayBuffer = await file.arrayBuffer();
+function buildBookFromText(text, filePath) {
+    console.log("[6] Entrou em buildBookFromText.");
     
-    // ConfiguraÃ§Ã£o do worker do PDF.js
-    if (typeof pdfjsLib !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-    const pdf = await loadingTask.promise;
-    console.log(`[7] PDF carregado pela pdfjsLib. Total de pÃ¡ginas: ${pdf.numPages}`);
-
+    const paragraphs = text.split(/\n\s*\n/);
     const chunks = [];
-    for (let p = 1; p <= pdf.numPages; p++) {
-        try {
-            const page = await pdf.getPage(p);
-            const textContent = await page.getTextContent({ normalizeWhitespace: true });
-            const textItems = textContent.items.map(it => it.str).join(' ').trim();
 
-            if (p === 1) {
-                chunks.push({ type: 'text', content: textItems });
-            } else if (p === 2) {
-                chunks.push({ type: 'text', content: textItems });
-            } else if (textItems) {
-                const pageChunks = splitIntoSmartChunks(textItems);
-                chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
-            }
-        } catch (err) {
-            console.warn(`Falha ao processar pÃ¡gina ${p}:`, err);
+    for (const paragraph of paragraphs) {
+        const trimmedParagraph = paragraph.trim();
+        if (trimmedParagraph) {
+            const pageChunks = splitIntoSmartChunks(trimmedParagraph);
+            chunks.push(...pageChunks.map(ct => ({ type: 'text', content: ct })));
         }
     }
-    console.log(`[7.1] Processamento de pÃ¡ginas concluÃ­do. Total de chunks: ${chunks.length}`);
-    return { name: file.name.replace(/\.pdf$/i, ''), chunks };
+    
+    const rawName = filePath.split('/').pop().replace(/\.txt$/i, '').replace(/_/g, ' ');
+    const title = rawName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    console.log(`[7] Processamento de texto concluído. Total de chunks: ${chunks.length}`);
+    return { name: title, chunks };
 }
 
 function splitIntoSmartChunks(text) {
     const clean = text.replace(/\s+/g, ' ').trim();
     const sentences = clean.match(/[^.!?]+[.!?]+/g) || [];
+
+    // If no sentences with punctuation are found, treat the whole text as a chunk.
+    if (sentences.length === 0 && clean.length > 0) {
+        return [clean];
+    }
+
     const chunks = [];
     let currentChunk = '';
 
@@ -769,7 +730,7 @@ function interleaveBooksIntoScreens(books) {
 
     const infoTitle = document.getElementById('info-title');
     let coverImage = 'assets/book2.svg'; // Using the svg from the carousel
-    let bookTitle = 'Dom Casmurro';
+    let bookTitle = book.name;
 
     if (infoTitle) {
         infoTitle.textContent = bookTitle;

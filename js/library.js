@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Flag de página e título
   document.body.setAttribute('data-page', 'library');
-  document.title = 'Rufus - Biblioteca';
+  document.title = 'Rufus Reader - Biblioteca';
 
   const bookList = document.getElementById('book-list');
 
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         year: '1881',
         format: 'PDF',
         cover: 'assets/Cover.png',
-        path: 'assets/Mem�rias Postumas de Br�s Cubas - PDF_removed.pdf'
+        path: 'assets/Mem?rias Postumas de Br?s Cubas - PDF_removed.pdf'
       }
     ];
 
@@ -127,3 +127,5 @@ try {
   const beta = document.querySelector('.beta-badge');
   if (beta) beta.setAttribute('aria-label', 'Versão beta');
 } catch (e) {}
+
+

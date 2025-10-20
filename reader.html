@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,12 +8,9 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/styles.css?v=1.3">
-
-    <!-- A biblioteca pdf.js precisa ser carregada aqui no head -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         body {
@@ -59,13 +56,17 @@
             color: var(--text-secondary, #6b7280);
         }
 
+
     </style>
 </head>
 <body>
 
     <header class="app-header">
-        <h1 class="app-title fullscreen-hidden">Leitor Imersivo</h1>
-        <a href="index.html" class="home-button" aria-label="Voltar para a biblioteca">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="brand-title">Rufus Reader</div>
+            <span class="beta-badge" aria-label="VersÃ£o beta">Beta</span>
+        </div>
+        <a href="/" class="home-button" aria-label="Voltar para a biblioteca">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
         </a>
     </header>
@@ -83,7 +84,7 @@
         </button>
         <div id="reader-screen" class="screen active">
             <div class="reader-content" id="reader-content">
-                <!-- O conteúdo será gerado dinamicamente -->
+                <!-- O conteÃºdo serÃ¡ gerado dinamicamente -->
             </div>
         </div>
 
@@ -102,21 +103,21 @@
         <div id="action-sheet-overlay" class="action-sheet-overlay" style="display:none;"></div>
         <div id="action-sheet" class="action-sheet">
             <div class="action-sheet-handle" aria-hidden="true"></div>
-            <div class="action-sheet-header">Opções</div>
+            <div class="action-sheet-header">OpÃ§Ãµes</div>
             <button class="action-sheet-close-btn">
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z"/></svg>
             </button>
             <div class="action-sheet-inner">
-            <button class="action-sheet-item" id="action-restart">Recomeçar</button>
+            <button class="action-sheet-item" id="action-restart">RecomeÃ§ar</button>
 
             <div class="action-sheet-header">Tema</div>
             <div class="theme-options" role="group" aria-label="Escolher tema de papel">
-                <button class="theme-circle" data-theme-choice="default" aria-label="Padrão"></button>
+                <button class="theme-circle" data-theme-choice="default" aria-label="PadrÃ£o"></button>
                 <button class="theme-circle" data-theme-choice="tema1" aria-label="Tema 1"></button>
                 <button class="theme-circle" data-theme-choice="tema2" aria-label="Tema 2"></button>
             </div>
 
-            <div class="action-sheet-header">Aparência</div>
+            <div class="action-sheet-header">AparÃªncia</div>
             <div class="setting-row">
                 <div class="setting-text">
                     <div class="setting-title">Modo escuro</div>
@@ -144,7 +145,7 @@
                 </span>
             </button>
 
-            <!-- Card do autor (logo abaixo do botão de leitura) -->
+            <!-- Card do autor (logo abaixo do botÃ£o de leitura) -->
             <div class="author-card" role="group" aria-label="Sobre o autor">
                 <div class="author-cover">
                     <img src="assets/authorphoto.png" alt="Machado de Assis" loading="lazy"/>
@@ -152,7 +153,7 @@
                 <div class="author-content">
                     <div class="author-eyebrow">Sobre o autor</div>
                     <div class="author-title">Machado de Assis</div>
-                    <div class="author-desc">Clássico da literatura brasileira. Cronista, contista e romancista.</div>
+                    <div class="author-desc">ClÃ¡ssico da literatura brasileira. Cronista, contista e romancista.</div>
                     <div class="author-actions">
                         <a class="author-link" href="https://pt.wikipedia.org/wiki/Machado_de_Assis" target="_blank" rel="noopener">Ver mais</a>
                     </div>
@@ -169,24 +170,24 @@
                     <img src="assets/book2.svg" alt="Capa de Dom Casmurro" loading="lazy" />
                     <div class="carousel-title">Dom Casmurro</div>
                 </a>
-                <a class="carousel-card" href="#" aria-label="Esaú e Jacó">
-                    <img src="assets/book3.svg" alt="Capa de Esaú e Jacó" loading="lazy" />
-                    <div class="carousel-title">Esaú e Jacó</div>
+                <a class="carousel-card" href="#" aria-label="EsaÃº e JacÃ³">
+                    <img src="assets/book3.svg" alt="Capa de EsaÃº e JacÃ³" loading="lazy" />
+                    <div class="carousel-title">EsaÃº e JacÃ³</div>
                 </a>
             </div>
 
             
 
-            <!-- Último: Produtos -->
+            <!-- Ãšltimo: Produtos -->
             <div class="action-sheet-header">Produtos</div>
             <div class="products-list" aria-label="Produtos do autor">
-                <a class="product-card" href="#" aria-label="Marca-páginas">
-                    <img src="assets/product1.svg" alt="Marca-páginas" loading="lazy" />
-                    <div class="product-title">Marca‑páginas</div>
+                <a class="product-card" href="#" aria-label="Marca-pÃ¡ginas">
+                    <img src="assets/product1.svg" alt="Marca-pÃ¡ginas" loading="lazy" />
+                    <div class="product-title">Marcaâ€‘pÃ¡ginas</div>
                 </a>
-                <a class="product-card" href="#" aria-label="Pôster">
-                    <img src="assets/product2.svg" alt="Pôster" loading="lazy" />
-                    <div class="product-title">Pôster</div>
+                <a class="product-card" href="#" aria-label="PÃ´ster">
+                    <img src="assets/product2.svg" alt="PÃ´ster" loading="lazy" />
+                    <div class="product-title">PÃ´ster</div>
                 </a>
                 <a class="product-card" href="#" aria-label="Camiseta">
                     <img src="assets/product3.svg" alt="Camiseta" loading="lazy" />
@@ -224,7 +225,7 @@
                     </label>
                     <label class="ambient-option">
                         <input type="radio" name="ambient" value="space">
-                        <span class="ambient-chip">Espaço</span>
+                        <span class="ambient-chip">EspaÃ§o</span>
                     </label>
                 </div>
                 <div class="ambient-footer">
@@ -238,3 +239,5 @@
 
 </body>
 </html>
+
+
