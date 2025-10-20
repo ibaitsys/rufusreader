@@ -7,6 +7,24 @@ let scrollTimeout;
 let isScrolling = false;
 let touchStartY = 0;
 
+// PWA install prompt handling
+let __deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    try {
+        e.preventDefault();
+        __deferredPrompt = e;
+        if (!localStorage.getItem('__installDismissed') && !localStorage.getItem('__installInstalled')) {
+            showInstallToast();
+        }
+    } catch (_) {}
+});
+window.addEventListener('appinstalled', () => {
+    try {
+        localStorage.setItem('__installInstalled', '1');
+        hideInstallToast();
+    } catch (_) {}
+});
+
 // VersÃ£o de depuraÃ§Ã£o com logs detalhados
 
 
@@ -54,6 +72,17 @@ async function init() {
     if (exitFullscreenBtn) {
         exitFullscreenBtn.addEventListener('click', toggleFullscreen);
     }
+
+    // Maybe show install toast (iOS hint or Android prompt captured)
+    try {
+        const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (!localStorage.getItem('__installDismissed') && !localStorage.getItem('__installInstalled')) {
+            if (isiOS && !isStandalone) {
+                showInstallToast(true); // hint mode
+            }
+        }
+    } catch (_) {}
 
     // Deep reading helpers: rain visual and sound
     let rainAudioCtx = null;
@@ -1070,6 +1099,75 @@ function interleaveBooksIntoScreens(books) {
 
     console.log(`[10] RenderizaÃ§Ã£o concluÃ­da. ${pageCounter} cards adicionados ao DOM.`);
     loadProgress();
+}
+
+// ---------- Install Toast (Add to Home) ----------
+function showInstallToast(hintOnly = false) {
+    let toast = document.getElementById('install-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'install-toast';
+        toast.className = 'install-toast';
+        toast.innerHTML = `
+            <div class="toast-body">
+                <div class="toast-title">Adicionar atalho</div>
+                <div class="toast-text">Adicione o Rufus Reader à tela inicial para acesso rápido.</div>
+                <div class="toast-actions">
+                    <button class="btn-primary" id="install-accept">Adicionar</button>
+                    <button class="btn-secondary" id="install-dismiss">Depois</button>
+                </div>
+            </div>
+            <button class="toast-close" id="install-close" aria-label="Fechar">×</button>
+        `;
+        document.body.appendChild(toast);
+
+        const btnAccept = toast.querySelector('#install-accept');
+        const btnDismiss = toast.querySelector('#install-dismiss');
+        const btnClose = toast.querySelector('#install-close');
+
+        const openChapterSheet = () => {
+            const overlay = document.getElementById('action-sheet-overlay');
+            const chapterSheetEl = document.getElementById('chapter-sheet');
+            const actionSheetEl = document.getElementById('action-sheet');
+            if (overlay) overlay.classList.add('visible');
+            document.body.classList.add('body-no-scroll');
+            if (actionSheetEl) actionSheetEl.classList.remove('open');
+            if (chapterSheetEl) {
+                if (typeof renderChapterList === 'function') renderChapterList();
+                chapterSheetEl.classList.add('open');
+                chapterSheetEl.classList.add('peek');
+                chapterSheetEl.setAttribute('aria-hidden', 'false');
+            }
+        };
+
+        btnAccept.addEventListener('click', async () => {
+            try {
+                if (__deferredPrompt && !hintOnly) {
+                    __deferredPrompt.prompt();
+                    const { outcome } = await __deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        localStorage.setItem('__installInstalled', '1');
+                    }
+                    __deferredPrompt = null;
+                    hideInstallToast();
+                } else {
+                    // Fallback hint: show quick instructions
+                    alert("iOS: Toque em Compartilhar e 'Adicionar à Tela de Início'.\nAndroid: use o menu do navegador 'Adicionar à tela inicial'.");
+                    hideInstallToast();
+                }
+            } catch (_) {
+                hideInstallToast();
+            }
+        });
+        const doDismiss = () => { try { localStorage.setItem('__installDismissed', '1'); } catch(_){} hideInstallToast(); };
+        btnDismiss.addEventListener('click', doDismiss);
+        btnClose.addEventListener('click', doDismiss);
+    }
+    toast.classList.add('visible');
+}
+function hideInstallToast() {
+    const toast = document.getElementById('install-toast');
+    if (toast) toast.classList.remove('visible');
 }
 
 

@@ -1045,3 +1045,27 @@ body.deep-reading-active.ambient-space {
     background-image: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
     box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
 }
+
+/* Install (Add to Home) toast */
+.install-toast {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 60;
+    display: none;
+    max-width: min(360px, 92vw);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    padding: 10px 12px;
+    gap: 10px;
+}
+.install-toast.visible { display: flex; align-items: flex-start; }
+.install-toast .toast-icon { margin-right: 8px; }
+.install-toast .toast-body { flex: 1; font-size: 13px; color: var(--text-color); }
+.install-toast .toast-title { font-weight: 800; font-size: 13px; margin-bottom: 2px; }
+.install-toast .toast-actions { display: flex; gap: 8px; align-items: center; }
+.install-toast .btn-primary { background: var(--primary-color); color: #fff; border: none; border-radius: 8px; padding: 6px 10px; font-weight: 700; cursor: pointer; }
+.install-toast .btn-secondary { background: transparent; color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+.install-toast .toast-close { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 4px; line-height: 1; align-self: flex-start; }
