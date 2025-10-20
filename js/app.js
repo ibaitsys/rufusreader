@@ -904,6 +904,17 @@ function interleaveBooksIntoScreens(books) {
                         <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                     </button>
                 </div>`;
+
+            // Inject a dummy chapter pill above the footer (visual only)
+            {
+                const footerForPill = content.querySelector('.share-card-footer');
+                if (footerForPill) {
+                    const pill = document.createElement('div');
+                    pill.className = 'chapter-pill';
+                    pill.textContent = 'Capítulo 1 · O AVIADOR';
+                    footerForPill.parentNode.insertBefore(pill, footerForPill);
+                }
+            }
         }
         
         // Create a "Simplificar" button and group actions to the right
