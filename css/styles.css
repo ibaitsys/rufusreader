@@ -174,10 +174,10 @@ body.body-no-scroll {
 }
 
 .page {
-    height: calc(90vh - 108px); /* 120px for header and nav bar */
+    height: calc(81vh - 108px); /* reduce ~10% to avoid touching footer */
     width: 100%;
     padding: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     scroll-snap-align: start;
