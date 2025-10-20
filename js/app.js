@@ -1335,9 +1335,8 @@ try {
   if (homeBtn) {
     homeBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const base = window.location.pathname.replace(/[^/]+$/, '');
-      const url = `${window.location.origin}${base}index.html`;
-      window.location.assign(url);
+      const url = new URL('index.html', window.location.href);
+      window.location.assign(url.href);
     });
   }
 } catch (_) {}
