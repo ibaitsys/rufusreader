@@ -976,20 +976,40 @@ function interleaveBooksIntoScreens(books) {
                     <div style="display:flex; justify-content:center;">
                         <button class="club-notify" style="padding:12px 16px; border-radius:10px; background: var(--primary-color); color:#fff; font-weight:800;">Me avise</button>
                     </div>
+                    <div class="club-modal" style="display:none; position:fixed; inset:0; z-index:100; align-items:center; justify-content:center; background:rgba(0,0,0,0.45);">
+                        <div class="club-modal-card" style="width:min(360px,92vw); background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.35); padding:12px;">
+                            <div style="font-weight:800; margin-bottom:6px;">Receber aviso</div>
+                            <div style="display:grid; gap:8px; margin:8px 0;">
+                                <input type="text" class="club-name" placeholder="Seu nome" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:10px;">
+                                <input type="tel" class="club-phone" placeholder="WhatsApp (DDD) 9XXXX-XXXX" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:10px;">
+                            </div>
+                            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                                <button class="club-cancel" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border-color); background: var(--card-bg);">Cancelar</button>
+                                <button class="club-save" style="padding:8px 12px; border-radius:10px; background: var(--primary-color); color:#fff; font-weight:800;">Salvar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>`;
                 const btn = content.querySelector('.club-notify');
-                if (btn) {
-                    btn.addEventListener('click', () => {
-                        const phone = prompt('Seu WhatsApp (com DDD):');
-                        const name = prompt('Seu nome (opcional):');
-                    if (phone && phone.trim()) {
-                        try {
-                            localStorage.setItem('clubLead', JSON.stringify({ name: (name||'').trim(), phone: phone.trim(), ts: Date.now() }));
-                        } catch(_){}
-                        alert('Tudo certo! Avisaremos quando chegar.');
-                        btn.textContent = 'Anotado!';
-                        btn.disabled = true;
-                    }
+                const modal = content.querySelector('.club-modal');
+                const cancelBtn = content.querySelector('.club-cancel');
+                const saveBtn = content.querySelector('.club-save');
+                const nameEl = content.querySelector('.club-name');
+                const phoneEl = content.querySelector('.club-phone');
+                if (btn && modal) {
+                    btn.addEventListener('click', () => { modal.style.display = 'flex'; });
+                }
+                if (cancelBtn && modal) {
+                    cancelBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+                }
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', () => {
+                        const name = (nameEl?.value || '').trim();
+                        const phone = (phoneEl?.value || '').trim();
+                        if (!phone) { alert('Informe seu WhatsApp.'); return; }
+                        try { localStorage.setItem('clubLead', JSON.stringify({ name, phone, ts: Date.now() })); } catch(_){}
+                        if (modal) modal.style.display = 'none';
+                        if (btn) { btn.textContent = 'Anotado!'; btn.disabled = true; }
                     });
                 }
                 continue;
