@@ -775,8 +775,9 @@ function interleaveBooksIntoScreens(books) {
             content.style.backgroundSize = 'cover';
             content.style.backgroundPosition = 'center';
             content.style.backgroundRepeat = 'no-repeat';
-        } else if (index === 1) {
+        } else if (!firstTextRenderedAsRemarkable && chunk && chunk.type === 'text') {
             content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
+            firstTextRenderedAsRemarkable = true;
         } else {
             const chunkText = chunk.content.trim();
             const match = chunkText.match(/^(\S+)(.*)$/s);
