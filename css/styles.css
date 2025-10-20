@@ -437,6 +437,15 @@ body.body-no-scroll {
     padding-bottom: calc(16px + env(safe-area-inset-bottom, 24px));
 }
 
+/* Chapter list inside action sheet */
+.chapter-list { display: grid; gap: 8px; margin: 8px 0 12px; }
+.chapter-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.chapter-item:hover { background: rgba(0,0,0,0.03); }
+[data-theme="dark"] .chapter-item:hover { background: rgba(255,255,255,0.06); }
+.chapter-item-title { font-weight: 700; font-size: 14px; }
+.chapter-item-sub { font-size: 12px; color: var(--text-secondary); margin-left: 8px; }
+.chapter-item-goto { font-size: 12px; color: var(--primary-color); margin-left: 12px; }
+
 .action-sheet-title {
     font-weight: 700;
     font-size: 16px;

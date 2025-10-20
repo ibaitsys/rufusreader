@@ -566,6 +566,10 @@ async function init() {
         actionSheetTrigger = document.activeElement;
         const actionSheet = document.getElementById('action-sheet');
         if (actionSheetOverlay && actionSheet) {
+            // Populate chapter list on open
+            if (typeof renderChapterList === 'function') {
+                renderChapterList();
+            }
             actionSheetOverlay.classList.add('visible');
             actionSheet.classList.add('open');
             actionSheet.classList.add('peek');
@@ -600,6 +604,38 @@ async function init() {
     // Listeners bÃ¡sicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
     if (actionSheetOverlay) actionSheetOverlay.addEventListener('click', closeActionSheet);
+
+    function scrollToPageIndex(pageIndex) {
+        const readerContentDiv = document.getElementById('reader-content');
+        const pages = document.querySelectorAll('.page');
+        const idx = Math.max(0, Math.min(pages.length - 1, (pageIndex - 1)));
+        const targetPage = pages[idx];
+        if (!targetPage || !readerContentDiv) return;
+        isScrolling = true;
+        readerContentDiv.scrollTo({ top: targetPage.offsetTop, behavior: 'smooth' });
+        setTimeout(() => { isScrolling = false; }, 1000);
+        updatePageNumber(idx + 1, pages.length);
+    }
+
+    function renderChapterList() {
+        const list = document.getElementById('chapter-list');
+        if (!list) return;
+        list.innerHTML = '';
+        const chapters = (window.__chapters || []).slice();
+        if (chapters.length === 0) return;
+        for (const ch of chapters) {
+            const btn = document.createElement('button');
+            btn.className = 'chapter-item';
+            btn.setAttribute('role', 'listitem');
+            btn.setAttribute('data-page-index', String(ch.pageIndex));
+            btn.innerHTML = `<span class=\"chapter-item-title\">Capítulo ${ch.number}</span><span class=\"chapter-item-sub\">${ch.title}</span>`;
+            btn.addEventListener('click', () => {
+                scrollToPageIndex(ch.pageIndex);
+                closeActionSheet();
+            });
+            list.appendChild(btn);
+        }
+    }
 
     // LÃ³gica principal
     try {
@@ -650,6 +686,7 @@ function buildBookFromText(text, filePath) {
     
     const paragraphs = text.split(/\n\s*\n/);
     const chunks = [];
+    let chapterCount = 0;
 
     for (const paragraph of paragraphs) {
         let rest = paragraph.trim();
@@ -686,7 +723,8 @@ function buildBookFromText(text, filePath) {
                 post = '';
             }
             if (title) {
-                chunks.push({ type: 'chapter', title });
+                chapterCount += 1;
+                chunks.push({ type: 'chapter', title, number: chapterCount });
             }
             rest = post;
             if (!rest) break; // nothing left to process
@@ -755,6 +793,7 @@ function interleaveBooksIntoScreens(books) {
     console.log("[9] Entrou em interleaveBooksIntoScreens para renderizar os cards.");
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '';
+    window.__chapters = [];
     let pageCounter = 0;
 
     const book = books[0];
@@ -793,6 +832,11 @@ function interleaveBooksIntoScreens(books) {
                 </div>`;
             screen.appendChild(content);
             readerContent.appendChild(screen);
+            const number = (chunk && chunk.number) ? chunk.number : (window.__chapters ? window.__chapters.length + 1 : 1);
+            const eyebrowEl = content.querySelector('.chapter-eyebrow');
+            if (eyebrowEl) { eyebrowEl.textContent = `Capítulo ${number}`; }
+            if (!window.__chapters) window.__chapters = [];
+            window.__chapters.push({ number, title, pageIndex: pageCounter });
             continue;
         }
 

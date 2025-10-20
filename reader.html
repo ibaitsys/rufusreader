@@ -20,7 +20,6 @@
         }
         .reader-content {
             padding-top: 2rem;
-            padding-bottom: 2rem;
         }
         .page.share-card {
             margin: 0 auto 1.5rem auto;
@@ -43,6 +42,8 @@
             font-size: 1.15rem;
             line-height: 1.7;
             text-align: left !important;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         .share-card-body .first-word {
@@ -108,6 +109,8 @@
                 <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z"/></svg>
             </button>
             <div class="action-sheet-inner">
+            <div class="action-sheet-header">Capítulos</div>
+            <div id="chapter-list" class="chapter-list" role="list"></div>
             <button class="action-sheet-item" id="action-restart">RecomeÃ§ar</button>
 
             <div class="action-sheet-header">Tema</div>
