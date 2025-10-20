@@ -917,16 +917,7 @@ function interleaveBooksIntoScreens(books) {
                 }
             }
 
-            // Inject a dummy chapter pill above the footer (visual only)
-            {
-                const footerForPill = content.querySelector('.share-card-footer');
-                if (footerForPill) {
-                    const pill = document.createElement('div');
-                    pill.className = 'chapter-pill';
-                    pill.textContent = 'Capítulo 1 · O AVIADOR';
-                    footerForPill.parentNode.insertBefore(pill, footerForPill);
-                }
-            }
+            // Note: no extra pill above footer
         }
         
         // Create a "Simplificar" button and group actions to the right
