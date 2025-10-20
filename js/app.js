@@ -727,10 +727,20 @@ async function processAndDisplayBook(text, bookPath) {
 
 function buildBookFromText(text, filePath) {
     console.log("[6] Entrou em buildBookFromText.");
-    
-    const paragraphs = text.split(/\n\s*\n/);
+    // Normalize line endings to improve cross-host consistency
+    const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    // Split paragraphs on 1+ blank lines (robust)
+    let paragraphs = normalized.split(/\n\s*\n+/);
     const chunks = [];
     let chapterCount = 0;
+
+    // Fallback: if very few paragraphs detected, try splitting on single newlines too
+    if (paragraphs.length < 20) {
+        const alt = normalized.split(/\n{1,}/).map(p => p.trim()).filter(Boolean);
+        if (alt.length > paragraphs.length) paragraphs = alt;
+    }
+
+    console.log(`[6a] Parágrafos detectados: ${paragraphs.length}`);
 
     for (const paragraph of paragraphs) {
         let rest = paragraph.trim();
