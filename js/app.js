@@ -1051,10 +1051,7 @@ function interleaveBooksIntoScreens(books) {
             const percentage = Math.round((pageCounter / totalChunks) * 100);
 
             content.innerHTML = `
-                <div class="share-card-body">
-                    <div class="book-title-inline">Memorias postumas de bras cubas</div>
-                    <div class="text-content">${chunkText}</div>
-                </div>
+                <div class="share-card-body">${chunkText}</div>
                 <div class="share-card-footer">
                     <span class="share-card-page">${percentage}%</span>
                     <button class="speak-button" aria-label="Read aloud">
@@ -1085,8 +1082,6 @@ function interleaveBooksIntoScreens(books) {
             const speakBtn = content.querySelector('.speak-button');
             const bodyEl = content.querySelector('.share-card-body');
             if (!footerEl || !speakBtn || !bodyEl) return;
-            const textEl = bodyEl.querySelector('.text-content');
-            if (!textEl) return;
 
             // Wrap actions
             const actions = document.createElement('div');
@@ -1104,8 +1099,8 @@ function interleaveBooksIntoScreens(books) {
             actions.appendChild(speakBtn);
 
             // Round-trip translation toggle with caching
-            const originalHTML = textEl.innerHTML;
-            const originalText = textEl.textContent.trim();
+            const originalHTML = bodyEl.innerHTML;
+            const originalText = bodyEl.textContent.trim();
             const cacheKey = `rt-simple:${book.name || 'book'}:${index}`;
             let isSimplified = false;
 
@@ -1117,7 +1112,7 @@ function interleaveBooksIntoScreens(books) {
                     simplifyBtn.textContent = 'Aaâ€¦';
                     const cached = localStorage.getItem(cacheKey);
                     const simplifiedText = cached || await roundTripSimplify(originalText);
-                    textEl.textContent = simplifiedText;
+                    bodyEl.textContent = simplifiedText;
                     if (!cached) localStorage.setItem(cacheKey, simplifiedText);
                     isSimplified = true;
                     simplifyBtn.classList.add('active');
@@ -1136,7 +1131,7 @@ function interleaveBooksIntoScreens(books) {
                 if (!isSimplified) {
                     await applySimplify();
                 } else {
-                    textEl.innerHTML = originalHTML;
+                    bodyEl.innerHTML = originalHTML;
                     isSimplified = false;
                     simplifyBtn.classList.remove('active');
                     simplifyBtn.setAttribute('aria-pressed', 'false');
