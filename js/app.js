@@ -1048,13 +1048,10 @@ function interleaveBooksIntoScreens(books) {
             firstTextRenderedAsRemarkable = true;
         } else {
             const chunkText = chunk.content.trim();
-            const match = chunkText.match(/^(\S+)(.*)$/s);
-            const fw = match ? match[1] : chunkText;
-            const rest = match ? match[2] : '';
             const percentage = Math.round((pageCounter / totalChunks) * 100);
 
             content.innerHTML = `
-                <div class="share-card-body"><span class="first-word">${fw}</span>${rest}</div>
+                <div class="share-card-body">${chunkText}</div>
                 <div class="share-card-footer">
                     <span class="share-card-page">${percentage}%</span>
                     <button class="speak-button" aria-label="Read aloud">
@@ -1107,12 +1104,7 @@ function interleaveBooksIntoScreens(books) {
             const cacheKey = `rt-simple:${book.name || 'book'}:${index}`;
             let isSimplified = false;
 
-            function decorateFirstWord(text) {
-                const m = text.match(/^(\S+)(.*)$/s);
-                const fw = m ? m[1] : text;
-                const rest = m ? m[2] : '';
-                return `<span class="first-word">${fw}</span>${rest}`;
-            }
+            // No first-word decoration; keep text uniform
 
             async function applySimplify() {
                 try {
@@ -1120,7 +1112,7 @@ function interleaveBooksIntoScreens(books) {
                     simplifyBtn.textContent = 'Aaâ€¦';
                     const cached = localStorage.getItem(cacheKey);
                     const simplifiedText = cached || await roundTripSimplify(originalText);
-                    bodyEl.innerHTML = decorateFirstWord(simplifiedText);
+                    bodyEl.textContent = simplifiedText;
                     if (!cached) localStorage.setItem(cacheKey, simplifiedText);
                     isSimplified = true;
                     simplifyBtn.classList.add('active');
