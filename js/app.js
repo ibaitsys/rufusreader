@@ -426,19 +426,7 @@ async function init() {
 
     // Theme picker: 3 circles (default, tema1, tema2)
     function applyPaperTheme(choice) {
-        if (choice === 'tema1') {
-            document.body.style.backgroundImage = "url('assets/tema1.png')";
-            document.body.style.backgroundRepeat = 'repeat';
-            document.body.style.backgroundSize = 'auto';
-        } else if (choice === 'tema2') {
-            document.body.style.backgroundImage = "url('assets/tema2.png')";
-            document.body.style.backgroundRepeat = 'repeat';
-            document.body.style.backgroundSize = 'auto';
-        } else {
-            document.body.style.backgroundImage = '';
-            document.body.style.backgroundRepeat = '';
-            document.body.style.backgroundSize = '';
-        }
+        document.body.setAttribute('data-paper-theme', choice);
         localStorage.setItem('paperTheme', choice);
         // Update UI selection state
         document.querySelectorAll('.theme-circle').forEach(btn => {
@@ -447,8 +435,13 @@ async function init() {
         });
     }
 
-    // Restore saved paper theme
-    const savedPaperTheme = localStorage.getItem('paperTheme') || 'default';
+    // Restore saved paper theme (park removed; fallback to default if unknown)
+    const allowedPaperThemes = new Set(['default','tema1','tema2']);
+    let savedPaperTheme = localStorage.getItem('paperTheme') || 'default';
+    if (!allowedPaperThemes.has(savedPaperTheme)) {
+        savedPaperTheme = 'default';
+        try { localStorage.setItem('paperTheme', 'default'); } catch(_) {}
+    }
     applyPaperTheme(savedPaperTheme);
 
     // Wire up theme circle buttons

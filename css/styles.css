@@ -1108,29 +1108,8 @@ body[data-paper-theme="tema2"] {
     background-size: auto;
 }
 
-body[data-paper-theme="park"] {
-    background-image: url('../assets/park.avif');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-color: #f9f8f4; /* Fallback color */
-}
-
-/* Ensure paper theme backgrounds also apply within the app container */
-body[data-paper-theme="park"] .app-container {
-    background-image: url('../assets/park.avif');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
+/* park theme removed */
 
 
 
-[data-paper-theme="park"] .share-card-body {
-    font-family: 'Crimson Pro', serif;
-    color: #222;
-}
-
-/* Dark mode overrides for park theme */
-[data-theme="dark"][data-paper-theme="park"] .share-card-body {
-    color: #f3f4f6;
-}
+/* park theme removed */
