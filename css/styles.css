@@ -236,6 +236,12 @@ body.body-no-scroll {
     overscroll-behavior: contain;
 }
 
+/* Inline book title at top of each card */
+.book-title-inline {
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
 .share-card-footer {
     margin-top: auto;
     padding: 0.75rem 0 0;
