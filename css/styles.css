@@ -1115,6 +1115,14 @@ body[data-paper-theme="park"] {
     background-color: #f9f8f4; /* Fallback color */
 }
 
+/* Ensure paper theme backgrounds also apply within the app container */
+body[data-paper-theme="park"] .app-container {
+    background-image: url('../assets/park.avif');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
 
 
 [data-paper-theme="park"] .share-card-body {
