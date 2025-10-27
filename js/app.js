@@ -56,6 +56,49 @@ async function roundTripSimplify(text) {
     }
 }
 
+// --- i18n helpers (global) ---
+const PT_FIXES = [
+    ['CapÃ­tulo', 'Capítulo'],
+    ['ClÃ¡ssico', 'Clássico'],
+    ['EsaÃº', 'Esaú'],
+    ['JacÃ³', 'Jacó'],
+    ['PÃ´ster', 'Pôster'],
+    ['Marcaâ€‘pÃ¡ginas', 'Marca-páginas'],
+    ['Marca-pÃ¡ginas', 'Marca-páginas'],
+    ['EspaÃ§o', 'Espaço'],
+    ['mÃªs', 'mês'],
+    ['Quase lÃ¡', 'Quase lá'],
+    ['prÃ³ximos', 'próximos'],
+    ['capÃ­tulos', 'capítulos'],
+    ['NÃ£o', 'Não'],
+    ['nÃºmero', 'número'],
+    ['VocÃª', 'Você'],
+    ['conexÃ£o', 'conexão'],
+    ['configuraÃ§Ã£o', 'configuração'],
+    ['RenderizaÃ§Ã£o', 'Renderização'],
+    [' Ã  ', ' à '],
+    ['rÃ¡pido', 'rápido'],
+    ['Ã—', '×']
+];
+
+function normalizePortuguese(str) {
+    let out = str;
+    for (const [from, to] of PT_FIXES) out = out.replaceAll(from, to);
+    return out;
+}
+
+function fixMojibake(rootEl) {
+    try {
+        const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        for (const n of nodes) {
+            const fixed = normalizePortuguese(n.nodeValue);
+            if (fixed !== n.nodeValue) n.nodeValue = fixed;
+        }
+    } catch (_) {}
+}
+
 async function init() {
     // Normalize common mojibake sequences to proper pt-BR accents
     const PT_FIXES = [
