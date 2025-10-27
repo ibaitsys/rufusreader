@@ -57,6 +57,46 @@ async function roundTripSimplify(text) {
 }
 
 async function init() {
+    // Normalize common mojibake sequences to proper pt-BR accents
+    const PT_FIXES = [
+        ['CapÃ­tulo', 'Capítulo'],
+        ['ClÃ¡ssico', 'Clássico'],
+        ['EsaÃº', 'Esaú'],
+        ['JacÃ³', 'Jacó'],
+        ['Ãš', 'Ú'],
+        ['PÃ´ster', 'Pôster'],
+        ['Marcaâ€‘pÃ¡ginas', 'Marca-páginas'],
+        ['Marca-pÃ¡ginas', 'Marca-páginas'],
+        ['EspaÃ§o', 'Espaço'],
+        ['mÃªs', 'mês'],
+        ['Quase lÃ¡', 'Quase lá'],
+        ['prÃ³ximos', 'próximos'],
+        ['capÃ­tulos', 'capítulos'],
+        ['NÃ£o', 'Não'],
+        ['nÃºmero', 'número'],
+        ['VocÃª', 'Você'],
+        ['conexÃ£o', 'conexão'],
+        ['configuraÃ§Ã£o', 'configuração'],
+        ['RenderizaÃ§Ã£o', 'Renderização'],
+        [' Ã  ', ' à '],
+        ['rÃ¡pido', 'rápido']
+    ];
+    function normalizePortuguese(str) {
+        let out = str;
+        for (const [from, to] of PT_FIXES) out = out.replaceAll(from, to);
+        return out;
+    }
+    function fixMojibake(rootEl) {
+        try {
+            const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
+            const nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            for (const n of nodes) {
+                const fixed = normalizePortuguese(n.nodeValue);
+                if (fixed !== n.nodeValue) n.nodeValue = fixed;
+            }
+        } catch (_) {}
+    }
     if ('speechSynthesis' in window) {
         speechSynthesis.onvoiceschanged = () => {
             const voices = speechSynthesis.getVoices();
@@ -697,7 +737,7 @@ async function init() {
             btn.className = 'chapter-item';
             btn.setAttribute('role', 'listitem');
             btn.setAttribute('data-page-index', String(ch.pageIndex));
-            btn.innerHTML = `<span class=\"chapter-item-title\">CapÃ­tulo ${ch.number}</span><span class=\"chapter-item-sub\">${ch.title}</span>`;
+            btn.innerHTML = `<span class=\"chapter-item-title\">Capítulo ${ch.number}</span><span class=\"chapter-item-sub\">${ch.title}</span>`;
             btn.addEventListener('click', () => {
                 scrollToPageIndex(ch.pageIndex);
                 closeActionSheet();
@@ -915,14 +955,15 @@ function interleaveBooksIntoScreens(books) {
             const title = chunk.title || '';
             content.innerHTML = `
                 <div class="chapter-cover-inner">
-                    <div class="chapter-eyebrow">CapÃ­tulo</div>
+                <div class="chapter-eyebrow">Capítulo</div>
                     <h2 class="chapter-title">${title}</h2>
                 </div>`;
+            fixMojibake(content);
             screen.appendChild(content);
             readerContent.appendChild(screen);
             const number = (chunk && chunk.number) ? chunk.number : (window.__chapters ? window.__chapters.length + 1 : 1);
             const eyebrowEl = content.querySelector('.chapter-eyebrow');
-            if (eyebrowEl) { eyebrowEl.textContent = `CapÃ­tulo ${number}`; }
+            if (eyebrowEl) { eyebrowEl.textContent = `Capítulo ${number}`; }
             if (!window.__chapters) window.__chapters = [];
             window.__chapters.push({ number, title, pageIndex: pageCounter });
             currentChapter = { number, title };
@@ -969,6 +1010,7 @@ function interleaveBooksIntoScreens(books) {
                     </div>
                 </div>`;
 
+            fixMojibake(content);
             // Simple single-button override (no footer, no scroll)
             {
                 content.innerHTML = `<div class="share-card-body" style="text-align:left; padding-bottom:12px;">
@@ -1013,6 +1055,7 @@ function interleaveBooksIntoScreens(books) {
                         if (btn) { btn.textContent = 'Anotado!'; btn.disabled = true; }
                     });
                 }
+                fixMojibake(content);
                 screen.appendChild(content);
                 readerContent.appendChild(screen);
                 continue;
@@ -1067,7 +1110,7 @@ function interleaveBooksIntoScreens(books) {
                 if (footerEl && pageEl && currentChapter && currentChapter.number) {
                     const pill = document.createElement('span');
                     pill.className = 'chapter-pill';
-                    pill.textContent = `CapÃ­tulo ${currentChapter.number}`;
+                    pill.textContent = `Capítulo ${currentChapter.number}`;
                     // Non-interactive visual pill only
                     footerEl.replaceChild(pill, pageEl);
                 }
@@ -1193,6 +1236,7 @@ function interleaveBooksIntoScreens(books) {
             });
         }
 
+        fixMojibake(content);
         screen.appendChild(content);
         readerContent.appendChild(screen);
     }
