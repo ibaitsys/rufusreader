@@ -324,9 +324,10 @@ body.body-no-scroll {
 
 /* Sparkles icon for simplify button */
 .simplify-button::before {
-    content: '✨';
+    content: '✦';
     font-size: 16px;
     line-height: 1;
+    color: #000;
 }
 
 .speak-icon {
