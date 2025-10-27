@@ -305,8 +305,11 @@ body.body-no-scroll {
     padding: 0.25rem 0.5rem;
     border-radius: 8px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 0; /* hide text, use icon via ::before */
     color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .simplify-button.active,
@@ -317,6 +320,13 @@ body.body-no-scroll {
 .simplify-button.loading {
     opacity: 0.6;
     cursor: wait;
+}
+
+/* Sparkles icon for simplify button */
+.simplify-button::before {
+    content: '✨';
+    font-size: 16px;
+    line-height: 1;
 }
 
 .speak-icon {
