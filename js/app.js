@@ -31,7 +31,8 @@ window.addEventListener('appinstalled', () => {
 
 
 async function translateText(text, from, to) {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
+    const hlParam = (to && typeof to === 'string' && to.toLowerCase().startsWith('pt')) ? '&hl=pt-BR' : '';
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}${hlParam}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Translation API error: ' + res.status);
     const data = await res.json();
@@ -44,8 +45,15 @@ async function translateText(text, from, to) {
 
 async function roundTripSimplify(text) {
     const en = await translateText(text, 'pt', 'en');
-    const pt = await translateText(en, 'en', 'pt');
-    return pt;
+    try {
+        // Prefer Brazilian Portuguese
+        const ptbr = await translateText(en, 'en', 'pt-BR');
+        return ptbr;
+    } catch (_) {
+        // Fallback to generic Portuguese
+        const pt = await translateText(en, 'en', 'pt');
+        return pt;
+    }
 }
 
 async function init() {
