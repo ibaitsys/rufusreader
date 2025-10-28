@@ -96,13 +96,11 @@ body.body-no-scroll {
     scroll-behavior: auto;
     position: relative;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: transparent;
     overscroll-behavior: contain;
 }
 
-[data-theme="dark"] .reader-content {
-    background-color: rgba(255, 255, 255, 0.05);
-}
+[data-theme="dark"] .reader-content { background-color: transparent; }
 
 
 /* Minimal branding for Library (white) */
@@ -200,6 +198,30 @@ body.body-no-scroll {
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+}
+
+/* Full-bleed cover page (first page) */
+.page.cover-page.share-card {
+    /* override card layout to fill the viewport and sit behind header/footer */
+    width: 100vw;
+    max-width: 100vw;
+    /* pull up to cover the header padding and extend height to cover bottom padding */
+    margin: calc(-64px - 2rem) 0 0 calc(50% - 50vw);
+    height: calc(100vh + 64px + 2rem + 140px + env(safe-area-inset-bottom, 24px));
+    padding: 0 !important;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.page.cover-page .share-card-content.cover-card {
+    height: 100%;
+    max-width: none;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
 }
 
 .share-card-content {
@@ -341,7 +363,7 @@ body.body-no-scroll {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    background-color: var(--card-bg);
+    background: transparent;
     border-bottom: 1px solid var(--border-color);
     position: fixed;
     top: 0;
@@ -349,6 +371,59 @@ body.body-no-scroll {
     right: 0;
     z-index: 1000;
 }
+
+/* Compact theme picker inside header */
+.app-header .theme-options { padding: 0; gap: 8px; }
+.app-header .theme-circle { width: 28px; height: 28px; }
+.app-header .theme-circle[data-theme-choice="tema1"] { background-size: auto 28px; }
+.app-header .theme-circle[data-theme-choice="tema2"] { background-size: auto 28px; }
+
+/* Header menu (three-dots) */
+.header-menu-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+}
+.header-menu-btn:hover { background: rgba(0,0,0,0.05); }
+[data-theme="dark"] .header-menu-btn:hover { background: rgba(255,255,255,0.08); }
+
+.header-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    min-width: 180px;
+    padding: 8px;
+    z-index: 1100;
+    display: none;
+}
+.header-menu.open { display: block; }
+
+.paper-option {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 14px;
+}
+.paper-option:hover { background: rgba(0,0,0,0.05); }
+[data-theme="dark"] .paper-option:hover { background: rgba(255,255,255,0.08); }
+.paper-option.selected { font-weight: 800; }
+
+/* (Header now matches share-card translucency 0.9 via --card-bg-rgb) */
 
 .app-title {
     font-size: 1.25rem;

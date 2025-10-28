@@ -724,6 +724,22 @@ async function init() {
 
     // Listeners bÃƒÂ¡sicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
+    // Header "Temas" button opens action sheet and scrolls to theme section
+    const headerThemesBtn = document.getElementById('header-themes-btn');
+    if (headerThemesBtn) {
+        headerThemesBtn.addEventListener('click', () => {
+            try { openActionSheet(); } catch(_) {}
+            setTimeout(() => {
+                const as = document.getElementById('action-sheet');
+                const inner = as?.querySelector('.action-sheet-inner');
+                const target = as?.querySelector('.theme-options');
+                if (inner && target) {
+                    const top = target.getBoundingClientRect().top - inner.getBoundingClientRect().top;
+                    inner.scrollTo({ top: Math.max(top - 12, 0), behavior: 'smooth' });
+                }
+            }, 60);
+        });
+    }
     if (actionSheetOverlay) actionSheetOverlay.addEventListener('click', closeActionSheet);
 
     // Open nested chapter sheet
@@ -1014,6 +1030,8 @@ function interleaveBooksIntoScreens(books) {
         }
 
         if (index === 0) {
+            // Make the first page a full-bleed cover
+            screen.classList.add('cover-page');
             content.classList.add('cover-card');
             content.innerHTML = '';
             content.style.backgroundImage = `url('${coverImage}')`;
@@ -1421,3 +1439,34 @@ try {
   }
 } catch (_) {}
 
+
+
+    // Header three-dots quick menu for paper background
+    (function(){
+        const btn = document.getElementById('header-menu-btn');
+        const menu = document.getElementById('header-menu');
+        if (!btn || !menu) return;
+        const close = () => { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); };
+        const open = () => { menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); };
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.contains('open') ? close() : open();
+        });
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && e.target !== btn) close();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+        const setSelected = () => {
+            const current = document.body.getAttribute('data-paper-theme') || 'default';
+            menu.querySelectorAll('.paper-option').forEach(b => b.classList.toggle('selected', (b.dataset.paper||'default')===current));
+        };
+        menu.querySelectorAll('.paper-option').forEach(b => {
+            b.addEventListener('click', () => {
+                const choice = b.dataset.paper || 'default';
+                try { applyPaperTheme(choice); } catch(_) { document.body.setAttribute('data-paper-theme', choice); }
+                setSelected();
+                close();
+            });
+        });
+        setSelected();
+    })();
