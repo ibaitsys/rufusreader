@@ -1018,8 +1018,19 @@ function interleaveBooksIntoScreens(books) {
                     <h2 class="chapter-title">${title}</h2>
                 </div>`;
             fixMojibake(content);
+            try { content.classList.add('preload-blur'); requestAnimationFrame(() => setTimeout(() => content.classList.remove('preload-blur'), 140)); } catch(_) {}
             screen.appendChild(content);
             readerContent.appendChild(screen);
+            // Stagger reveal of chapter title
+            try {
+                const titleEl = content.querySelector('.chapter-title');
+                if (titleEl) {
+                    titleEl.classList.add('reveal');
+                    requestAnimationFrame(() => {
+                        setTimeout(() => titleEl.classList.add('in'), 80);
+                    });
+                }
+            } catch(_) {}
             const number = (chunk && chunk.number) ? chunk.number : (window.__chapters ? window.__chapters.length + 1 : 1);
             const eyebrowEl = content.querySelector('.chapter-eyebrow');
             if (eyebrowEl) { eyebrowEl.textContent = `Capítulo ${number}`; }
@@ -1038,6 +1049,11 @@ function interleaveBooksIntoScreens(books) {
             content.style.backgroundSize = 'cover';
             content.style.backgroundPosition = 'center';
             content.style.backgroundRepeat = 'no-repeat';
+            // Cover reveal animation
+            try {
+                content.classList.add('cover-reveal');
+                requestAnimationFrame(() => content.classList.add('in'));
+            } catch(_) {}
         } else if (chunk && chunk.type === 'club_cta') {
             const percentage = Math.round((pageCounter / totalChunks) * 100);
             content.innerHTML = `
@@ -1072,6 +1088,7 @@ function interleaveBooksIntoScreens(books) {
                 </div>`;
 
             fixMojibake(content);
+            try { content.classList.add('preload-blur'); requestAnimationFrame(() => setTimeout(() => content.classList.remove('preload-blur'), 140)); } catch(_) {}
             // Simple single-button override (no footer, no scroll)
             {
                 content.innerHTML = `<div class="share-card-body" style="text-align:left; padding-bottom:12px;">
@@ -1150,9 +1167,13 @@ function interleaveBooksIntoScreens(books) {
         } else if (!firstTextRenderedAsRemarkable && chunk && chunk.type === 'text') {
             content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
             firstTextRenderedAsRemarkable = true;
+            try { content.classList.add('preload-blur'); requestAnimationFrame(() => setTimeout(() => content.classList.remove('preload-blur'), 140)); } catch(_) {}
         } else {
             const chunkText = chunk.content.trim();
             const percentage = Math.round((pageCounter / totalChunks) * 100);
+
+            // Skeleton overlay before content (replaced on next frame)
+            content.classList.add('skeleton');
 
             content.innerHTML = `
                 <div class="share-card-body">${chunkText}</div>
@@ -1163,6 +1184,8 @@ function interleaveBooksIntoScreens(books) {
                         <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                     </button>
                 </div>`;
+            // Add gentle preload blur
+            try { content.classList.add('preload-blur'); requestAnimationFrame(() => setTimeout(() => content.classList.remove('preload-blur'), 160)); } catch(_) {}
 
             // Replace percentage badge with chapter pill showing current chapter number
             {
@@ -1176,6 +1199,20 @@ function interleaveBooksIntoScreens(books) {
                     footerEl.replaceChild(pill, pageEl);
                 }
             }
+
+            // Footer reveal after body by 80ms
+            try {
+                const footerEl = content.querySelector('.share-card-footer');
+                if (footerEl) {
+                    footerEl.classList.add('reveal');
+                    requestAnimationFrame(() => {
+                        setTimeout(() => footerEl.classList.add('in'), 80);
+                    });
+                }
+            } catch(_) {}
+
+            // Remove skeleton overlay on next frame
+            requestAnimationFrame(() => content.classList.remove('skeleton'));
 
             // Note: no extra pill above footer
         }
@@ -1470,3 +1507,5 @@ try {
         });
         setSelected();
     })();
+
+

@@ -242,6 +242,81 @@ body.body-no-scroll {
     min-height: 0;
 }
 
+/* Gentle preload blur for newly inserted chunks */
+.share-card-content.preload-blur {
+    filter: blur(6px);
+    opacity: 0.85;
+    transform: translateZ(0) scale(1.01);
+    transition: filter 300ms ease, opacity 220ms ease, transform 300ms ease;
+}
+.share-card-content.preload-blur:not(.preload-blur) {
+    filter: none;
+    opacity: 1;
+    transform: none;
+}
+
+/* Cover reveal: subtle zoom + blur that settles */
+.cover-card.cover-reveal {
+    transform: scale(1.04);
+    filter: blur(6px);
+    opacity: 0.85;
+    transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+                filter 450ms cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 280ms ease;
+}
+.cover-card.cover-reveal.in {
+    transform: none;
+    filter: none;
+    opacity: 1;
+}
+
+/* Stagger reveals */
+.chapter-title.reveal,
+.share-card-footer.reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+.chapter-title.reveal.in,
+.share-card-footer.reveal.in {
+    opacity: 1;
+    transform: none;
+}
+
+/* Skeleton shimmer overlay for page content while loading */
+.share-card-content.skeleton {
+    position: relative;
+    overflow: hidden;
+}
+.share-card-content.skeleton::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.6) 50%,
+        rgba(255,255,255,0) 100%);
+    transform: translateX(-100%);
+    animation: skeleton-shimmer 900ms infinite;
+    pointer-events: none;
+}
+[data-theme="dark"] .share-card-content.skeleton::before {
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.2) 50%,
+        rgba(255,255,255,0) 100%);
+}
+@keyframes skeleton-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .cover-card.cover-reveal { transition: opacity 120ms linear !important; transform: none !important; filter: none !important; }
+    .chapter-title.reveal, .share-card-footer.reveal { transition: opacity 120ms linear !important; transform: none !important; }
+}
+
 .share-card-body {
     /* Take remaining space and enable internal scroll when content overflows */
     flex: 1 1 auto;
@@ -374,9 +449,26 @@ body.body-no-scroll {
 
 /* Compact theme picker inside header */
 .app-header .theme-options { padding: 0; gap: 8px; }
-.app-header .theme-circle { width: 28px; height: 28px; }
+.app-header .theme-circle { width: 28px; height: 28px; background: var(--card-bg); position: relative; overflow: hidden; }
 .app-header .theme-circle[data-theme-choice="tema1"] { background-size: auto 28px; }
 .app-header .theme-circle[data-theme-choice="tema2"] { background-size: auto 28px; }
+
+/* Header theme image thumbs (lazy + animated) */
+.app-header .theme-circle .theme-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    filter: blur(8px);
+    transform: scale(1.04);
+    transition: opacity 300ms ease, filter 350ms ease, transform 350ms ease;
+}
+.app-header .theme-circle .theme-thumb.in {
+    opacity: 1;
+    filter: none;
+    transform: none;
+}
 
 /* Header menu (three-dots) */
 .header-menu-btn {
