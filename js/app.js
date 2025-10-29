@@ -527,7 +527,7 @@ async function init() {
     }
 
     // Restore saved paper theme (park removed; fallback to default if unknown)
-    const allowedPaperThemes = new Set(['default','tema1','tema2']);
+    const allowedPaperThemes = new Set(['default','tema1','space']);
     let savedPaperTheme = localStorage.getItem('paperTheme') || 'default';
     if (!allowedPaperThemes.has(savedPaperTheme)) {
         savedPaperTheme = 'default';
@@ -1507,5 +1507,6 @@ try {
         });
         setSelected();
     })();
+
 
 
