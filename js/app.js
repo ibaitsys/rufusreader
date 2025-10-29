@@ -493,12 +493,23 @@ async function init() {
 
     // Menu dark mode toggle (in action sheet)
     const menuDarkToggle = document.getElementById('menu-dark-toggle');
+    let lastLightPaperTheme = localStorage.getItem('paperThemeLight') || 'default';
+    if (lastLightPaperTheme === 'tema3' || lastLightPaperTheme === 'tema4') {
+        lastLightPaperTheme = 'tema1';
+        try { localStorage.setItem('paperThemeLight', 'tema1'); } catch(_) {}
+    } else if (lastLightPaperTheme !== 'default' && lastLightPaperTheme !== 'tema1') {
+        lastLightPaperTheme = 'default';
+        try { localStorage.setItem('paperThemeLight', 'default'); } catch(_) {}
+    }
     if (menuDarkToggle) {
         menuDarkToggle.checked = (currentTheme === 'dark');
         menuDarkToggle.addEventListener('change', (e) => {
-            const newTheme = e.target.checked ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            if (e.target.checked) {
+                applyPaperTheme('dark');
+            } else {
+                const fallback = lastLightPaperTheme || 'default';
+                applyPaperTheme(fallback);
+            }
         });
     }
 
@@ -515,10 +526,26 @@ async function init() {
     const readerContentDiv = document.getElementById('reader-content');
 
 
-    // Theme picker: 4 circles (default, tema1, tema3, tema4)
+    // Theme picker: 3 circles (default, dark, tema1)
     function applyPaperTheme(choice) {
-        document.body.setAttribute('data-paper-theme', choice);
-        localStorage.setItem('paperTheme', choice);
+        const isDark = (choice === 'dark');
+        const paperChoice = isDark ? 'dark' : choice;
+
+        document.body.setAttribute('data-paper-theme', paperChoice);
+        document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(_) {}
+        try { localStorage.setItem('paperTheme', choice); } catch(_) {}
+
+        if (!isDark) {
+            lastLightPaperTheme = choice;
+            try { localStorage.setItem('paperThemeLight', choice); } catch(_) {}
+        }
+
+        if (menuDarkToggle) {
+            menuDarkToggle.checked = isDark;
+        }
+
         // Update UI selection state
         document.querySelectorAll('.theme-circle').forEach(btn => {
             btn.classList.toggle('selected', btn.dataset.themeChoice === choice);
@@ -526,12 +553,15 @@ async function init() {
         });
     }
 
-    // Restore saved paper theme (park removed; space migrated to tema3; fallback to default if unknown)
-    const allowedPaperThemes = new Set(['default','tema1','tema3','tema4']);
+    // Restore saved paper theme (fallback to default for legacy or unknown values)
+    const allowedPaperThemes = new Set(['default','dark','tema1']);
     let savedPaperTheme = localStorage.getItem('paperTheme') || 'default';
     if (savedPaperTheme === 'space') {
-        savedPaperTheme = 'tema3';
-        try { localStorage.setItem('paperTheme', 'tema3'); } catch(_) {}
+        savedPaperTheme = 'default';
+        try { localStorage.setItem('paperTheme', 'default'); } catch(_) {}
+    } else if (savedPaperTheme === 'tema3' || savedPaperTheme === 'tema4') {
+        savedPaperTheme = 'tema1';
+        try { localStorage.setItem('paperTheme', 'tema1'); } catch(_) {}
     }
     if (!allowedPaperThemes.has(savedPaperTheme)) {
         savedPaperTheme = 'default';

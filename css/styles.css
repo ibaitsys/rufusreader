@@ -451,8 +451,10 @@ body.body-no-scroll {
 .app-header .theme-options { padding: 0; gap: 8px; }
 .app-header .theme-circle { width: 28px; height: 28px; background: var(--card-bg); position: relative; overflow: hidden; }
 .app-header .theme-circle[data-theme-choice="tema1"] { background-size: auto 28px; }
-.app-header .theme-circle[data-theme-choice="tema3"] { background-size: auto 28px; }
-.app-header .theme-circle[data-theme-choice="tema4"] { background-size: auto 28px; }
+.app-header .theme-circle[data-theme-choice="dark"] {
+    background-size: cover;
+    background-position: center;
+}
 
 /* Header theme image thumbs (lazy + animated) */
 .app-header .theme-circle .theme-thumb {
@@ -866,27 +868,21 @@ body.body-no-scroll {
 
 /* Visual previews for each theme */
 .theme-circle[data-theme-choice="default"] {
-    background-image: linear-gradient(135deg, var(--bg-color) 0%, var(--card-bg) 100%);
+    background-image: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+.theme-circle[data-theme-choice="dark"] {
+    background-color: #111827;
+    background-image: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+    border-color: #0b1120;
+    background-size: cover;
+    background-position: center;
 }
 
 .theme-circle[data-theme-choice="tema1"] {
     background-image: url('../assets/tema1.avif');
     background-repeat: repeat;
     background-size: auto 36px;
-}
-
-.theme-circle[data-theme-choice="tema3"] {
-    background-image: url('../assets/gif.gif');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-}
-
-.theme-circle[data-theme-choice="tema4"] {
-    background-image: url('../assets/happy love rain GIF.gif');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
 }
 
 /* Settings row with switch */
@@ -1280,7 +1276,12 @@ body.deep-reading-active.ambient-space {
 /* Paper Themes */
 body[data-paper-theme="default"] {
     background-image: none;
-    background-color: var(--bg-color);
+    background-color: #f5f5f5;
+}
+
+body[data-paper-theme="dark"] {
+    background-image: none;
+    background-color: #0f172a;
 }
 
 body[data-paper-theme="tema1"] {
@@ -1289,23 +1290,11 @@ body[data-paper-theme="tema1"] {
     background-size: auto;
 }
 
-body[data-paper-theme="tema3"] {
-    background-image: url('../assets/gif.gif');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-}
-
-body[data-paper-theme="tema4"] {
-    background-image: url('../assets/happy love rain GIF.gif');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-}
 
 /* park theme removed */
 
 
 
 /* park theme removed */
+
 
