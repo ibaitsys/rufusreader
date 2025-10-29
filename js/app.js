@@ -515,7 +515,7 @@ async function init() {
     const readerContentDiv = document.getElementById('reader-content');
 
 
-    // Theme picker: 3 circles (default, tema1, tema2)
+    // Theme picker: 4 circles (default, tema1, tema3, tema4)
     function applyPaperTheme(choice) {
         document.body.setAttribute('data-paper-theme', choice);
         localStorage.setItem('paperTheme', choice);
@@ -526,9 +526,13 @@ async function init() {
         });
     }
 
-    // Restore saved paper theme (park removed; fallback to default if unknown)
-    const allowedPaperThemes = new Set(['default','tema1','space']);
+    // Restore saved paper theme (park removed; space migrated to tema3; fallback to default if unknown)
+    const allowedPaperThemes = new Set(['default','tema1','tema3','tema4']);
     let savedPaperTheme = localStorage.getItem('paperTheme') || 'default';
+    if (savedPaperTheme === 'space') {
+        savedPaperTheme = 'tema3';
+        try { localStorage.setItem('paperTheme', 'tema3'); } catch(_) {}
+    }
     if (!allowedPaperThemes.has(savedPaperTheme)) {
         savedPaperTheme = 'default';
         try { localStorage.setItem('paperTheme', 'default'); } catch(_) {}

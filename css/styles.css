@@ -451,7 +451,8 @@ body.body-no-scroll {
 .app-header .theme-options { padding: 0; gap: 8px; }
 .app-header .theme-circle { width: 28px; height: 28px; background: var(--card-bg); position: relative; overflow: hidden; }
 .app-header .theme-circle[data-theme-choice="tema1"] { background-size: auto 28px; }
-.app-header .theme-circle[data-theme-choice="space"] { background-size: auto 28px; }
+.app-header .theme-circle[data-theme-choice="tema3"] { background-size: auto 28px; }
+.app-header .theme-circle[data-theme-choice="tema4"] { background-size: auto 28px; }
 
 /* Header theme image thumbs (lazy + animated) */
 .app-header .theme-circle .theme-thumb {
@@ -874,10 +875,18 @@ body.body-no-scroll {
     background-size: auto 36px;
 }
 
-.theme-circle[data-theme-choice="space"] {
-    background-image: url('../assets/tema2.png');
-    background-repeat: repeat;
-    background-size: auto 36px;
+.theme-circle[data-theme-choice="tema3"] {
+    background-image: url('../assets/gif.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.theme-circle[data-theme-choice="tema4"] {
+    background-image: url('../assets/happy love rain GIF.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 /* Settings row with switch */
@@ -1280,10 +1289,18 @@ body[data-paper-theme="tema1"] {
     background-size: auto;
 }
 
-body[data-paper-theme="space"] {
-    background-image: url('../assets/tema2.png');
-    background-repeat: repeat;
-    background-size: auto;
+body[data-paper-theme="tema3"] {
+    background-image: url('../assets/gif.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+body[data-paper-theme="tema4"] {
+    background-image: url('../assets/happy love rain GIF.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 /* park theme removed */
