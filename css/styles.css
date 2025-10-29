@@ -1280,15 +1280,12 @@ body[data-paper-theme="tema1"] {
     background-size: auto;
 }
 
-body[data-paper-theme="space"] {
-    background-image: url('../assets/tema2.png');
-    background-repeat: repeat;
-    background-size: auto;
-}
+body[data-paper-theme="space"] {`n    background-image: url('../assets/space.gif');`n    background-repeat: no-repeat;`n    background-size: cover;`n    background-attachment: fixed;`n}
 
 /* park theme removed */
 
 
 
 /* park theme removed */
+
 
