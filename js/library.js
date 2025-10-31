@@ -17,8 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
         author: 'Machado de Assis',
         year: '1881',
         format: 'Texto',
-        cover: 'assets/Cover.png',
+        cover: 'assets/brascubascover.webp',
+        lang: 'pt-BR',
         path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Play Bigger',
+        author: 'Al Ramadan',
+        year: '2016',
+        format: 'Texto',
+        cover: 'assets/playbiggercover.jpg',
+        lang: 'en-US',
+        path: 'assets/Play Bigger - Al Ramadan.txt'
       }
     ];
 
@@ -29,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       li.className = 'book-item';
 
       const a = document.createElement('a');
-            a.href = `book-dashboard.html?book=${encodeURIComponent(book.path)}&title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&cover=${encodeURIComponent(book.cover)}`;
+            a.href = `book-dashboard.html?book=${encodeURIComponent(book.path)}&title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&cover=${encodeURIComponent(book.cover)}${book.lang ? `&lang=${encodeURIComponent(book.lang)}` : ''}`;
 
       const wrap = document.createElement('div');
       wrap.className = 'book-cover-wrap';

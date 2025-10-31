@@ -142,8 +142,11 @@ async function init() {
     }
     if ('speechSynthesis' in window) {
         speechSynthesis.onvoiceschanged = () => {
-            const voices = speechSynthesis.getVoices();
-            console.log("Available voices:", voices);
+            try {
+                const voices = speechSynthesis.getVoices();
+                window.__voices = voices;
+                console.log("Available voices:", voices);
+            } catch (_) {}
         };
     } else {
         console.log("Speech Synthesis not supported");
@@ -845,6 +848,28 @@ async function init() {
         // Prefer URL param ?book= when it's a .txt; otherwise fallback to default
         const params = new URLSearchParams(window.location.search);
         const requested = params.get('book');
+        // Capture optional metadata passed from dashboard
+        try {
+            window.__readerMeta = {
+                title: params.get('title') || null,
+                author: params.get('author') || null,
+                cover: params.get('cover') || null,
+                covermode: params.get('covermode') || null,
+            };
+        } catch (_) { window.__readerMeta = window.__readerMeta || {}; }
+        // Decide default TTS language based on metadata or file name
+        try {
+            const titleLc = (window.__readerMeta.title || '').toLowerCase();
+            const explicitLang = params.get('lang');
+            const fileLc = (requested || '').toLowerCase();
+            let ttsLang = explicitLang || 'pt-BR';
+            if (!explicitLang) {
+                if (titleLc.includes('play bigger') || fileLc.includes('play bigger')) {
+                    ttsLang = 'en-US';
+                }
+            }
+            window.__ttsLang = ttsLang;
+        } catch (_) { window.__ttsLang = 'pt-BR'; }
         let bookPath = 'assets/memorias_postumas_final.txt';
         if (requested && /\.txt$/i.test(requested)) {
             bookPath = requested;
@@ -881,7 +906,7 @@ async function processAndDisplayBook(text, bookPath) {
     await new Promise(resolve => setTimeout(resolve, 0)); // Cede ao loop de eventos
 
     try {
-        const book = buildBookFromText(text, bookPath);
+    const book = buildBookFromText(text, bookPath);
         console.log("[8] Livro processado a partir do texto. Chamando interleaveBooksIntoScreens.");
         interleaveBooksIntoScreens([book]); // interleave espera um array de livros
     } catch (error) {
@@ -955,7 +980,7 @@ function buildBookFromText(text, filePath) {
     // Append final club CTA chunk (persistent)
     chunks.push({ type: 'club_cta' });
     console.log(`[7] Processamento de texto concluÃ­do. Total de chunks: ${chunks.length}`);
-    return { name: title, chunks };
+    return { name: title, chunks, filePath };
 }
 
 function splitIntoSmartChunks(text) {
@@ -1023,8 +1048,17 @@ function interleaveBooksIntoScreens(books) {
     }
 
     const infoTitle = document.getElementById('info-title');
-    let coverImage = 'assets/book2.svg'; // Using the svg from the carousel
-    let bookTitle = book.name;
+    let coverImage = (window.__readerMeta && window.__readerMeta.cover) || 'assets/book2.svg';
+    // Fallback mapping by file name when no cover is provided
+    try {
+        if (!window.__readerMeta || !window.__readerMeta.cover) {
+            const fp = (book && book.filePath ? String(book.filePath) : '').toLowerCase();
+            if (fp.includes('play bigger')) coverImage = 'assets/playbiggercover.jpg';
+            else if (fp.includes('memor') || fp.includes('brascubas') || fp.includes('memorias_postumas')) coverImage = 'assets/brascubascover.webp';
+            else if (fp.includes('dom_casmurro')) coverImage = 'assets/dom-casmurro.svg';
+        }
+    } catch (_) {}
+    let bookTitle = (window.__readerMeta && window.__readerMeta.title) || book.name;
 
     if (infoTitle) {
         infoTitle.textContent = bookTitle;
@@ -1074,7 +1108,7 @@ function interleaveBooksIntoScreens(books) {
             continue;
         }
 
-        if (index === 0) {
+        if (index === 0 && window.__readerMeta && window.__readerMeta.covermode === 'full') {
             // Make the first page a full-bleed cover
             screen.classList.add('cover-page');
             content.classList.add('cover-card');
@@ -1083,6 +1117,26 @@ function interleaveBooksIntoScreens(books) {
             content.style.backgroundSize = 'cover';
             content.style.backgroundPosition = 'center';
             content.style.backgroundRepeat = 'no-repeat';
+            // Adjust background fit to avoid aggressive cropping on tall covers
+            try {
+                const probe = new Image();
+                probe.onload = function() {
+                    try {
+                        const viewportRatio = window.innerWidth / Math.max(window.innerHeight, 1);
+                        const imgRatio = (this.width || 1) / Math.max(this.height || 1, 1);
+                        // If image is much taller than viewport, prefer contain to show the whole cover
+                        if (imgRatio < viewportRatio * 0.9) {
+                            content.style.backgroundSize = 'contain';
+                            content.style.backgroundColor = '#000';
+                        }
+                    } catch (_) {}
+                };
+                probe.onerror = function() {
+                    // Fallback to neutral placeholder if image fails
+                    try { content.style.backgroundImage = "url('assets/book2.svg')"; } catch(_) {}
+                };
+                probe.src = coverImage;
+            } catch (_) {}
             // Cover reveal animation
             try {
                 content.classList.add('cover-reveal');
@@ -1199,9 +1253,50 @@ function interleaveBooksIntoScreens(books) {
                 }
             })();
         } else if (!firstTextRenderedAsRemarkable && chunk && chunk.type === 'text') {
-            content.innerHTML = `<p class="remarkable-sentence">${chunk.content}</p>`;
+            const chunkText = chunk.content.trim();
+            const percentage = Math.round((pageCounter / totalChunks) * 100);
+            content.classList.add('skeleton');
+            content.innerHTML = `
+                <div class="share-card-body">${chunkText}</div>
+                <div class="share-card-footer">
+                    <span class="share-card-page">${percentage}%</span>
+                    <button class="speak-button" aria-label="Read aloud">
+                        <svg class="speak-icon play-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                        <svg class="speak-icon pause-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                </div>`;
+            // Use the book cover as a subtle background on the first text chunk
+            if (index === 0) {
+                // Remove any inner elements for the first chunk; keep only the cover background
+                try { content.innerHTML = ''; content.classList.remove('skeleton'); content.classList.remove('preload-blur'); } catch(_) {}
+                try {
+                    content.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('${coverImage}')`;
+                    content.style.backgroundSize = 'cover';
+                    content.style.backgroundPosition = 'center';
+                    content.style.backgroundRepeat = 'no-repeat';
+                    const bodyEl = content.querySelector('.share-card-body');
+                    const footerEl = content.querySelector('.share-card-footer');
+                    const speakBtnEl = content.querySelector('.speak-button');
+                    if (bodyEl) bodyEl.style.color = '#fff';
+                    if (footerEl) footerEl.style.color = 'rgba(255,255,255,0.92)';
+                    if (speakBtnEl) speakBtnEl.style.color = '#fff';
+                    const probe = new Image();
+                    probe.onload = function() {
+                        try {
+                            const rect = content.getBoundingClientRect();
+                            const cardRatio = rect.width / Math.max(rect.height, 1);
+                            const imgRatio = (this.width || 1) / Math.max(this.height || 1, 1);
+                            if (imgRatio < cardRatio * 0.9) {
+                                content.style.backgroundSize = 'contain';
+                                content.style.backgroundColor = '#000';
+                            }
+                        } catch (_) {}
+                    };
+                    probe.src = coverImage;
+                } catch (_) {}
+            }
             firstTextRenderedAsRemarkable = true;
-            try { content.classList.add('preload-blur'); requestAnimationFrame(() => setTimeout(() => content.classList.remove('preload-blur'), 140)); } catch(_) {}
+            try { if (index !== 0) { content.classList.add('preload-blur'); requestAnimationFrame(() => setTimeout(() => content.classList.remove('preload-blur'), 160)); } } catch(_) {}
         } else {
             const chunkText = chunk.content.trim();
             const percentage = Math.round((pageCounter / totalChunks) * 100);
@@ -1319,7 +1414,8 @@ function interleaveBooksIntoScreens(books) {
 
         if (speakButton) {
             speakButton.addEventListener('click', () => {
-                const textToSpeak = content.textContent;
+                const bodyEl = content.querySelector('.share-card-body');
+                const textToSpeak = (bodyEl ? bodyEl.innerText : content.innerText).replace(/\s+/g, ' ').trim();
                 const playIcon = speakButton.querySelector('.play-icon');
                 const pauseIcon = speakButton.querySelector('.pause-icon');
 
@@ -1339,7 +1435,18 @@ function interleaveBooksIntoScreens(books) {
                     }
 
                     currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                    currentUtterance.lang = 'pt-BR';
+                    try {
+                        const desired = (window.__ttsLang || 'pt-BR');
+                        currentUtterance.lang = desired;
+                        // Pick a matching voice if available
+                        const vs = (window.__voices && window.__voices.length) ? window.__voices : (speechSynthesis.getVoices ? speechSynthesis.getVoices() : []);
+                        if (vs && vs.length) {
+                            let voice = vs.find(v => (v.lang || '').toLowerCase() === desired.toLowerCase());
+                            if (!voice && desired.startsWith('en')) voice = vs.find(v => (v.lang || '').toLowerCase().startsWith('en'));
+                            if (!voice && desired.startsWith('pt')) voice = vs.find(v => (v.lang || '').toLowerCase().startsWith('pt'));
+                            if (voice) currentUtterance.voice = voice;
+                        }
+                    } catch (_) {}
 
                     currentUtterance.onend = () => {
                         playIcon.style.display = 'block';

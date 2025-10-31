@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookTitle = params.get('title');
     const bookAuthor = params.get('author');
     const bookCover = params.get('cover');
+    const bookLang = params.get('lang');
 
     const bookTitleElement = document.getElementById('book-title');
     const bookAuthorElement = document.getElementById('book-author');
@@ -32,7 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lerAgoraBtn.addEventListener('click', () => {
         if (bookPath) {
-            window.location.href = `reader.html?book=${encodeURIComponent(bookPath)}`;
+            const qp = new URLSearchParams({
+                book: bookPath || '',
+                title: bookTitle || '',
+                author: bookAuthor || '',
+                cover: bookCover || '',
+                lang: bookLang || ''
+            }).toString();
+            window.location.href = `reader.html?${qp}`;
         }
     });
 
