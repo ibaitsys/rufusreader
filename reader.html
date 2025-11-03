@@ -77,16 +77,7 @@
     </header>
 
     <div class="app-container">
-        <div id="rain-overlay" class="rain-overlay" aria-hidden="true"></div>
-        <canvas id="space-canvas" class="space-overlay" aria-hidden="true"></canvas>
-        <audio id="fullscreen-audio" src="assets/Arnor(chosic.com).mp3" loop></audio>
-        <button id="music-toggle-btn" class="fab-right">
-            <svg class="play-music-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            <svg class="pause-music-icon" style="display: none;" viewBox="0 0 24 24"><path fill="currentColor" d="M10 16.5v-9l6 4.5-6 4.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-        </button>
-        <button id="exit-fullscreen-btn" class="exit-fullscreen-btn">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z"/></svg>
-        </button>
+        
         <div id="reader-screen" class="screen active">
             <div class="reader-content" id="reader-content">
                 <!-- O conte�do ser� gerado dinamicamente -->
@@ -116,58 +107,21 @@
             <button class="action-sheet-item" id="action-chapters">Capítulos</button>
             <button class="action-sheet-item" id="action-restart">Recomeçar</button>
 
-            <div class="action-sheet-header">Tema</div>
-            <div class="theme-options" role="group" aria-label="Escolher tema de papel">
-            <button class="theme-circle" data-theme-choice="default" aria-label="Padrão"></button>
-            <button class="theme-circle" data-theme-choice="dark" aria-label="Tema escuro"></button>
-            <button class="theme-circle" data-theme-choice="tema1" aria-label="Tema imagem"></button>
-        </div>
-
-            <div class="action-sheet-header">Aparência</div>
-            <div class="setting-row">
-                <div class="setting-text">
-                    <div class="setting-title">Modo escuro</div>
-                    <div class="setting-subtitle">Melhor para leitura noturna</div>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="menu-dark-toggle" aria-label="Ativar modo escuro">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
             
-            <button class="action-card deep-reading-card" id="action-fullscreen" aria-label="Leitura profunda">
-                <span class="card-icon" aria-hidden="true">
-                    <svg viewBox="0 0 64 64" width="28" height="28" fill="none">
-                        <circle cx="32" cy="16" r="6" fill="currentColor"/>
-                        <path d="M20 34c3-6 9-9 12-9s9 3 12 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M14 46c4-4 10-6 18-6s14 2 18 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M24 40l8 6 8-6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span class="card-content">
-                    <span class="card-title">Leitura profunda</span>
-                    <span class="card-subtitle">Entrar em tela cheia e foco</span>
-                </span>
-            </button>
 
             <!-- Card do autor (logo abaixo do bot�o de leitura) -->
-            <div class="author-card" role="group" aria-label="Sobre o autor">
+            <div class="author-card profile" role="group" aria-label="Sobre o autor">
                 <div class="author-cover">
                     <img src="assets/authorphoto.png" alt="Machado de Assis" loading="lazy"/>
                 </div>
                 <div class="author-content">
-                    <div class="author-eyebrow">Sobre o autor</div>
                     <div class="author-title">Machado de Assis</div>
-                    <div class="author-desc">Clássico da literatura brasileira. Cronista, contista e romancista.</div>
-                    <div class="author-actions">
-                        <a class="author-link" href="https://pt.wikipedia.org/wiki/Machado_de_Assis" target="_blank" rel="noopener">Ver mais</a>
-                    </div>
+                    <div class="author-subtitle">Autor</div>
                 </div>
             </div>
 
-            <div class="action-sheet-header">Outros livros do autor</div>
-            <div class="carousel" aria-label="Outros livros">
+            <div class="action-sheet-header" style="display:none">Outros livros do autor</div>
+            <div class="carousel" aria-label="Outros livros" style="display:none">
                 <a class="carousel-card" href="#" aria-label="Quincas Borba">
                     <img src="assets/book1.svg" alt="Capa de Quincas Borba" loading="lazy" />
                     <div class="carousel-title">Quincas Borba</div>
@@ -185,8 +139,8 @@
             
 
             <!-- �ltimo: Produtos -->
-            <div class="action-sheet-header">Produtos</div>
-            <div class="products-list" aria-label="Produtos do autor">
+            <div class="action-sheet-header" style="display:none">Produtos</div>
+            <div class="products-list" aria-label="Produtos do autor" style="display:none">
                 <a class="product-card" href="#" aria-label="Marca-páginas">
                     <img src="assets/product1.svg" alt="Marca-páginas" loading="lazy" />
                     <div class="product-title">Marca-páginas</div>
@@ -218,45 +172,19 @@
                 <div id="chapter-list" class="chapter-list" role="list"></div>
             </div>
         </div>
-            </div>
-
-
-
-            
-        </div>
-        <!-- Ambient selection modal -->
-        <div id="ambient-modal-overlay" class="ambient-overlay" aria-hidden="true"></div>
-        <div id="ambient-modal" class="ambient-modal" role="dialog" aria-modal="true" aria-labelledby="ambient-title" aria-hidden="true">
-            <div class="ambient-modal-inner">
-                <div class="ambient-header">
-                    <div class="ambient-title" id="ambient-title">Ambiente imersivo</div>
-                    <button class="ambient-close" id="ambient-close" aria-label="Fechar">&times;</button>
-                </div>
-                <div class="ambient-options" role="group" aria-label="Selecionar ambiente">
-                    <label class="ambient-option">
-                        <input type="radio" name="ambient" value="neutral" checked>
-                        <span class="ambient-chip">Neutro</span>
-                    </label>
-                    <label class="ambient-option">
-                        <input type="radio" name="ambient" value="rain">
-                        <span class="ambient-chip">Chuva</span>
-                    </label>
-                    <label class="ambient-option">
-                        <input type="radio" name="ambient" value="space">
-                        <span class="ambient-chip">Espaço</span>
-                    </label>
-                </div>
-                <div class="ambient-footer">
-                    <button id="ambient-confirm" class="ambient-confirm">Confirmar</button>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
     <script src="js/app.js?v=1.2"></script>
 
 </body>
 </html>
+
+
+
+
+
+
 
 
 

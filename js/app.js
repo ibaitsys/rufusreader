@@ -1,4 +1,6 @@
-
+﻿
+// Feature flags
+const DEEP_READING_ENABLED = false; // Safe-disable deep reading/fullscreen/ambience
 
 let currentUtterance = null;
 let currentSpeakButton = null;
@@ -26,7 +28,7 @@ window.addEventListener('appinstalled', () => {
     } catch (_) {}
 });
 
-// VersÃƒÂ£o de depuraÃƒÂ§ÃƒÂ£o com logs detalhados
+// VersÃƒÆ’Ã‚Â£o de depuraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o com logs detalhados
 
 
 
@@ -58,27 +60,27 @@ async function roundTripSimplify(text) {
 
 // --- i18n helpers (global) ---
 const PT_FIXES = [
-    ['CapÃ­tulo', 'Capítulo'],
-    ['ClÃ¡ssico', 'Clássico'],
-    ['EsaÃº', 'Esaú'],
-    ['JacÃ³', 'Jacó'],
-    ['PÃ´ster', 'Pôster'],
-    ['Marcaâ€‘pÃ¡ginas', 'Marca-páginas'],
-    ['Marca-pÃ¡ginas', 'Marca-páginas'],
-    ['EspaÃ§o', 'Espaço'],
-    ['mÃªs', 'mês'],
-    ['Quase lÃ¡', 'Quase lá'],
-    ['prÃ³ximos', 'próximos'],
-    ['capÃ­tulos', 'capítulos'],
-    ['NÃ£o', 'Não'],
-    ['nÃºmero', 'número'],
-    ['VocÃª', 'Você'],
-    ['conexÃ£o', 'conexão'],
-    ['configuraÃ§Ã£o', 'configuração'],
-    ['RenderizaÃ§Ã£o', 'Renderização'],
-    [' Ã  ', ' à '],
-    ['rÃ¡pido', 'rápido'],
-    ['Ã—', '×']
+    ['CapÃƒÂ­tulo', 'CapÃ­tulo'],
+    ['ClÃƒÂ¡ssico', 'ClÃ¡ssico'],
+    ['EsaÃƒÂº', 'EsaÃº'],
+    ['JacÃƒÂ³', 'JacÃ³'],
+    ['PÃƒÂ´ster', 'PÃ´ster'],
+    ['MarcaÃ¢â‚¬â€˜pÃƒÂ¡ginas', 'Marca-pÃ¡ginas'],
+    ['Marca-pÃƒÂ¡ginas', 'Marca-pÃ¡ginas'],
+    ['EspaÃƒÂ§o', 'EspaÃ§o'],
+    ['mÃƒÂªs', 'mÃªs'],
+    ['Quase lÃƒÂ¡', 'Quase lÃ¡'],
+    ['prÃƒÂ³ximos', 'prÃ³ximos'],
+    ['capÃƒÂ­tulos', 'capÃ­tulos'],
+    ['NÃƒÂ£o', 'NÃ£o'],
+    ['nÃƒÂºmero', 'nÃºmero'],
+    ['VocÃƒÂª', 'VocÃª'],
+    ['conexÃƒÂ£o', 'conexÃ£o'],
+    ['configuraÃƒÂ§ÃƒÂ£o', 'configuraÃ§Ã£o'],
+    ['RenderizaÃƒÂ§ÃƒÂ£o', 'RenderizaÃ§Ã£o'],
+    [' ÃƒÂ  ', ' Ã  '],
+    ['rÃƒÂ¡pido', 'rÃ¡pido'],
+    ['Ãƒâ€”', 'Ã—']
 ];
 
 function normalizePortuguese(str) {
@@ -102,27 +104,27 @@ function fixMojibake(rootEl) {
 async function init() {
     // Normalize common mojibake sequences to proper pt-BR accents
     const PT_FIXES = [
-        ['CapÃ­tulo', 'Capítulo'],
-        ['ClÃ¡ssico', 'Clássico'],
-        ['EsaÃº', 'Esaú'],
-        ['JacÃ³', 'Jacó'],
-        ['Ãš', 'Ú'],
-        ['PÃ´ster', 'Pôster'],
-        ['Marcaâ€‘pÃ¡ginas', 'Marca-páginas'],
-        ['Marca-pÃ¡ginas', 'Marca-páginas'],
-        ['EspaÃ§o', 'Espaço'],
-        ['mÃªs', 'mês'],
-        ['Quase lÃ¡', 'Quase lá'],
-        ['prÃ³ximos', 'próximos'],
-        ['capÃ­tulos', 'capítulos'],
-        ['NÃ£o', 'Não'],
-        ['nÃºmero', 'número'],
-        ['VocÃª', 'Você'],
-        ['conexÃ£o', 'conexão'],
-        ['configuraÃ§Ã£o', 'configuração'],
-        ['RenderizaÃ§Ã£o', 'Renderização'],
-        [' Ã  ', ' à '],
-        ['rÃ¡pido', 'rápido']
+        ['CapÃƒÂ­tulo', 'CapÃ­tulo'],
+        ['ClÃƒÂ¡ssico', 'ClÃ¡ssico'],
+        ['EsaÃƒÂº', 'EsaÃº'],
+        ['JacÃƒÂ³', 'JacÃ³'],
+        ['ÃƒÅ¡', 'Ãš'],
+        ['PÃƒÂ´ster', 'PÃ´ster'],
+        ['MarcaÃ¢â‚¬â€˜pÃƒÂ¡ginas', 'Marca-pÃ¡ginas'],
+        ['Marca-pÃƒÂ¡ginas', 'Marca-pÃ¡ginas'],
+        ['EspaÃƒÂ§o', 'EspaÃ§o'],
+        ['mÃƒÂªs', 'mÃªs'],
+        ['Quase lÃƒÂ¡', 'Quase lÃ¡'],
+        ['prÃƒÂ³ximos', 'prÃ³ximos'],
+        ['capÃƒÂ­tulos', 'capÃ­tulos'],
+        ['NÃƒÂ£o', 'NÃ£o'],
+        ['nÃƒÂºmero', 'nÃºmero'],
+        ['VocÃƒÂª', 'VocÃª'],
+        ['conexÃƒÂ£o', 'conexÃ£o'],
+        ['configuraÃƒÂ§ÃƒÂ£o', 'configuraÃ§Ã£o'],
+        ['RenderizaÃƒÂ§ÃƒÂ£o', 'RenderizaÃ§Ã£o'],
+        [' ÃƒÂ  ', ' Ã  '],
+        ['rÃƒÂ¡pido', 'rÃ¡pido']
     ];
     function normalizePortuguese(str) {
         let out = str;
@@ -158,15 +160,6 @@ async function init() {
     const actionSheetOverlay = document.getElementById('action-sheet-overlay');
     // const themeToggleButton = document.getElementById('theme-toggle');
     const immersiveModeBtn = document.getElementById('immersive-mode-btn');
-    const audioPlayer = document.getElementById('fullscreen-audio');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const musicSelect = document.getElementById('music-select');
-    const musicToggleBtn = document.getElementById('music-toggle-btn');
-    const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
-
-    if (exitFullscreenBtn) {
-        exitFullscreenBtn.addEventListener('click', toggleFullscreen);
-    }
 
     // Maybe show install toast (iOS hint or Android prompt captured)
     try {
@@ -338,131 +331,27 @@ async function init() {
     }
 
     if (!readerContent) {
-        console.error("FALHA CRÃƒÂTICA: #reader-content nÃƒÂ£o encontrado.");
+        console.error("FALHA CRÃƒÆ’Ã‚ÂTICA: #reader-content nÃƒÆ’Ã‚Â£o encontrado.");
         return;
     }
 
-    // Music toggle logic
-    musicToggleBtn.addEventListener('click', () => {
-        const playIcon = document.querySelector('.play-music-icon');
-        const pauseIcon = document.querySelector('.pause-music-icon');
-
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-            playIcon.style.display = 'none';
-            pauseIcon.style.display = 'block';
-        } else {
-            audioPlayer.pause();
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-        }
-    });
+    // [removed] music toggle logic
 
 
 
 
 
-    // Fullscreen logic (neutral entry; ambience applied separately)
-    function toggleFullscreen() {
-        const musicToggleBtn = document.getElementById('music-toggle-btn');
-        const fullscreenAudio = document.getElementById('fullscreen-audio');
-        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+    // [removed] fullscreen logic
 
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-            document.body.classList.add('fullscreen-active');
-            // Neutral: no ambiance, show music toggle (user can choose), pause any playing
-            musicToggleBtn.style.display = 'flex';
-            exitFullscreenBtn.style.display = 'flex';
-            try { fullscreenAudio.pause(); } catch(_) {}
-            document.body.classList.add('deep-reading-active');
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-                document.body.classList.remove('fullscreen-active');
-                musicToggleBtn.style.display = 'none';
-                exitFullscreenBtn.style.display = 'none';
-                try { fullscreenAudio.pause(); } catch(_) {}
-                stopRainSound();
-                stopRainEffect();
-                try { stopSpaceEffect(); } catch(_) {}
-                document.body.classList.remove('deep-reading-active');
-            }
-        }
-    }
+    // [removed] deep reading fullscreen and ambient wiring
 
-    const actionFullscreen = document.getElementById('action-fullscreen');
-    // Ambient selection modal wiring
-    const ambientModal = document.getElementById('ambient-modal');
-    const ambientOverlay = document.getElementById('ambient-modal-overlay');
-    const ambientConfirm = document.getElementById('ambient-confirm');
-    const ambientClose = document.getElementById('ambient-close');
-    let selectedAmbient = 'neutral';
-
-    function openAmbientModal() {
-        document.body.classList.add('ambient-visible');
-        ambientModal?.setAttribute('aria-hidden', 'false');
-        ambientOverlay?.setAttribute('aria-hidden', 'false');
-        // reset selection to neutral
-        const radios = document.querySelectorAll('input[name="ambient"]');
-        radios.forEach(r => { if (r instanceof HTMLInputElement) r.checked = (r.value === 'neutral'); });
-        selectedAmbient = 'neutral';
-    }
-    function closeAmbientModal() {
-        document.body.classList.remove('ambient-visible');
-        ambientModal?.setAttribute('aria-hidden', 'true');
-        ambientOverlay?.setAttribute('aria-hidden', 'true');
-    }
-    function applyAmbient(kind) {
-        const musicToggleBtn = document.getElementById('music-toggle-btn');
-        const fullscreenAudio = document.getElementById('fullscreen-audio');
-        const playIcon = document.querySelector('.play-music-icon');
-        const pauseIcon = document.querySelector('.pause-music-icon');
-        stopRainSound();
-        stopRainEffect();
-        try { stopSpaceEffect(); } catch(_) {}
-        document.body.classList.remove('ambient-rain', 'ambient-space');
-
-        if (kind === 'rain') {
-            startRainEffect();
-            startRainSound();
-            document.body.classList.add('ambient-rain');
-            if (musicToggleBtn) musicToggleBtn.style.display = 'none';
-            try { fullscreenAudio.pause(); } catch(_) {}
-        } else if (kind === 'space') {
-            startSpaceEffect();
-            document.body.classList.add('ambient-space');
-            if (musicToggleBtn) musicToggleBtn.style.display = 'flex';
-            try {
-                fullscreenAudio.play();
-                if (playIcon && pauseIcon) { playIcon.style.display = 'none'; pauseIcon.style.display = 'block'; }
-            } catch(_) {}
-        } else {
-            // neutral
-            if (musicToggleBtn) musicToggleBtn.style.display = 'flex';
-            try {
-                fullscreenAudio.pause();
-                if (playIcon && pauseIcon) { playIcon.style.display = 'block'; pauseIcon.style.display = 'none'; }
-            } catch(_) {}
-        }
-    }
-    if (ambientOverlay) ambientOverlay.addEventListener('click', closeAmbientModal);
-    if (ambientClose) ambientClose.addEventListener('click', closeAmbientModal);
-    if (ambientConfirm) ambientConfirm.addEventListener('click', () => {
-        closeAmbientModal();
-        if (!document.fullscreenElement) toggleFullscreen();
-        applyAmbient(selectedAmbient);
-    });
-    document.addEventListener('change', (e) => {
-        const t = e.target; if (t && t instanceof HTMLInputElement && t.name === 'ambient') selectedAmbient = t.value;
-    });
-    if (actionFullscreen) {
-        actionFullscreen.addEventListener('click', () => {
-            closeActionSheet();
-            if (!document.fullscreenElement) toggleFullscreen();
-            openAmbientModal();
-        });
-    }
+    function openAmbientModal() { /* removed */ }
+    function closeAmbientModal() { /* removed */ }
+    function applyAmbient(kind) { /* removed */ }
+    
+    
+    
+    
 
     const actionRestart = document.getElementById('action-restart');
     if (actionRestart) {
@@ -494,8 +383,7 @@ async function init() {
     //     if (menuDarkToggle) menuDarkToggle.checked = (newTheme === 'dark');
     // });
 
-    // Menu dark mode toggle (in action sheet)
-    const menuDarkToggle = document.getElementById('menu-dark-toggle');
+    // [removed] Menu dark mode toggle from action sheet
     let lastLightPaperTheme = localStorage.getItem('paperThemeLight') || 'default';
     if (lastLightPaperTheme === 'tema3' || lastLightPaperTheme === 'tema4') {
         lastLightPaperTheme = 'tema1';
@@ -503,17 +391,6 @@ async function init() {
     } else if (lastLightPaperTheme !== 'default' && lastLightPaperTheme !== 'tema1') {
         lastLightPaperTheme = 'default';
         try { localStorage.setItem('paperThemeLight', 'default'); } catch(_) {}
-    }
-    if (menuDarkToggle) {
-        menuDarkToggle.checked = (currentTheme === 'dark');
-        menuDarkToggle.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                applyPaperTheme('dark');
-            } else {
-                const fallback = lastLightPaperTheme || 'default';
-                applyPaperTheme(fallback);
-            }
-        });
     }
 
     // Navigation buttons logic
@@ -545,9 +422,7 @@ async function init() {
             try { localStorage.setItem('paperThemeLight', choice); } catch(_) {}
         }
 
-        if (menuDarkToggle) {
-            menuDarkToggle.checked = isDark;
-        }
+        // header-only: no menu toggle to sync
 
         // Update UI selection state
         document.querySelectorAll('.theme-circle').forEach(btn => {
@@ -712,7 +587,7 @@ async function init() {
 
     let actionSheetTrigger = null;
 
-    // FunÃƒÂ§ÃƒÂµes de UI (melhoradas)
+    // FunÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de UI (melhoradas)
     function openActionSheet() {
         actionSheetTrigger = document.activeElement;
         const actionSheet = document.getElementById('action-sheet');
@@ -759,24 +634,9 @@ async function init() {
         }
     }
 
-    // Listeners bÃƒÂ¡sicos
+    // Listeners bÃƒÆ’Ã‚Â¡sicos
     if (infoPanel) infoPanel.addEventListener('click', openActionSheet);
-    // Header "Temas" button opens action sheet and scrolls to theme section
-    const headerThemesBtn = document.getElementById('header-themes-btn');
-    if (headerThemesBtn) {
-        headerThemesBtn.addEventListener('click', () => {
-            try { openActionSheet(); } catch(_) {}
-            setTimeout(() => {
-                const as = document.getElementById('action-sheet');
-                const inner = as?.querySelector('.action-sheet-inner');
-                const target = as?.querySelector('.theme-options');
-                if (inner && target) {
-                    const top = target.getBoundingClientRect().top - inner.getBoundingClientRect().top;
-                    inner.scrollTo({ top: Math.max(top - 12, 0), behavior: 'smooth' });
-                }
-            }, 60);
-        });
-    }
+    // [removed] header themes button wiring to bottom sheet
     if (actionSheetOverlay) actionSheetOverlay.addEventListener('click', closeActionSheet);
 
     // Open nested chapter sheet
@@ -833,7 +693,7 @@ async function init() {
             btn.className = 'chapter-item';
             btn.setAttribute('role', 'listitem');
             btn.setAttribute('data-page-index', String(ch.pageIndex));
-            btn.innerHTML = `<span class=\"chapter-item-title\">Capítulo ${ch.number}</span><span class=\"chapter-item-sub\">${ch.title}</span>`;
+            btn.innerHTML = `<span class=\"chapter-item-title\">${ch.number}. ${ch.title || ""}</span>`;
             btn.addEventListener('click', () => {
                 scrollToPageIndex(ch.pageIndex);
                 closeActionSheet();
@@ -842,7 +702,7 @@ async function init() {
         }
     }
 
-    // LÃƒÂ³gica principal
+    // LÃƒÆ’Ã‚Â³gica principal
     try {
         console.log("[2] Iniciando fetch do livro de texto...");
         // Prefer URL param ?book= when it's a .txt; otherwise fallback to default
@@ -883,15 +743,15 @@ async function init() {
         const text = await response.text();
         console.log("[3] Arquivo .txt carregado.");
 
-        // Evita reprocessar o livro na mesma sessÃƒÂ£o
+        // Evita reprocessar o livro na mesma sessÃƒÆ’Ã‚Â£o
         if (!window.__bookCache) {
             await processAndDisplayBook(text, bookPath);
             window.__bookCache = true;
         }
-        console.log("[4] Processamento do livro concluÃƒÂ­do.");
+        console.log("[4] Processamento do livro concluÃƒÆ’Ã‚Â­do.");
 
     } catch (error) {
-        console.error("[ERRO] Falha no bloco de inicializaÃƒÂ§ÃƒÂ£o:", error);
+        console.error("[ERRO] Falha no bloco de inicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o:", error);
         readerContent.innerHTML = '<p style="text-align: center; padding-top: 50%;">Ocorreu um erro ao carregar o livro.</p>';
     }
 }
@@ -901,7 +761,7 @@ async function processAndDisplayBook(text, bookPath) {
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '<div class="loading-container"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
 
-    // ForÃƒÂ§a uma reflow para garantir que a animaÃƒÂ§ÃƒÂ£o de carregamento seja renderizada.
+    // ForÃƒÆ’Ã‚Â§a uma reflow para garantir que a animaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o de carregamento seja renderizada.
     await new Promise(resolve => requestAnimationFrame(resolve));
     await new Promise(resolve => setTimeout(resolve, 0)); // Cede ao loop de eventos
 
@@ -929,7 +789,7 @@ function buildBookFromText(text, filePath) {
         if (alt.length > paragraphs.length) paragraphs = alt;
     }
 
-    console.log(`[6a] ParÃ¡grafos detectados: ${paragraphs.length}`);
+    console.log(`[6a] ParÃƒÂ¡grafos detectados: ${paragraphs.length}`);
 
     for (const paragraph of paragraphs) {
         let rest = paragraph.trim();
@@ -979,7 +839,7 @@ function buildBookFromText(text, filePath) {
     const title = rawName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     // Append final club CTA chunk (persistent)
     chunks.push({ type: 'club_cta' });
-    console.log(`[7] Processamento de texto concluÃ­do. Total de chunks: ${chunks.length}`);
+    console.log(`[7] Processamento de texto concluÃƒÂ­do. Total de chunks: ${chunks.length}`);
     return { name: title, chunks, filePath };
 }
 
@@ -1012,8 +872,8 @@ function splitIntoSmartChunks(text) {
 function simplifyTextRules(text) {
     let out = text;
     const rules = [
-        [/\bvossa merc[ÃƒÂªe]\b/gi, 'vocÃƒÂª'],
-        [/\bvossemec[ÃƒÂªe]\b/gi, 'vocÃƒÂª'],
+        [/\bvossa merc[ÃƒÆ’Ã‚Âªe]\b/gi, 'vocÃƒÆ’Ã‚Âª'],
+        [/\bvossemec[ÃƒÆ’Ã‚Âªe]\b/gi, 'vocÃƒÆ’Ã‚Âª'],
         [/\bhei de\b/gi, 'vou'],
         [/\bcousa\b/gi, 'coisa'],
         [/\bdeveras\b/gi, 'realmente'],
@@ -1082,7 +942,7 @@ function interleaveBooksIntoScreens(books) {
             const title = chunk.title || '';
             content.innerHTML = `
                 <div class="chapter-cover-inner">
-                <div class="chapter-eyebrow">Capítulo</div>
+                <div class="chapter-eyebrow">CapÃ­tulo</div>
                     <h2 class="chapter-title">${title}</h2>
                 </div>`;
             fixMojibake(content);
@@ -1101,7 +961,7 @@ function interleaveBooksIntoScreens(books) {
             } catch(_) {}
             const number = (chunk && chunk.number) ? chunk.number : (window.__chapters ? window.__chapters.length + 1 : 1);
             const eyebrowEl = content.querySelector('.chapter-eyebrow');
-            if (eyebrowEl) { eyebrowEl.textContent = `Capítulo ${number}`; }
+            if (eyebrowEl) { eyebrowEl.textContent = `CapÃ­tulo ${number}`; }
             if (!window.__chapters) window.__chapters = [];
             window.__chapters.push({ number, title, pageIndex: pageCounter });
             currentChapter = { number, title };
@@ -1148,14 +1008,14 @@ function interleaveBooksIntoScreens(books) {
                 <div class="share-card-body" style="text-align:left">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
                         <span style="font-size:12px; font-weight:800; padding:2px 8px; border-radius:999px; background:#f3f4f6; border:1px solid var(--border-color); color:var(--text-secondary);">Clube Rufus</span>
-                        <small style="opacity:.7">R$15/mÃªs</small>
+                        <small style="opacity:.7">R$15/mÃƒÂªs</small>
                     </div>
-                    <div style="font-weight:800; font-size:20px; margin-bottom:4px;">Quase lÃ¡!</div>
-                    <p style="margin:0 0 8px;">Estamos finalizando os prÃ³ximos capÃ­tulos. Quer ser avisado e participar da nossa comunidade?</p>
+                    <div style="font-weight:800; font-size:20px; margin-bottom:4px;">Quase lÃƒÂ¡!</div>
+                    <p style="margin:0 0 8px;">Estamos finalizando os prÃƒÂ³ximos capÃƒÂ­tulos. Quer ser avisado e participar da nossa comunidade?</p>
                     <ul style="margin:6px 0 12px 18px; line-height:1.6;">
-                        <li>âœ“ Encontros semanais entre leitores</li>
-                        <li>âœ“ Sorteios e novidades</li>
-                        <li>âœ“ Novos livros toda semana</li>
+                        <li>Ã¢Å“â€œ Encontros semanais entre leitores</li>
+                        <li>Ã¢Å“â€œ Sorteios e novidades</li>
+                        <li>Ã¢Å“â€œ Novos livros toda semana</li>
                     </ul>
                     <div class="club-form" style="display:grid; gap:8px; margin-top:8px;">
                         <label style="font-size:12px">Nome
@@ -1169,9 +1029,9 @@ function interleaveBooksIntoScreens(books) {
                             <button class="club-save" style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid var(--border-color); background: var(--card-bg); font-weight:700;">Quero ser avisado</button>
                         </div>
                         <label style="display:flex; align-items:center; gap:6px; font-size:12px; opacity:.8">
-                            <input type="checkbox" class="club-hide"> NÃ£o mostrar novamente
+                            <input type="checkbox" class="club-hide"> NÃƒÂ£o mostrar novamente
                         </label>
-                        <small style="opacity:.7">Usaremos seu nÃºmero para avisos do Rufus Reader. VocÃª pode sair a qualquer momento.</small>
+                        <small style="opacity:.7">Usaremos seu nÃƒÂºmero para avisos do Rufus Reader. VocÃƒÂª pode sair a qualquer momento.</small>
                     </div>
                 </div>`;
 
@@ -1180,8 +1040,8 @@ function interleaveBooksIntoScreens(books) {
             // Simple single-button override (no footer, no scroll)
             {
                 content.innerHTML = `<div class="share-card-body" style="text-align:left; padding-bottom:12px;">
-                    <div style="font-weight:800; font-size:20px; margin-bottom:6px;">Quase lÃ¡!</div>
-                    <p style="margin:0 0 12px;">Estamos finalizando os prÃ³ximos capÃ­tulos. Toque abaixo e eu aviso vocÃª quando chegar.</p>
+                    <div style="font-weight:800; font-size:20px; margin-bottom:6px;">Quase lÃƒÂ¡!</div>
+                    <p style="margin:0 0 12px;">Estamos finalizando os prÃƒÂ³ximos capÃƒÂ­tulos. Toque abaixo e eu aviso vocÃƒÂª quando chegar.</p>
                     <div style="display:flex; justify-content:center;">
                         <button class="club-notify" style="padding:12px 16px; border-radius:10px; background: var(--primary-color); color:#fff; font-weight:800;">Me avise</button>
                     </div>
@@ -1323,7 +1183,7 @@ function interleaveBooksIntoScreens(books) {
                 if (footerEl && pageEl && currentChapter && currentChapter.number) {
                     const pill = document.createElement('span');
                     pill.className = 'chapter-pill';
-                    pill.textContent = `Capítulo ${currentChapter.number}`;
+                    pill.textContent = `CapÃ­tulo ${currentChapter.number}`;
                     // Non-interactive visual pill only
                     footerEl.replaceChild(pill, pageEl);
                 }
@@ -1379,7 +1239,7 @@ function interleaveBooksIntoScreens(books) {
             async function applySimplify() {
                 try {
                     simplifyBtn.classList.add('loading');
-                    simplifyBtn.textContent = 'Aaâ€¦';
+                    simplifyBtn.textContent = 'AaÃ¢â‚¬Â¦';
                     const cached = localStorage.getItem(cacheKey);
                     const simplifiedText = cached || await roundTripSimplify(originalText);
                     bodyEl.textContent = simplifiedText;
@@ -1389,8 +1249,8 @@ function interleaveBooksIntoScreens(books) {
                     simplifyBtn.setAttribute('aria-pressed', 'true');
                     simplifyBtn.title = 'Mostrar original';
                 } catch (e) {
-                    console.error('Falha na simplificaÃ§Ã£o:', e);
-                    alert('NÃ£o foi possÃ­vel simplificar agora. Verifique a conexÃ£o/configuraÃ§Ã£o de traduÃ§Ã£o.');
+                    console.error('Falha na simplificaÃƒÂ§ÃƒÂ£o:', e);
+                    alert('NÃƒÂ£o foi possÃƒÂ­vel simplificar agora. Verifique a conexÃƒÂ£o/configuraÃƒÂ§ÃƒÂ£o de traduÃƒÂ§ÃƒÂ£o.');
                 } finally {
                     simplifyBtn.classList.remove('loading');
                     simplifyBtn.textContent = 'Aa';
@@ -1483,7 +1343,7 @@ function interleaveBooksIntoScreens(books) {
     totalPages = document.querySelectorAll('.page').length;
     updatePageNumber(1, totalPages);
 
-    console.log(`[10] RenderizaÃƒÂ§ÃƒÂ£o concluÃƒÂ­da. ${pageCounter} cards adicionados ao DOM.`);
+    console.log(`[10] RenderizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o concluÃƒÆ’Ã‚Â­da. ${pageCounter} cards adicionados ao DOM.`);
     loadProgress();
 }
 
@@ -1497,13 +1357,13 @@ function showInstallToast(hintOnly = false) {
         toast.innerHTML = `
             <div class="toast-body">
                 <div class="toast-title">Adicionar atalho</div>
-                <div class="toast-text">Adicione o Rufus Reader Ã  tela inicial para acesso rÃ¡pido.</div>
+                <div class="toast-text">Adicione o Rufus Reader ÃƒÂ  tela inicial para acesso rÃƒÂ¡pido.</div>
                 <div class="toast-actions">
                     <button class="btn-primary" id="install-accept">Adicionar</button>
                     <button class="btn-secondary" id="install-dismiss">Depois</button>
                 </div>
             </div>
-            <button class="toast-close" id="install-close" aria-label="Fechar">Ã—</button>
+            <button class="toast-close" id="install-close" aria-label="Fechar">Ãƒâ€”</button>
         `;
         document.body.appendChild(toast);
 
@@ -1538,7 +1398,7 @@ function showInstallToast(hintOnly = false) {
                     hideInstallToast();
                 } else {
                     // Fallback hint: show quick instructions
-                    alert("iOS: Toque em Compartilhar e 'Adicionar Ã  Tela de InÃ­cio'.\nAndroid: use o menu do navegador 'Adicionar Ã  tela inicial'.");
+                    alert("iOS: Toque em Compartilhar e 'Adicionar ÃƒÂ  Tela de InÃƒÂ­cio'.\nAndroid: use o menu do navegador 'Adicionar ÃƒÂ  tela inicial'.");
                     hideInstallToast();
                 }
             } catch (_) {
@@ -1596,7 +1456,7 @@ function loadProgress() {
     }
 }
 
-// Garante que o app sÃƒÂ³ rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
+// Garante que o app sÃƒÆ’Ã‚Â³ rode depois que todos os recursos, incluindo pdf.js, forem carregrados.
 window.onload = init;
 
 
@@ -1648,6 +1508,8 @@ try {
         });
         setSelected();
     })();
+
+
 
 
 

@@ -595,6 +595,7 @@ body.body-no-scroll {
     right: 0;
     bottom: 0;
     background: var(--card-bg);
+    color: var(--text-color);
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
     box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
@@ -644,21 +645,26 @@ body.body-no-scroll {
 
 /* Initial peek height; inner scroll reveals more */
 .action-sheet.peek {
-    height: 56vh;
+    height: 36vh;
+}
+/* Chapters sheet opens taller for easier browsing */
+#chapter-sheet.peek {
+    height: 76vh;
 }
 
 .action-sheet-inner {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 24px));
+    /* Slightly tighter bottom padding while respecting safe area */
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 16px));
 }
 
 /* Chapter list inside action sheet */
-.chapter-list { display: grid; gap: 8px; margin: 8px 0 12px; }
-.chapter-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.chapter-list { display: grid; gap: 8px; margin: 8px 0 12px; text-align: left; }
+.chapter-item { display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
 .chapter-item:hover { background: rgba(0,0,0,0.03); }
 [data-theme="dark"] .chapter-item:hover { background: rgba(255,255,255,0.06); }
-.chapter-item-title { font-weight: 700; font-size: 14px; }
+.chapter-item-title { font-weight: 700; font-size: 14px; color: var(--text-color); }
 .chapter-item-sub { font-size: 12px; color: var(--text-secondary); margin-left: 8px; }
 .chapter-item-goto { font-size: 12px; color: var(--primary-color); margin-left: 12px; }
 
@@ -712,63 +718,7 @@ body.body-no-scroll {
     background: rgba(255,255,255,0.06);
 }
 
-/* Action sheet card: Leitura profunda */
-.action-card {
-    width: 100%;
-    border: none;
-    text-align: left;
-    padding: 14px 14px;
-    border-radius: 14px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: transform 0.25s ease, opacity 0.25s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    margin: 14px 0 18px;
-}
-
-.action-sheet.open .action-card {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.deep-reading-card {
-    background-image: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
-}
-
-.action-card:hover {
-    box-shadow: 0 14px 28px rgba(0,0,0,0.2);
-    filter: brightness(1.05);
-}
-
-.action-card .card-icon {
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-}
-
-.action-card .card-content {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-}
-
-.action-card .card-title {
-    font-weight: 700;
-    font-size: 15px;
-}
-
-.action-card .card-subtitle {
-    font-size: 12px;
-    opacity: 0.9;
-}
+/* [removed] Action sheet card: Leitura profunda */
 
 /* Author highlight card */
 .author-card {
@@ -837,6 +787,42 @@ body.body-no-scroll {
 
 .author-card .author-link:hover {
     text-decoration: underline;
+}
+
+/* Author card: compact profile variant */
+.author-card.profile {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+}
+.author-card.profile .author-cover {
+    width: 48px;
+    height: 48px;
+    aspect-ratio: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+.author-card.profile .author-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.author-card.profile .author-content {
+    padding: 0 0 0 10px;
+    display: flex;
+    flex-direction: column;
+}
+.author-card.profile .author-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+}
+.author-card.profile .author-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
 }
 
 /* Theme picker (3 circles) */
@@ -995,45 +981,7 @@ body.body-no-scroll {
     color: #f0f0f0;
 }
 
-body.fullscreen-active .app-header,
-body.fullscreen-active .info-panel {
-    display: none;
-}
-
-.fab-right svg {
-    width: 24px;
-    height: 24px;
-}
-
-.exit-fullscreen-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1001;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-}
-
-body.fullscreen-active .exit-fullscreen-btn {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.exit-fullscreen-btn svg {
-    width: 24px;
-    height: 24px;
-}
+/* [removed] fullscreen-specific styles and exit-fullscreen button */
 
 
 
@@ -1091,109 +1039,9 @@ body[data-theme="light"] {
     scrollbar-gutter: stable;
 }
 
-/* Deep Reading (glassmorphism + rain) */
-body.deep-reading-active.ambient-rain,
-body.deep-reading-active.ambient-space {
-    background: radial-gradient(1200px 800px at 20% 10%, rgba(20,24,34,0.95) 0%, rgba(11,14,22,0.98) 40%, #0a0d15 100%) fixed;
-}
+/* [removed] Deep Reading (ambience, overlays, glassmorphism) */
 
-/* Glass cards while in deep reading */
-.deep-reading-active.ambient-rain .share-card-content,
-.deep-reading-active.ambient-space .share-card-content {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-    backdrop-filter: saturate(140%) blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-}
-
-/* Rain overlay behind content */
-.rain-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 300ms ease;
-}
-
-.deep-reading-active.ambient-rain .rain-overlay {
-    opacity: 0.35;
-}
-
-.raindrop {
-    position: absolute;
-    top: -80px;
-    width: 2px;
-    height: 70px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0) 100%);
-    filter: blur(0.2px);
-    animation-name: rain-fall;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-@keyframes rain-fall {
-    0% { transform: translate3d(0, -100px, 0); opacity: 0; }
-    10% { opacity: 1; }
-    100% { transform: translate3d(0, 120vh, 0); opacity: 0; }
-}
-
-/* Space ambience */
-.space-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 300ms ease;
-}
-
-.deep-reading-active.ambient-space .space-overlay {
-    opacity: 0.45;
-}
-
-/* Ambient modal */
-.ambient-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 40;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 220ms ease;
-}
-
-.ambient-modal {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(0.98);
-    width: min(560px, 92vw);
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    z-index: 50;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 220ms ease, transform 220ms ease;
-}
-
-.ambient-modal-inner { padding: 16px; }
-.ambient-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.ambient-title { font-weight: 700; font-size: 16px; }
-.ambient-close { background: transparent; border: none; font-size: 22px; line-height: 1; cursor: pointer; color: var(--text-color); }
-.ambient-options { display: flex; gap: 10px; flex-wrap: wrap; margin: 6px 0 12px; }
-.ambient-option { display: inline-flex; align-items: center; gap: 8px; }
-.ambient-option input { display: none; }
-.ambient-chip { padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; user-select: none; }
-.ambient-option input:checked + .ambient-chip { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
-.ambient-footer { display: flex; justify-content: flex-end; }
-.ambient-confirm { background: var(--primary-color); color: white; border: none; border-radius: 10px; padding: 10px 14px; cursor: pointer; }
-
-.ambient-visible .ambient-overlay { opacity: 1; pointer-events: auto; }
-.ambient-visible .ambient-modal { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+/* [removed] Ambient modal */
 
 /* Loading Animation */
 .loading-container {
