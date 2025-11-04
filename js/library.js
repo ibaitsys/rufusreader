@@ -282,6 +282,17 @@ document.addEventListener('DOMContentLoaded', () => {
       , { title: 'Hamlet', author: 'William Shakespeare', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
     ];
 
+    // Normalize generic covers to a neutral placeholder
+    try {
+      books.forEach(b => {
+        if (!b) return;
+        const c = String(b.cover || '');
+        if (/assets\/(book1\.svg|book3\.svg|dom-casmurro\.svg)$/i.test(c)) {
+          b.cover = 'assets/book-placeholder.svg';
+        }
+      });
+    } catch (_) {}
+
     // Limpa e renderiza
     bookList.innerHTML = '';
     books.forEach(book => {
