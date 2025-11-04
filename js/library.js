@@ -269,7 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
       , { title: 'A cabeça do santo', author: 'Socorro Acioli', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'Oração para Desaparecer', author: 'Socorro Acioli', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'It: A coisa: O livro que deu origem à série da HBO Max “Bem-vindos à Derry”', author: 'Stephen King', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
-    ,\r\n      , { title: 'O Vampiro que Ri (Mangá - Vol. 1 de 2)', author: 'Suehiro Maruo', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+    ,
+      , { title: 'O Vampiro que Ri (Mangá - Vol. 1 de 2)', author: 'Suehiro Maruo', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'O cara que estou a fim não é um cara! - Volume 2', author: 'Sumiko Arai', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'Os segredos da mente milionária', author: 'T. Harv Eker', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'Ganhe o mundo sem perder a alma: O que a Sabedoria Milenar nos ensina sobre dinheiro e espiritualidade', author: 'Tiago Brunet', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
@@ -278,7 +279,10 @@ document.addEventListener('DOMContentLoaded', () => {
       , { title: 'Casas estranhas: Casas estranhas Vol. 1', author: 'Uketsu', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'Tremembé: O presídio dos famosos', author: 'Ullisses Campbell', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
       , { title: 'Em Busca De Sentido: Um psicólogo no campo de concentração', author: 'Viktor E. Frankl', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
-      , { title: 'Hamlet', author: 'William Shakespeare', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }\r\n    ];\r\n\r\n    // Limpa e renderiza
+      , { title: 'Hamlet', author: 'William Shakespeare', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+    ];
+
+    // Limpa e renderiza
     bookList.innerHTML = '';
     books.forEach(book => {
       const li = document.createElement('li');
@@ -388,6 +392,7 @@ try {
   const beta = document.querySelector('.beta-badge');
   if (beta) beta.setAttribute('aria-label', 'Versão beta');
 } catch (e) {}
+
 
 
 
