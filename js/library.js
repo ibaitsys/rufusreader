@@ -293,39 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (_) {}
 
-    // Limpa e renderiza
-    bookList.innerHTML = '';
-    books.forEach(book => {
-      const li = document.createElement('li');
-      li.className = 'book-item';
-
-      const a = document.createElement('a');
-            a.href = `book-dashboard.html?book=${encodeURIComponent(book.path)}&title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}&cover=${encodeURIComponent(book.cover)}${book.lang ? `&lang=${encodeURIComponent(book.lang)}` : ''}`;
-
-      const wrap = document.createElement('div');
-      wrap.className = 'book-cover-wrap';
-
-      const img = document.createElement('img');
-      img.src = book.cover;
-      img.alt = `Capa do livro ${book.title}`;
-
-      const badge = document.createElement('div');
-      badge.className = 'corner-badge';
-      badge.textContent = 'Disponível';
-
-      wrap.appendChild(img);
-      wrap.appendChild(badge);
-
-      const meta = document.createElement('div');
-      meta.className = 'book-meta';
-      meta.textContent = book.title || '';
-
-
-      a.appendChild(wrap);
-      a.appendChild(meta);
-      li.appendChild(a);
-      bookList.appendChild(li);
-    });
+    \ \ \ \ //\ Render\ helper\n\ \ \ \ const\ renderBooks\ =\ \(arr\)\ =>\ \{\n\ \ \ \ \ \ bookList\.innerHTML\ =\ '';\n\ \ \ \ \ \ arr\.forEach\(book\ =>\ \{\n\ \ \ \ \ \ \ \ const\ li\ =\ document\.createElement\('li'\);\n\ \ \ \ \ \ \ \ li\.className\ =\ 'book-item';\n\ \ \ \ \ \ \ \ const\ a\ =\ document\.createElement\('a'\);\n\ \ \ \ \ \ \ \ a\.href\ =\ 'book-dashboard\.html\?book='\ \+\ encodeURIComponent\(book\.path\)\ \+\ '&title='\ \+\ encodeURIComponent\(book\.title\)\ \+\ '&author='\ \+\ encodeURIComponent\(book\.author\)\ \+\ '&cover='\ \+\ encodeURIComponent\(book\.cover\)\ \+\ \(book\.lang\ \?\ \('&lang='\ \+\ encodeURIComponent\(book\.lang\)\)\ :\ ''\);\n\ \ \ \ \ \ \ \ const\ wrap\ =\ document\.createElement\('div'\);\n\ \ \ \ \ \ \ \ wrap\.className\ =\ 'book-cover-wrap';\n\ \ \ \ \ \ \ \ const\ img\ =\ document\.createElement\('img'\);\n\ \ \ \ \ \ \ \ img\.src\ =\ book\.cover;\n\ \ \ \ \ \ \ \ img\.alt\ =\ 'Capa\ do\ livro\ '\ \+\ \(book\.title\ \|\|\ ''\);\n\ \ \ \ \ \ \ \ const\ badge\ =\ document\.createElement\('div'\);\n\ \ \ \ \ \ \ \ badge\.className\ =\ 'corner-badge';\n\ \ \ \ \ \ \ \ badge\.textContent\ =\ 'Disponíveis';\n\ \ \ \ \ \ \ \ wrap\.appendChild\(img\);\n\ \ \ \ \ \ \ \ wrap\.appendChild\(badge\);\n\ \ \ \ \ \ \ \ const\ meta\ =\ document\.createElement\('div'\);\n\ \ \ \ \ \ \ \ meta\.className\ =\ 'book-meta';\n\ \ \ \ \ \ \ \ meta\.textContent\ =\ book\.title\ \|\|\ '';\n\ \ \ \ \ \ \ \ a\.appendChild\(wrap\);\n\ \ \ \ \ \ \ \ a\.appendChild\(meta\);\n\ \ \ \ \ \ \ \ li\.appendChild\(a\);\n\ \ \ \ \ \ \ \ bookList\.appendChild\(li\);\n\ \ \ \ \ \ }\);\n\ \ \ \ };\n\ \ \ \ renderBooks\(books\);
   }
 
   // Seção Em breve (render only once)
@@ -403,6 +371,8 @@ try {
   const beta = document.querySelector('.beta-badge');
   if (beta) beta.setAttribute('aria-label', 'Versão beta');
 } catch (e) {}
+
+
 
 
 

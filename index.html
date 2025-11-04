@@ -78,6 +78,16 @@
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
+        .search-wrap { margin: 8px 0 10px; }
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 10px;
+            background: var(--card-bg, #fff);
+            color: var(--text-color, #111827);
+            font: inherit;
+        }
         @media (max-width: 640px) {
             .library-container { padding: 12px; }
             .book-list { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
@@ -91,6 +101,9 @@
         <span class="beta-badge" aria-label="Vers&#227;o beta">Beta</span>
     </header>
     <div class="library-container">
+        <div class="search-wrap">
+            <input id="book-search" class="search-input" type="search" placeholder="Buscar livros" aria-label="Buscar livros">
+        </div>
         <div class="section-title">Dispon&#237;veis</div>
         <ul id="book-list" class="book-list">
             <!-- Livros ser&#227;o inseridos aqui via JavaScript -->
