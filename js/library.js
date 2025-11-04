@@ -212,6 +212,63 @@ document.addEventListener('DOMContentLoaded', () => {
         lang: 'pt-BR',
         path: 'assets/memorias_postumas_final.txt'
       }
+      , { title: 'Verity', author: 'Colleen Hoover', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Verity (Edição de colecionador)', author: 'Colleen Hoover', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O lado feio do amor', author: 'Colleen Hoover', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Uma segunda chance (Fenômeno do TikTok)', author: 'Colleen Hoover', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Canção para ninar menino grande', author: 'Conceição Evaristo', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Olhos D\'Água', author: 'Conceição Evaristo', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Como fazer amigos e influenciar pessoas', author: 'Dale Carnegie', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O segredo final (Robert Langdon – Livro 6)', author: 'Dan Brown', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Nada pode me ferir', author: 'David Goggins', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Oi, Sumido', author: 'Dolly Alderton', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Noites Brancas', author: 'Fiódor Dostoiévski', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A Metamorfose: DIE VERWANDLUNG', author: 'Franz Kafka', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Nunca minta', author: 'Freida McFadden', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A empregada (A empregada – Livro 1): Bem-vinda à família', author: 'Freida McFadden', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O segredo da empregada (A empregada – Livro 2)', author: 'Freida McFadden', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Cristianismo puro e simples', author: 'Gabriele Greggersen', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O homem mais rico da Babilônia', author: 'George S. Clason', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Vidas secas', author: 'Graciliano Ramos', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Essencialismo: A disciplinada busca por menos', author: 'Greg McKeown', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'As coisas que você só vê quando desacelera: Como manter a calma em um mundo frenético', author: 'Haemin Sunim', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Aliada do Vilã', author: 'Hannah Nicole Maehrer', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A coragem de não agradar: Como a filosofia pode ajudar você a se libertar da opinião dos outros, superar suas limitações e se tornar a pessoa que deseja', author: 'Ichiro Kishimi', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Hábitos Atômicos: um Método Fácil e Comprovado de Criar Bons Hábitos e se Livrar dos Maus', author: 'James Clear', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Thorgal: Série Clássica (Vol. 1 de 4)', author: 'Jean Van Hamme', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Quebrando o hábito de ser você mesmo: como reconstruir sua mente e criar um novo eu', author: 'Joe Dispenza', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A geração ansiosa: Como a infância hiperconectada está causando uma epidemia de transtornos mentais', author: 'Jonathan Haidt', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O poder do subconsciente', author: 'Joseph Murphy', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Capitães da areia', author: 'Jorge Amado', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Café com Deus Pai Vol. 6 - 2026: Porções Diárias de Amor', author: 'Júnior Rostirola', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Bíblia King James 1611 de Estudo Holman - Duotone - 7 Edição', author: 'King James', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Caçador sem coração (Mariposa Escarlate - Livro 1)', author: 'Kristen Ciccarelli', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A Morte de Ivan Ilitch (2 ed.)', author: 'Liev Tolstói', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'De quanta terra precisa um homem e outras histórias', author: 'Liev Tolstói', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Mulherzinhas', author: 'Louisa May Alcott', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Melhor do que nos filmes', author: 'Lynn Painter', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Não é como nos filmes: (Melhor do que nos filmes – vol. 2)', author: 'Lynn Painter', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Rabiscos de Florentia', author: 'Maidy Lacerda', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Box Trono de Vidro (acompanha pôster e marcadores)', author: 'Mariana Kohnert', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Não Começou com Você: Como o Trauma Familiar Herdado nos Define e Como dar um fim a Esse Ciclo', author: 'Mark Wolynn', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A Biblioteca da Meia-Noite', author: 'Matt Haig', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Deixa pra lá: A teoria Let Them', author: 'Mel Robbins', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Coisa de rico: A vida dos endinheirados brasileiros', author: 'Michel Alcoforado', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A psicologia financeira: lições atemporais sobre fortuna, ganância e felicidade', author: 'Morgan Housel', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A arte de gastar dinheiro: Escolhas simples para uma vida equilibrada', author: 'Morgan Housel', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Mais esperto que o diabo: o mistério revelado da liberdade e do sucesso', author: 'Napoleon Hill', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Noites brancas (tradução direta do original russo)', author: 'Nivaldo dos Santos', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O livro que você gostaria que seus pais tivessem lido: (e seus filhos ficarão gratos por você ler)', author: 'Philippa Perry', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Dias perfeitos: O livro que deu origem à série original Globoplay', author: 'Raphael Montes', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Jantar secreto', author: 'Raphael Montes', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Quarta asa: 1', author: 'Rebecca Yarros', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Chama de Ferro (Série O Empyriano, Livro 2)', author: 'Rebecca Yarros', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'O massacre da família Hope', author: 'Riley Sager', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'As 48 leis do poder', author: 'Robert Greene', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Absolute Batman 01 (Volume 1)', author: 'Scott Snyder', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'A cabeça do santo', author: 'Socorro Acioli', year: '', format: 'Texto', cover: 'assets/book3.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'Oração para Desaparecer', author: 'Socorro Acioli', year: '', format: 'Texto', cover: 'assets/dom-casmurro.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
+      , { title: 'It: A coisa: O livro que deu origem à série da HBO Max “Bem-vindos à Derry”', author: 'Stephen King', year: '', format: 'Texto', cover: 'assets/book1.svg', lang: 'pt-BR', path: 'assets/memorias_postumas_final.txt' }
     ];
 
     // Limpa e renderiza
