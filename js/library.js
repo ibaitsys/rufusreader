@@ -30,6 +30,124 @@ document.addEventListener('DOMContentLoaded', () => {
         cover: 'assets/playbiggercover.jpg',
         lang: 'en-US',
         path: 'assets/Play Bigger - Al Ramadan.txt'
+      },
+      // Adicionados
+      {
+        title: 'Confissões de Santo Agostinho - Edição de Luxo Almofadada',
+        author: 'Agostinho de Hipona',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Amor, teoricamente',
+        author: 'Ali Hazelwood',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book3.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'A hipótese do amor',
+        author: 'Ali Hazelwood',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/dom-casmurro.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Como arruinar um casamento – Um livro sobre recomeços e amizades improváveis, vencedor do prêmio Goodreads',
+        author: 'Alison Espach',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'A morte é um dia que vale a pena viver: E um excelente motivo para se buscar um novo olhar para a vida',
+        author: 'Ana Claudia Quintana Arantes',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book3.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Um defeito de cor',
+        author: 'Ana Maria Gonçalves',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/dom-casmurro.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'A gente mira no amor e acerta na solidão',
+        author: 'Ana Suy',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'O Pequeno Príncipe - Edição de Luxo Almofadada',
+        author: 'Antoine de Saint-Exupéry',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book3.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Tudo Sobre o Amor',
+        author: 'bell hooks',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/dom-casmurro.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Coleção completa Bobbie Goods (Do dia para a noite, Dias quentes, Isso e aquilo e Dias frios)',
+        author: 'Bobbie Goods',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Dias quentes (Spring Summer)',
+        author: 'Bobbie Goods',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book3.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Do dia para a noite (Day to night)',
+        author: 'Bobbie Goods',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/dom-casmurro.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'A coragem de ser imperfeito: Como aceitar a própria vulnerabilidade, vencer a vergonha e ousar ser quem você é',
+        author: 'Brené Brown',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
       }
     ];
 
