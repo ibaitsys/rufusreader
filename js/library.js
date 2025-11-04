@@ -307,8 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const meta = document.createElement('div');
       meta.className = 'book-meta';
-      const parts = [book.author].filter(Boolean);
-      meta.textContent = parts.join(' • ');
+      meta.textContent = book.title || '';
+
 
       a.appendChild(wrap);
       a.appendChild(meta);
@@ -392,6 +392,7 @@ try {
   const beta = document.querySelector('.beta-badge');
   if (beta) beta.setAttribute('aria-label', 'Versão beta');
 } catch (e) {}
+
 
 
 
