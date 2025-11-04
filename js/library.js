@@ -148,6 +148,69 @@ document.addEventListener('DOMContentLoaded', () => {
         cover: 'assets/book1.svg',
         lang: 'pt-BR',
         path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Sociedade do cansaço',
+        author: 'Byung-Chul Han',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Cartas de um diabo a seu aprendiz',
+        author: 'C. S. Lewis',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book3.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Tudo é rio',
+        author: 'Carla Madeira',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/dom-casmurro.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Binding 13: Marcação cerrada no amor',
+        author: 'Chloe Walsh',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Keeping 13: Se apaixonar é a parte fácil: 2',
+        author: 'Chloe Walsh',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book3.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'A hora da estrela: Edição comemorativa',
+        author: 'Clarice Lispector',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/dom-casmurro.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
+      },
+      {
+        title: 'Se não fosse você',
+        author: 'Colleen Hoover',
+        year: '',
+        format: 'Texto',
+        cover: 'assets/book1.svg',
+        lang: 'pt-BR',
+        path: 'assets/memorias_postumas_final.txt'
       }
     ];
 
