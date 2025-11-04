@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.__libraryInitDone = true;
   // Flag de página e título
   document.body.setAttribute('data-page', 'library');
-  document.title = 'Rufus Reader - Biblioteca';
+  document.title = 'Rodlist - Biblioteca';
 
   const bookList = document.getElementById('book-list');
 
@@ -293,7 +293,50 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (_) {}
 
-    \ \ \ \ //\ Render\ helper\n\ \ \ \ const\ renderBooks\ =\ \(arr\)\ =>\ \{\n\ \ \ \ \ \ bookList\.innerHTML\ =\ '';\n\ \ \ \ \ \ arr\.forEach\(book\ =>\ \{\n\ \ \ \ \ \ \ \ const\ li\ =\ document\.createElement\('li'\);\n\ \ \ \ \ \ \ \ li\.className\ =\ 'book-item';\n\ \ \ \ \ \ \ \ const\ a\ =\ document\.createElement\('a'\);\n\ \ \ \ \ \ \ \ a\.href\ =\ 'book-dashboard\.html\?book='\ \+\ encodeURIComponent\(book\.path\)\ \+\ '&title='\ \+\ encodeURIComponent\(book\.title\)\ \+\ '&author='\ \+\ encodeURIComponent\(book\.author\)\ \+\ '&cover='\ \+\ encodeURIComponent\(book\.cover\)\ \+\ \(book\.lang\ \?\ \('&lang='\ \+\ encodeURIComponent\(book\.lang\)\)\ :\ ''\);\n\ \ \ \ \ \ \ \ const\ wrap\ =\ document\.createElement\('div'\);\n\ \ \ \ \ \ \ \ wrap\.className\ =\ 'book-cover-wrap';\n\ \ \ \ \ \ \ \ const\ img\ =\ document\.createElement\('img'\);\n\ \ \ \ \ \ \ \ img\.src\ =\ book\.cover;\n\ \ \ \ \ \ \ \ img\.alt\ =\ 'Capa\ do\ livro\ '\ \+\ \(book\.title\ \|\|\ ''\);\n\ \ \ \ \ \ \ \ const\ badge\ =\ document\.createElement\('div'\);\n\ \ \ \ \ \ \ \ badge\.className\ =\ 'corner-badge';\n\ \ \ \ \ \ \ \ badge\.textContent\ =\ 'Disponíveis';\n\ \ \ \ \ \ \ \ wrap\.appendChild\(img\);\n\ \ \ \ \ \ \ \ wrap\.appendChild\(badge\);\n\ \ \ \ \ \ \ \ const\ meta\ =\ document\.createElement\('div'\);\n\ \ \ \ \ \ \ \ meta\.className\ =\ 'book-meta';\n\ \ \ \ \ \ \ \ meta\.textContent\ =\ book\.title\ \|\|\ '';\n\ \ \ \ \ \ \ \ a\.appendChild\(wrap\);\n\ \ \ \ \ \ \ \ a\.appendChild\(meta\);\n\ \ \ \ \ \ \ \ li\.appendChild\(a\);\n\ \ \ \ \ \ \ \ bookList\.appendChild\(li\);\n\ \ \ \ \ \ }\);\n\ \ \ \ };\n\ \ \ \ renderBooks\(books\);
+    // Render helper
+    const renderBooks = (arr) => {
+      bookList.innerHTML = '';
+      arr.forEach(book => {
+        const li = document.createElement('li');
+        li.className = 'book-item';
+        const a = document.createElement('a');
+        a.href = 'book-dashboard.html?book=' + encodeURIComponent(book.path) + '&title=' + encodeURIComponent(book.title) + '&author=' + encodeURIComponent(book.author) + '&cover=' + encodeURIComponent(book.cover) + (book.lang ? ('&lang=' + encodeURIComponent(book.lang)) : '');
+        const wrap = document.createElement('div');
+        wrap.className = 'book-cover-wrap';
+        const img = document.createElement('img');
+        img.src = book.cover;
+        img.alt = 'Capa do livro ' + (book.title || '');
+        const badge = document.createElement('div');
+        badge.className = 'corner-badge';
+        badge.textContent = 'Disponíveis';
+        wrap.appendChild(img);
+        wrap.appendChild(badge);
+        const meta = document.createElement('div');
+        meta.className = 'book-meta';
+        meta.textContent = book.title || '';
+        a.appendChild(wrap);
+        a.appendChild(meta);
+        li.appendChild(a);
+        bookList.appendChild(li);
+      });
+    };
+    // Initial render
+    renderBooks(books);
+
+    // Wire up search
+    const searchInput = document.getElementById('book-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        var q = (searchInput.value || '').toLowerCase();
+        if (!q) { renderBooks(books); return; }
+        var filtered = books.filter(function(b){
+          var t = String(b.title || '').toLowerCase();
+          var a = String(b.author || '').toLowerCase();
+          return t.indexOf(q) !== -1 || a.indexOf(q) !== -1;
+        });
+        renderBooks(filtered);
+      });
+    }
   }
 
   // Seção Em breve (render only once)

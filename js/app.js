@@ -1031,7 +1031,7 @@ function interleaveBooksIntoScreens(books) {
                         <label style="display:flex; align-items:center; gap:6px; font-size:12px; opacity:.8">
                             <input type="checkbox" class="club-hide"> NÃƒÂ£o mostrar novamente
                         </label>
-                        <small style="opacity:.7">Usaremos seu nÃƒÂºmero para avisos do Rufus Reader. VocÃƒÂª pode sair a qualquer momento.</small>
+                        <small style="opacity:.7">Usaremos seu nÃƒÂºmero para avisos do Rodlist. VocÃƒÂª pode sair a qualquer momento.</small>
                     </div>
                 </div>`;
 
@@ -1357,7 +1357,7 @@ function showInstallToast(hintOnly = false) {
         toast.innerHTML = `
             <div class="toast-body">
                 <div class="toast-title">Adicionar atalho</div>
-                <div class="toast-text">Adicione o Rufus Reader ÃƒÂ  tela inicial para acesso rÃƒÂ¡pido.</div>
+                <div class="toast-text">Adicione o Rodlist ÃƒÂ  tela inicial para acesso rÃƒÂ¡pido.</div>
                 <div class="toast-actions">
                     <button class="btn-primary" id="install-accept">Adicionar</button>
                     <button class="btn-secondary" id="install-dismiss">Depois</button>
@@ -1508,6 +1508,7 @@ try {
         });
         setSelected();
     })();
+
 
 
 

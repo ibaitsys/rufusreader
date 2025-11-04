@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "rufus-reader",
   "version": "1.0.0",
-  "description": "Rufus Reader — PWA de leitura de PDFs com progresso",
+  "description": "Rodlist â€” PWA de leitura de PDFs com progresso",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -21,3 +21,4 @@
     "nodemon": "^3.0.2"
   }
 }
+
