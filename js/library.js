@@ -1,5 +1,6 @@
 ﻿// Biblioteca: renderização de livros e seção "Em breve" com metadados compactos e badges
 document.addEventListener('DOMContentLoaded', () => {
+  const SHOW_COMING_SOON = false; // disable "Em breve" section on index
   // Prevent duplicate rendering if this script runs twice for any reason
   if (window.__libraryInitDone) return;
   window.__libraryInitDone = true;
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Seção Em breve (render only once)
   const container = document.querySelector('.library-container');
-  if (container && !document.getElementById('coming-soon-list')) {
+  if (SHOW_COMING_SOON && container && !document.getElementById('coming-soon-list')) {
     const title = document.createElement('div');
     title.className = 'section-title';
     title.textContent = 'Em breve';
